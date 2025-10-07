@@ -27,7 +27,7 @@ export default function HomePage() {
 
   const handleUpdateProduct = async (data: CreateProductRequest) => {
     if (!editingProduct) return;
-    
+
     try {
       await updateProduct(editingProduct.id, data);
       setEditingProduct(null);
@@ -56,11 +56,10 @@ export default function HomePage() {
     return (
       <div className="text-center py-12">
         <div className="text-red-500 text-lg mb-4">Error loading products</div>
+
         <div className="text-gray-600">{error}</div>
-        <button 
-          onClick={() => window.location.reload()} 
-          className="mt-4 btn btn-primary"
-        >
+
+        <button onClick={() => window.location.reload()} className="mt-4 btn btn-primary">
           Retry
         </button>
       </div>
@@ -72,12 +71,11 @@ export default function HomePage() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Products</h1>
+
           <p className="text-gray-600 mt-2">Manage your product inventory</p>
         </div>
-        <button
-          onClick={() => setIsFormOpen(true)}
-          className="btn btn-primary"
-        >
+
+        <button onClick={() => setIsFormOpen(true)} className="btn btn-primary">
           Add New Product
         </button>
       </div>

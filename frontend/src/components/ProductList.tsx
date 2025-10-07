@@ -23,6 +23,7 @@ export default function ProductList({ products, onEdit, onDelete, loading }: Pro
     return (
       <div className="text-center py-12">
         <div className="text-gray-500 text-lg">No products found</div>
+
         <div className="text-gray-400 text-sm mt-2">Create your first product to get started</div>
       </div>
     );
@@ -36,34 +37,42 @@ export default function ProductList({ products, onEdit, onDelete, loading }: Pro
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Product
             </th>
+
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Price
             </th>
+
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Stock
             </th>
+
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Created
             </th>
+
             <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
               Actions
             </th>
           </tr>
         </thead>
+
         <tbody className="bg-white divide-y divide-gray-200">
           {products.map((product) => (
             <tr key={product.id} className="hover:bg-gray-50 transition-colors">
               <td className="px-6 py-4 whitespace-nowrap">
                 <div>
                   <div className="text-sm font-medium text-gray-900">{product.name}</div>
+
                   {product.description && (
                     <div className="text-sm text-gray-500 truncate max-w-xs">{product.description}</div>
                   )}
                 </div>
               </td>
+
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 {formatCurrency(product.price)}
               </td>
+
               <td className="px-6 py-4 whitespace-nowrap">
                 <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                   product.stock > 10 
@@ -75,9 +84,11 @@ export default function ProductList({ products, onEdit, onDelete, loading }: Pro
                   {product.stock} units
                 </span>
               </td>
+
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {formatDate(product.createdAt)}
               </td>
+
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
                 {onEdit && (
                   <button
@@ -87,6 +98,7 @@ export default function ProductList({ products, onEdit, onDelete, loading }: Pro
                     Edit
                   </button>
                 )}
+
                 {onDelete && (
                   <button
                     onClick={() => onDelete(product.id)}

@@ -41,7 +41,9 @@ export default function ProductForm({
     }
 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+
+    
+return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -63,6 +65,7 @@ export default function ProductForm({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+
     setFormData((prev) => ({
       ...prev,
       [name]: name === 'price' || name === 'stock' ? Number(value) : value,
@@ -85,6 +88,7 @@ export default function ProductForm({
           <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
             Product Name *
           </label>
+
           <input
             type="text"
             id="name"
@@ -96,6 +100,7 @@ export default function ProductForm({
             }`}
             placeholder="Enter product name"
           />
+
           {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
         </div>
 
@@ -103,6 +108,7 @@ export default function ProductForm({
           <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
             Description
           </label>
+
           <textarea
             id="description"
             name="description"
@@ -119,6 +125,7 @@ export default function ProductForm({
             <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
               Price ($) *
             </label>
+
             <input
               type="number"
               id="price"
@@ -132,6 +139,7 @@ export default function ProductForm({
               }`}
               placeholder="0.00"
             />
+
             {errors.price && <p className="mt-1 text-sm text-red-600">{errors.price}</p>}
           </div>
 
@@ -139,6 +147,7 @@ export default function ProductForm({
             <label htmlFor="stock" className="block text-sm font-medium text-gray-700 mb-1">
               Stock Quantity
             </label>
+
             <input
               type="number"
               id="stock"
@@ -151,6 +160,7 @@ export default function ProductForm({
               }`}
               placeholder="0"
             />
+
             {errors.stock && <p className="mt-1 text-sm text-red-600">{errors.stock}</p>}
           </div>
         </div>
@@ -165,6 +175,7 @@ export default function ProductForm({
               Cancel
             </button>
           )}
+
           <button
             type="submit"
             disabled={loading}

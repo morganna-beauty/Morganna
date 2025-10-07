@@ -14,7 +14,9 @@ export class ProductsService {
 
   async create(createProductDto: CreateProductDto): Promise<Product> {
     const product = this.productRepository.create(createProductDto);
-    return await this.productRepository.save(product);
+
+    
+return await this.productRepository.save(product);
   }
 
   async findAll(): Promise<Product[]> {
@@ -25,10 +27,13 @@ export class ProductsService {
 
   async findOne(id: number): Promise<Product> {
     const product = await this.productRepository.findOne({ where: { id } });
+
     if (!product) {
       throw new NotFoundException(`Product with ID ${id} not found`);
     }
-    return product;
+
+    
+return product;
   }
 
   async update(
@@ -36,12 +41,16 @@ export class ProductsService {
     updateProductDto: UpdateProductDto,
   ): Promise<Product> {
     const product = await this.findOne(id);
+
     Object.assign(product, updateProductDto);
-    return await this.productRepository.save(product);
+
+    
+return await this.productRepository.save(product);
   }
 
   async remove(id: number): Promise<void> {
     const product = await this.findOne(id);
+
     await this.productRepository.remove(product);
   }
 }

@@ -11,31 +11,30 @@ const api = axios.create({
 });
 
 export const productsApi = {
-  // Get all products
   getProducts: async (): Promise<Product[]> => {
     const response = await api.get<Product[]>('/products');
+
     return response.data;
   },
 
-  // Get product by ID
   getProduct: async (id: number): Promise<Product> => {
     const response = await api.get<Product>(`/products/${id}`);
+
     return response.data;
   },
 
-  // Create new product
   createProduct: async (product: CreateProductRequest): Promise<Product> => {
     const response = await api.post<Product>('/products', product);
+
     return response.data;
   },
 
-  // Update product
   updateProduct: async (id: number, product: UpdateProductRequest): Promise<Product> => {
     const response = await api.patch<Product>(`/products/${id}`, product);
+
     return response.data;
   },
 
-  // Delete product
   deleteProduct: async (id: number): Promise<void> => {
     await api.delete(`/products/${id}`);
   },

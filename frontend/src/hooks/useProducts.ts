@@ -1,19 +1,22 @@
-'use client';
-
 import { useState, useEffect } from 'react';
 import { Product, CreateProductRequest, UpdateProductRequest } from '@/types/product';
 import { productsApi } from '@/lib/api';
 
 export function useProducts() {
   const [products, setProducts] = useState<Product[]>([]);
+
   const [loading, setLoading] = useState(true);
+
   const [error, setError] = useState<string | null>(null);
 
   const fetchProducts = async () => {
     try {
       setLoading(true);
+
       setError(null);
+
       const data = await productsApi.getProducts();
+
       setProducts(data);
     } catch (err) {
       setError('Failed to fetch products');
@@ -27,7 +30,9 @@ export function useProducts() {
     try {
       setError(null);
       const newProduct = await productsApi.createProduct(productData);
-      setProducts(prev => [newProduct, ...prev]);
+
+      setProducts((prev) => [newProduct, ...prev]);
+
       return newProduct;
     } catch (err) {
       setError('Failed to create product');
@@ -39,12 +44,11 @@ export function useProducts() {
   const updateProduct = async (id: number, productData: UpdateProductRequest) => {
     try {
       setError(null);
+
       const updatedProduct = await productsApi.updateProduct(id, productData);
-      setProducts(prev => 
-        prev.map(product => 
-          product.id === id ? updatedProduct : product
-        )
-      );
+
+      setProducts((prev) => prev.map((product) => (product.id === id ? updatedProduct : product)));
+
       return updatedProduct;
     } catch (err) {
       setError('Failed to update product');
@@ -56,8 +60,10 @@ export function useProducts() {
   const deleteProduct = async (id: number) => {
     try {
       setError(null);
+
       await productsApi.deleteProduct(id);
-      setProducts(prev => prev.filter(product => product.id !== id));
+
+      setProducts((prev) => prev.filter((product) => product.id !== id));
     } catch (err) {
       setError('Failed to delete product');
       console.error('Error deleting product:', err);
