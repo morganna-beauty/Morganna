@@ -1,87 +1,82 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { Product, CreateProductRequest, UpdateProductRequest } from '@/types';
-import { productsApi } from '@/lib';
+import { useCallback, useMemo } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { productsApi } from '@/lib'
+import { Product, CreateProductRequest, UpdateProductRequest } from '@/types'
+import { PRODUCTS_QUERY_KEY } from '@/lib/constants/queryKeys'
 
 export function useProducts() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const fetchProducts = useCallback(async () => {
-    try {
-      setLoading(true);
+  const queryClient = useQueryClient()
 
-      setError(null);
+  const { data: products = [], isLoading, error } = useQuery<Product[], Error>({
+    queryKey: PRODUCTS_QUERY_KEY,
+    queryFn: productsApi.getProducts,
+  })
 
-      const data = await productsApi.getProducts();
+  const createProduct = useCallback(
+    async (newProductData: CreateProductRequest) => {
+      try {
+        const newProduct = await productsApi.createProduct(newProductData)
 
-      setProducts(data);
-    } catch (err) {
-      setError('Failed to fetch products');
-      console.error('Error fetching products:', err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+        queryClient.setQueryData<Product[]>(PRODUCTS_QUERY_KEY, (currentProducts = []) => [
+          newProduct,
+          ...currentProducts,
+        ])
 
-  const createProduct = useCallback(async (productData: CreateProductRequest) => {
-    try {
-      setError(null);
-      const newProduct = await productsApi.createProduct(productData);
+        return newProduct
+      } catch (err) {
+        console.error('Error creating product:', err)
+        throw err
+      }
+    },
+    [queryClient]
+  )
 
-      setProducts((prev) => [newProduct, ...prev]);
+  const updateProduct = useCallback(
+    async (productId: number, updatedProductData: UpdateProductRequest) => {
+      try {
+        const updatedProduct = await productsApi.updateProduct(productId, updatedProductData)
 
-      return newProduct;
-    } catch (err) {
-      setError('Failed to create product');
-      console.error('Error creating product:', err);
-      throw err;
-    }
-  }, []);
+        queryClient.setQueryData<Product[]>(PRODUCTS_QUERY_KEY, (currentProducts = []) =>
+          currentProducts.map((product) =>
+            product.id === updatedProduct.id ? updatedProduct : product
+          )
+        )
 
-  const updateProduct = useCallback(async (id: number, productData: UpdateProductRequest) => {
-    try {
-      setError(null);
+        return updatedProduct
+      } catch (err) {
+        console.error('Error updating product:', err)
+        throw err
+      }
+    },
+    [queryClient]
+  )
 
-      const updatedProduct = await productsApi.updateProduct(id, productData);
+  const deleteProduct = useCallback(
+    async (productId: number) => {
+      try {
+        await productsApi.deleteProduct(productId)
 
-      setProducts((prev) => prev.map((product) => (product.id === id ? updatedProduct : product)));
-
-      return updatedProduct;
-    } catch (err) {
-      setError('Failed to update product');
-      console.error('Error updating product:', err);
-      throw err;
-    }
-  }, []);
-
-  const deleteProduct = useCallback(async (id: number) => {
-    try {
-      setError(null);
-
-      await productsApi.deleteProduct(id);
-
-      setProducts((prev) => prev.filter((product) => product.id !== id));
-    } catch (err) {
-      setError('Failed to delete product');
-      console.error('Error deleting product:', err);
-      throw err;
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+        queryClient.setQueryData<Product[]>(PRODUCTS_QUERY_KEY, (currentProducts = []) =>
+          currentProducts.filter((product) => product.id !== productId)
+        )
+      } catch (err) {
+        console.error('Error deleting product:', err)
+        throw err
+      }
+    },
+    [queryClient]
+  )
 
   return useMemo(
     () => ({
       products,
-      loading,
+      loading: isLoading,
       error,
-      fetchProducts,
       createProduct,
       updateProduct,
       deleteProduct,
+      refetch: () => queryClient.invalidateQueries({ queryKey: PRODUCTS_QUERY_KEY })
     }),
-    [products, loading, error, fetchProducts, createProduct, updateProduct, deleteProduct]
-  );
+    [products, isLoading, error, createProduct, updateProduct, deleteProduct, queryClient]
+  )
 }
