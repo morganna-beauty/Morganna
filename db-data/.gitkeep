@@ -1,0 +1,2 @@
+# Keep this directory for Docker volume mounting
+# Database data will be stored here when running with Docker Compose

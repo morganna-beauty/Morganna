@@ -1,0 +1,12 @@
+node_modules/
+.next/
+out/
+build/
+dist/
+*.d.ts
+coverage/
+.env*
+public/
+next.config.js
+tailwind.config.js
+postcss.config.js

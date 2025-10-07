@@ -1,0 +1,29 @@
+{
+  "name": "morganna",
+  "version": "1.0.0",
+  "description": "Full-stack product management system with Next.js and NestJS",
+  "private": true,
+  "scripts": {
+    "dev": "docker-compose up --build",
+    "dev:detached": "docker-compose up --build -d",
+    "stop": "docker-compose down",
+    "clean": "docker-compose down --rmi all --volumes --remove-orphans",
+    "logs": "docker-compose logs -f",
+    "logs:backend": "docker-compose logs -f backend",
+    "logs:frontend": "docker-compose logs -f frontend",
+    "logs:db": "docker-compose logs -f postgres",
+    "reset": "docker-compose down -v && docker volume rm morganna-db-data 2>/dev/null || true",
+    "install:backend": "cd backend && npm install",
+    "install:frontend": "cd frontend && npm install",
+    "install:all": "npm run install:backend && npm run install:frontend"
+  },
+  "keywords": [
+    "nextjs",
+    "nestjs",
+    "postgresql",
+    "docker",
+    "typescript"
+  ],
+  "author": "Morganna Team",
+  "license": "MIT"
+}
