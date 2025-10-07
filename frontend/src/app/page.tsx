@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import ProductList from '@/components/ProductList';
 import ProductForm from '@/components/ProductForm';
 import { useProducts } from '@/hooks/useProducts';
@@ -11,48 +11,63 @@ export default function HomePage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
-  const handleCreateProduct = async (data: CreateProductRequest) => {
-    try {
-      await createProduct(data);
-      setIsFormOpen(false);
-    } catch (error) {
-      console.error('Error creating product:', error);
-    }
-  };
+  const handleCreateProduct = useCallback(
+    async (data: CreateProductRequest) => {
+      try {
+        await createProduct(data);
+        setIsFormOpen(false);
+      } catch (error) {
+        console.error('Error creating product:', error);
+      }
+    },
+    [createProduct]
+  );
 
-  const handleEditProduct = (product: Product) => {
+  const handleEditProduct = useCallback((product: Product) => {
     setEditingProduct(product);
     setIsFormOpen(true);
-  };
+  }, []);
 
-  const handleUpdateProduct = async (data: CreateProductRequest) => {
-    if (!editingProduct) return;
+  const handleUpdateProduct = useCallback(
+    async (data: CreateProductRequest) => {
+      if (!editingProduct) return;
 
-    try {
-      await updateProduct(editingProduct.id, data);
-      setEditingProduct(null);
-      setIsFormOpen(false);
-    } catch (error) {
-      console.error('Error updating product:', error);
-    }
-  };
-
-  const handleDeleteProduct = async (id: number) => {
-    if (window.confirm('Are you sure you want to delete this product?')) {
       try {
-        await deleteProduct(id);
+        await updateProduct(editingProduct.id, data);
+        setEditingProduct(null);
+        setIsFormOpen(false);
       } catch (error) {
-        console.error('Error deleting product:', error);
+        console.error('Error updating product:', error);
       }
-    }
-  };
+    },
+    [editingProduct, updateProduct]
+  );
 
-  const handleCloseForm = () => {
+  const handleDeleteProduct = useCallback(
+    async (id: number) => {
+      if (window.confirm('Are you sure you want to delete this product?')) {
+        try {
+          await deleteProduct(id);
+        } catch (error) {
+          console.error('Error deleting product:', error);
+        }
+      }
+    },
+    [deleteProduct]
+  );
+
+  const handleCloseForm = useCallback(() => {
     setIsFormOpen(false);
     setEditingProduct(null);
-  };
+  }, []);
 
-  if (error) {
+  const handleOpenForm = useCallback(() => {
+    setIsFormOpen(true);
+  }, []);
+
+  const errorComponent = useMemo(() => {
+    if (!error) return null;
+
     return (
       <div className="text-center py-12">
         <div className="text-red-500 text-lg mb-4">Error loading products</div>
@@ -64,6 +79,10 @@ export default function HomePage() {
         </button>
       </div>
     );
+  }, [error]);
+
+  if (error) {
+    return errorComponent;
   }
 
   return (
@@ -75,7 +94,7 @@ export default function HomePage() {
           <p className="text-gray-600 mt-2">Manage your product inventory</p>
         </div>
 
-        <button onClick={() => setIsFormOpen(true)} className="btn btn-primary">
+        <button onClick={handleOpenForm} className="btn btn-primary">
           Add New Product
         </button>
       </div>

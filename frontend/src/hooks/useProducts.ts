@@ -1,15 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Product, CreateProductRequest, UpdateProductRequest } from '@/types/product';
 import { productsApi } from '@/lib/api';
 
 export function useProducts() {
   const [products, setProducts] = useState<Product[]>([]);
-
   const [loading, setLoading] = useState(true);
-
   const [error, setError] = useState<string | null>(null);
-
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
 
@@ -24,9 +21,9 @@ export function useProducts() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const createProduct = async (productData: CreateProductRequest) => {
+  const createProduct = useCallback(async (productData: CreateProductRequest) => {
     try {
       setError(null);
       const newProduct = await productsApi.createProduct(productData);
@@ -39,9 +36,9 @@ export function useProducts() {
       console.error('Error creating product:', err);
       throw err;
     }
-  };
+  }, []);
 
-  const updateProduct = async (id: number, productData: UpdateProductRequest) => {
+  const updateProduct = useCallback(async (id: number, productData: UpdateProductRequest) => {
     try {
       setError(null);
 
@@ -55,9 +52,9 @@ export function useProducts() {
       console.error('Error updating product:', err);
       throw err;
     }
-  };
+  }, []);
 
-  const deleteProduct = async (id: number) => {
+  const deleteProduct = useCallback(async (id: number) => {
     try {
       setError(null);
 
@@ -69,19 +66,22 @@ export function useProducts() {
       console.error('Error deleting product:', err);
       throw err;
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [fetchProducts]);
 
-  return {
-    products,
-    loading,
-    error,
-    fetchProducts,
-    createProduct,
-    updateProduct,
-    deleteProduct,
-  };
+  return useMemo(
+    () => ({
+      products,
+      loading,
+      error,
+      fetchProducts,
+      createProduct,
+      updateProduct,
+      deleteProduct,
+    }),
+    [products, loading, error, fetchProducts, createProduct, updateProduct, deleteProduct]
+  );
 }

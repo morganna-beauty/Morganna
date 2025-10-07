@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { Product, CreateProductRequest } from '@/types/product';
 
 interface ProductFormProps {
@@ -10,12 +10,12 @@ interface ProductFormProps {
   isEdit?: boolean;
 }
 
-export default function ProductForm({
+export const ProductForm = ({
   product,
   onSubmit,
   onCancel,
   isEdit = false,
-}: ProductFormProps) {
+}: ProductFormProps) => {
   const [formData, setFormData] = useState<CreateProductRequest>({
     name: product?.name || '',
     description: product?.description || '',
@@ -25,7 +25,7 @@ export default function ProductForm({
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const validateForm = () => {
+  const validateForm = useCallback(() => {
     const newErrors: Record<string, string> = {};
 
     if (!formData.name.trim()) {
@@ -42,40 +42,45 @@ export default function ProductForm({
 
     setErrors(newErrors);
 
-    
-return Object.keys(newErrors).length === 0;
-  };
+    return Object.keys(newErrors).length === 0;
+  }, [formData.name, formData.price, formData.stock]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
 
-    if (!validateForm()) {
-      return;
-    }
+      if (!validateForm()) {
+        return;
+      }
 
-    setLoading(true);
-    try {
-      await onSubmit(formData);
-    } catch (error) {
-      console.error('Error submitting form:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+      setLoading(true);
+      try {
+        await onSubmit(formData);
+      } catch (error) {
+        console.error('Error submitting form:', error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [validateForm, onSubmit, formData]
+  );
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const { name, value } = e.target;
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]: name === 'price' || name === 'stock' ? Number(value) : value,
-    }));
+      setFormData((prev) => ({
+        ...prev,
+        [name]: name === 'price' || name === 'stock' ? Number(value) : value,
+      }));
 
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: '' }));
-    }
-  };
+      // Clear error when user starts typing
+      if (errors[name]) {
+        setErrors((prev) => ({ ...prev, [name]: '' }));
+      }
+    },
+    [errors]
+  );
 
   return (
     <div className="bg-white shadow-sm rounded-lg p-6">
