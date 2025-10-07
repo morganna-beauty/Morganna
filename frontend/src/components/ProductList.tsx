@@ -1,8 +1,8 @@
 'use client';
 
 import { useCallback, useMemo } from 'react';
-import { Product } from '@/types/product';
-import { formatCurrency, formatDate } from '@/lib/utils';
+import { Product } from '@/types';
+import { formatCurrency, formatDate } from '@/lib';
 
 interface ProductListProps {
   products: Product[];

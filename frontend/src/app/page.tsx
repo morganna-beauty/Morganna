@@ -1,10 +1,9 @@
 'use client';
 
 import { useState, useCallback, useMemo } from 'react';
-import ProductList from '@/components/ProductList';
-import ProductForm from '@/components/ProductForm';
-import { useProducts } from '@/hooks/useProducts';
-import { Product, CreateProductRequest } from '@/types/product';
+import { useProducts } from '@/hooks';
+import { Product, CreateProductRequest } from '@/types';
+import { ProductForm, ProductList } from '@/components';
 
 export default function HomePage() {
   const { products, loading, error, createProduct, updateProduct, deleteProduct } = useProducts();

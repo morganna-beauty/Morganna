@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { Product, CreateProductRequest, UpdateProductRequest } from '@/types/product';
-import { productsApi } from '@/lib/api';
+import { Product, CreateProductRequest, UpdateProductRequest } from '@/types';
+import { productsApi } from '@/lib';
 
 export function useProducts() {
   const [products, setProducts] = useState<Product[]>([]);

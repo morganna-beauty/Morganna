@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useCallback, useMemo } from 'react';
-import { Product, CreateProductRequest } from '@/types/product';
+import { useState, useCallback } from 'react';
+import { Product, CreateProductRequest } from '@/types';
 
 interface ProductFormProps {
   product?: Product;
@@ -10,12 +10,7 @@ interface ProductFormProps {
   isEdit?: boolean;
 }
 
-export const ProductForm = ({
-  product,
-  onSubmit,
-  onCancel,
-  isEdit = false,
-}: ProductFormProps) => {
+export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: ProductFormProps) => {
   const [formData, setFormData] = useState<CreateProductRequest>({
     name: product?.name || '',
     description: product?.description || '',
@@ -192,4 +187,4 @@ export const ProductForm = ({
       </form>
     </div>
   );
-}
+};
