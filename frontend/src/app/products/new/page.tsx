@@ -1,6 +1,6 @@
 function ProductsPage() {
   return (
-    <div>pagess</div>
+    <div>New Product</div>
   )
 }
 
