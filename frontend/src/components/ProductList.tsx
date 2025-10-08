@@ -3,6 +3,7 @@
 import { useCallback, useMemo } from 'react';
 import { Product } from '@/types';
 import { formatCurrency, formatDate } from '@/lib';
+import { useI18n } from '@/hooks/useI18n';
 
 interface ProductListProps {
   products: Product[];
@@ -12,6 +13,8 @@ interface ProductListProps {
 }
 
 export const ProductList = ({ products, onEdit, onDelete, loading }: ProductListProps) => {
+  const { t } = useI18n();
+
   const handleEdit = useCallback(
     (product: Product) => {
       if (onEdit) {
@@ -42,12 +45,12 @@ export const ProductList = ({ products, onEdit, onDelete, loading }: ProductList
   const emptyStateComponent = useMemo(
     () => (
       <div className="text-center py-12">
-        <div className="text-gray-500 text-lg">No products found</div>
+        <div className="text-gray-500 text-lg">{t('product.noProducts')}</div>
 
-        <div className="text-gray-400 text-sm mt-2">Create your first product to get started</div>
+        <div className="text-gray-400 text-sm mt-2">{t('product.createFirst')}</div>
       </div>
     ),
-    []
+    [t]
   );
 
   if (loading) {
@@ -64,23 +67,23 @@ export const ProductList = ({ products, onEdit, onDelete, loading }: ProductList
         <thead className="bg-gray-50">
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Product
+              {t('product.product')}
             </th>
 
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Price
+              {t('product.price')}
             </th>
 
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Stock
+              {t('product.stock')}
             </th>
 
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Created
+              {t('product.created')}
             </th>
 
             <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Actions
+              {t('common.actions')}
             </th>
           </tr>
         </thead>
@@ -114,7 +117,7 @@ export const ProductList = ({ products, onEdit, onDelete, loading }: ProductList
                         : 'bg-red-100 text-red-800'
                   }`}
                 >
-                  {product.stock} units
+                  {`${product.stock} ${t('product.units')}`}
                 </span>
               </td>
 
@@ -128,7 +131,7 @@ export const ProductList = ({ products, onEdit, onDelete, loading }: ProductList
                     onClick={() => handleEdit(product)}
                     className="text-primary-600 hover:text-primary-900 transition-colors"
                   >
-                    Edit
+                    {t('common.edit')}
                   </button>
                 )}
 
@@ -137,7 +140,7 @@ export const ProductList = ({ products, onEdit, onDelete, loading }: ProductList
                     onClick={() => handleDelete(product.id)}
                     className="text-red-600 hover:text-red-900 transition-colors"
                   >
-                    Delete
+                    {t('common.delete')}
                   </button>
                 )}
               </td>

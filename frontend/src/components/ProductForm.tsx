@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { Product, CreateProductRequest } from '@/types';
+import { useI18n } from '@/hooks/useI18n';
 
 interface ProductFormProps {
   product?: Product;
@@ -11,6 +12,7 @@ interface ProductFormProps {
 }
 
 export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: ProductFormProps) => {
+  const { t } = useI18n();
   const [formData, setFormData] = useState<CreateProductRequest>({
     name: product?.name || '',
     description: product?.description || '',
@@ -24,21 +26,21 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
     const newErrors: Record<string, string> = {};
 
     if (!formData.name.trim()) {
-      newErrors.name = 'Product name is required';
+      newErrors.name = t('product.nameRequired');
     }
 
     if (formData.price <= 0) {
-      newErrors.price = 'Price must be greater than 0';
+      newErrors.price = t('product.priceRequired');
     }
 
     if (formData.stock !== undefined && formData.stock < 0) {
-      newErrors.stock = 'Stock cannot be negative';
+      newErrors.stock = t('product.stockNegative');
     }
 
     setErrors(newErrors);
 
     return Object.keys(newErrors).length === 0;
-  }, [formData.name, formData.price, formData.stock]);
+  }, [formData.name, formData.price, formData.stock, t]);
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -69,7 +71,6 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
         [name]: name === 'price' || name === 'stock' ? Number(value) : value,
       }));
 
-      // Clear error when user starts typing
       if (errors[name]) {
         setErrors((prev) => ({ ...prev, [name]: '' }));
       }
@@ -80,13 +81,13 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
   return (
     <div className="bg-white shadow-sm rounded-lg p-6">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">
-        {isEdit ? 'Edit Product' : 'Create New Product'}
+        {isEdit ? t('product.edit') : t('product.createNew')}
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-            Product Name *
+            {t('product.name')} *
           </label>
 
           <input
@@ -98,7 +99,7 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
             className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 ${
               errors.name ? 'border-red-500' : 'border-gray-300'
             }`}
-            placeholder="Enter product name"
+            placeholder={t('product.enterName')}
           />
 
           {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
@@ -106,7 +107,7 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
 
         <div>
           <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-            Description
+            {t('product.description')}
           </label>
 
           <textarea
@@ -116,14 +117,14 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
             onChange={handleChange}
             rows={3}
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-            placeholder="Enter product description"
+            placeholder={t('product.enterDescription')}
           />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
-              Price ($) *
+              {t('product.price')} ($) *
             </label>
 
             <input
@@ -145,7 +146,7 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
 
           <div>
             <label htmlFor="stock" className="block text-sm font-medium text-gray-700 mb-1">
-              Stock Quantity
+              {t('product.stockQuantity')}
             </label>
 
             <input
@@ -172,7 +173,7 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
               onClick={onCancel}
               className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
             >
-              Cancel
+              {t('common.cancel')}
             </button>
           )}
 
@@ -181,7 +182,7 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
             disabled={loading}
             className="px-4 py-2 bg-primary-600 border border-transparent rounded-md text-sm font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            {loading ? 'Saving...' : isEdit ? 'Update Product' : 'Create Product'}
+            {loading ? t('common.saving') : isEdit ? t('product.update') : t('product.create')}
           </button>
         </div>
       </form>

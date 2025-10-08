@@ -1,0 +1,22 @@
+{
+  "noProducts": "No se encontraron productos",
+  "createFirst": "Crea tu primer producto para comenzar",
+  "product": "Producto",
+  "name": "Nombre del Producto",
+  "description": "Descripción",
+  "price": "Precio",
+  "stock": "Stock",
+  "stockQuantity": "Cantidad en Stock",
+  "created": "Creado",
+  "units": "unidades",
+  "enterName": "Ingresa el nombre del producto",
+  "enterDescription": "Ingresa la descripción del producto",
+  "nameRequired": "El nombre del producto es requerido",
+  "priceRequired": "El precio debe ser mayor a 0",
+  "stockNegative": "El stock no puede ser negativo",
+  "create": "Crear Producto",
+  "createNew": "Crear Nuevo Producto",
+  "update": "Actualizar Producto",
+  "edit": "Editar Producto",
+  "manageInventory": "Gestiona tu inventario de productos"
+}
