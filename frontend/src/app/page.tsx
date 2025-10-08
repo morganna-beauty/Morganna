@@ -80,7 +80,7 @@ export default function HomePage() {
       <div className="text-center py-12">
         <div className="text-red-500 text-lg mb-4">{t('common.errorLoading')}</div>
 
-        <div className="text-gray-600">{error}</div>
+        <div className="text-gray-600">{error.message}</div>
 
         <button onClick={() => window.location.reload()} className="mt-4 btn btn-primary">
           {t('common.retry')}
