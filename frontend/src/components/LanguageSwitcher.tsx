@@ -16,6 +16,7 @@ export function LanguageSwitcher() {
   return (
     <div className="flex items-center space-x-2">
       <button
+        type="button"
         onClick={() => handleLanguageChange('en')}
         aria-pressed={language === 'en'}
         aria-label="Switch to English"

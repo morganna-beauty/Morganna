@@ -82,7 +82,7 @@ export default function HomePage() {
 
         <div className="text-gray-600">{error.message}</div>
 
-        <button onClick={() => window.location.reload()} className="mt-4 btn btn-primary">
+        <button type="button" onClick={() => window.location.reload()} className="mt-4 btn btn-primary">
           {t('common.retry')}
         </button>
       </div>
@@ -102,7 +102,7 @@ export default function HomePage() {
           <p className="text-gray-600 mt-2">{t('product.manageInventory')}</p>
         </div>
 
-        <button onClick={handleOpenForm} className="btn btn-primary">
+        <button type="button" onClick={handleOpenForm} className="btn btn-primary">
           {t('navbar.addProduct')}
         </button>
       </div>

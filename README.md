@@ -32,11 +32,14 @@ npm run docker:check
 ```
 
 **Si Docker no está funcionando:**
+
 1. Abrir Docker Desktop desde el menú inicio
 2. Esperar a que aparezca "Docker Desktop is running" en la bandeja del sistema  
 3. Ejecutar `npm run docker:check` de nuevo
 
-**Si hay problemas:** Ver la guía completa en [DOCKER-TROUBLESHOOTING.md](./DOCKER-TROUBLESHOOTING.md)
+**Si hay problemas:** 
+
+Ver la guía completa en [DOCKER-TROUBLESHOOTING.md](./DOCKER-TROUBLESHOOTING.md)
 
 ## 🏗️ Project Structure
 
@@ -82,9 +85,10 @@ npm run dev:local
 ```
 
 🎉 **That's it!** Your app will be running at:
-- Frontend: http://localhost:3000
-- Backend: http://localhost:3001/api  
-- Database: localhost:5432
+
+- Frontend: [http://localhost:3000](http://localhost:3000)
+- Backend: [http://localhost:3001/api](http://localhost:3001/api)  
+- Database: `localhost:5432`
 
 ### For Production Testing
 
@@ -108,6 +112,7 @@ PORT=3001
 ```
 
 **Frontend** (`.env.local` file will be created automatically):
+
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3001/api
 ```
@@ -123,6 +128,7 @@ docker-compose up --build -d
 ```
 
 This command will:
+
 - Build the frontend and backend applications
 - Start PostgreSQL database
 - Run database migrations automatically
@@ -177,6 +183,7 @@ npm run frontend:dev       # Start Next.js with hot reload (in new terminal)
 The project automatically uses different configurations for local development:
 
 **Backend** (`.env.local`):
+
 ```env
 NODE_ENV=development
 DATABASE_HOST=localhost
@@ -188,6 +195,7 @@ PORT=3001
 ```
 
 **Frontend** (`.env.local`):
+
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3001/api
 ```
@@ -207,6 +215,7 @@ The backend provides a complete REST API for product management:
 ### API Examples
 
 #### Create a Product
+
 ```bash
 curl -X POST http://localhost:3001/api/products \\
   -H "Content-Type: application/json" \\
@@ -219,11 +228,13 @@ curl -X POST http://localhost:3001/api/products \\
 ```
 
 #### Get All Products
+
 ```bash
 curl http://localhost:3001/api/products
 ```
 
 #### Update a Product
+
 ```bash
 curl -X PATCH http://localhost:3001/api/products/1 \\
   -H "Content-Type: application/json" \\
@@ -234,6 +245,7 @@ curl -X PATCH http://localhost:3001/api/products/1 \\
 ```
 
 #### Delete a Product
+
 ```bash
 curl -X DELETE http://localhost:3001/api/products/1
 ```
@@ -293,6 +305,7 @@ docker logs morganna-postgres-local
 ### Available Scripts
 
 #### Backend Scripts
+
 - `npm run start:dev` - Start in development mode with hot reload
 - `npm run build` - Build for production
 - `npm run start:prod` - Start production server
@@ -300,6 +313,7 @@ docker logs morganna-postgres-local
 - `npm run test` - Run tests
 
 #### Frontend Scripts
+
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
 - `npm run start` - Start production server
@@ -322,6 +336,7 @@ docker logs morganna-postgres-local
 ## 🐳 Docker Commands
 
 ### Basic Operations
+
 ```bash
 # Start services
 docker-compose up
@@ -343,6 +358,7 @@ docker-compose logs -f backend
 ```
 
 ### Maintenance
+
 ```bash
 # Clean up containers and images
 docker-compose down --rmi all --volumes --remove-orphans
@@ -360,6 +376,7 @@ docker-compose exec postgres psql -U postgres -d morganna_db
 ### Environment Variables
 
 #### Backend Configuration
+
 - `DATABASE_HOST` - PostgreSQL host (default: postgres)
 - `DATABASE_PORT` - PostgreSQL port (default: 5432)
 - `DATABASE_USER` - PostgreSQL username (default: postgres)
@@ -374,6 +391,7 @@ docker-compose exec postgres psql -U postgres -d morganna_db
 ## 📊 Features Overview
 
 ### Frontend Features
+
 - **Responsive Design** - Works on desktop, tablet, and mobile
 - **Product Management** - Create, read, update, delete products
 - **Form Validation** - Client-side validation with error messages
@@ -382,6 +400,7 @@ docker-compose exec postgres psql -U postgres -d morganna_db
 - **Modal Forms** - Clean modal interfaces for product forms
 
 ### Backend Features
+
 - **RESTful API** - Standard REST endpoints with proper HTTP codes
 - **Data Validation** - Server-side validation using class-validator
 - **Database Integration** - TypeORM with PostgreSQL
@@ -405,6 +424,7 @@ For production deployment, consider the following:
 ### Common Issues
 
 #### Port Already in Use
+
 ```bash
 # Kill processes using ports 3000, 3001, or 5432
 sudo lsof -t -i:3000 | xargs kill -9
@@ -443,6 +463,7 @@ npm run db:start
 #### Local Development Issues
 
 **Backend won't start:**
+
 ```bash
 # Make sure database is running first
 npm run db:start
@@ -455,6 +476,7 @@ netstat -ano | findstr :3001
 ```
 
 **Frontend won't start:**
+
 ```bash
 # Check if frontend dependencies are installed
 cd frontend && npm install
@@ -467,6 +489,7 @@ cd frontend && rm -rf .next
 ```
 
 **Database connection errors:**
+
 ```bash
 # Verify database is accessible
 telnet localhost 5432
@@ -475,6 +498,7 @@ pg_isready -h localhost -p 5432 -U postgres
 ```
 
 #### Build Issues
+
 ```bash
 # Clean Docker cache and rebuild
 docker system prune -a
