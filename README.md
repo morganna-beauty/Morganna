@@ -17,9 +17,29 @@ A modern, full-stack web application for product management built with **Next.js
 
 Before running this project, make sure you have the following installed:
 
-- **Docker** (version 20.0 or higher)
-- **Docker Compose** (version 2.0 or higher)
+- **Node.js 18+** (for local development)
+- **Docker Desktop** (version 20.0 or higher) - [Download here](https://www.docker.com/products/docker-desktop)
+- **Docker Compose** (included with Docker Desktop)
 - **Git**
+
+### ⚠️ Importante: Verificar Docker
+
+**Antes de empezar, asegúrate de que Docker Desktop esté ejecutándose:**
+
+```bash
+# Verificar estado de Docker
+npm run docker:check
+```
+
+**Si Docker no está funcionando:**
+
+1. Abrir Docker Desktop desde el menú inicio
+2. Esperar a que aparezca "Docker Desktop is running" en la bandeja del sistema  
+3. Ejecutar `npm run docker:check` de nuevo
+
+**Si hay problemas:** 
+
+Ver la guía completa en [DOCKER-TROUBLESHOOTING.md](./DOCKER-TROUBLESHOOTING.md)
 
 ## 🏗️ Project Structure
 
@@ -50,12 +70,32 @@ morganna/
 
 ## 🚀 Quick Start
 
-### 1. Clone the Repository
+### For Development (Recommended)
 
 ```bash
+# 1. Clone the repository
 git clone <repository-url>
 cd morganna
+
+# 2. Install dependencies
+npm run install:all
+
+# 3. Start development environment (Database + Apps with hot reload)
+npm run dev:local
 ```
+
+🎉 **That's it!** Your app will be running at:
+
+- Frontend: [http://localhost:3000](http://localhost:3000)
+- Backend: [http://localhost:3001/api](http://localhost:3001/api)  
+- Database: `localhost:5432`
+
+### For Production Testing
+
+```bash
+# 1. Clone the Repository
+git clone <repository-url>
+cd morganna
 
 ### 2. Environment Configuration
 
@@ -72,6 +112,7 @@ PORT=3001
 ```
 
 **Frontend** (`.env.local` file will be created automatically):
+
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3001/api
 ```
@@ -87,6 +128,7 @@ docker-compose up --build -d
 ```
 
 This command will:
+
 - Build the frontend and backend applications
 - Start PostgreSQL database
 - Run database migrations automatically
@@ -99,6 +141,64 @@ Once all services are running:
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:3001/api
 - **Database**: localhost:5432
+
+## 💻 Local Development (Recommended)
+
+For the best development experience with **live reloading** and **hot refresh**, run the database in Docker while running the frontend and backend locally:
+
+### Quick Start - Local Development
+
+```bash
+# Option 1: All-in-one command (recommended)
+npm run dev:local
+
+# Option 2: Step by step
+npm run db:start          # Start PostgreSQL in Docker
+npm run backend:dev        # Start NestJS with hot reload (in new terminal)
+npm run frontend:dev       # Start Next.js with hot reload (in new terminal)
+```
+
+### Local Development Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev:local` | **Start everything** - Database + Backend + Frontend with live reload |
+| `npm run db:start` | Start only PostgreSQL database in Docker |
+| `npm run db:stop` | Stop the database |
+| `npm run db:reset` | Reset database (removes all data) |
+| `npm run backend:dev` | Start backend with hot reload |
+| `npm run frontend:dev` | Start frontend with hot reload |
+| `npm run stop:local` | Stop local database |
+
+### Why Local Development?
+
+✅ **Instant Hot Reload** - Changes reflect immediately  
+✅ **Better Debugging** - Direct access to logs and breakpoints  
+✅ **Faster Builds** - No Docker rebuild needed  
+✅ **IDE Integration** - Full IntelliSense and debugging support  
+✅ **Live Editing** - Edit code and see changes instantly  
+
+### Environment Configuration
+
+The project automatically uses different configurations for local development:
+
+**Backend** (`.env.local`):
+
+```env
+NODE_ENV=development
+DATABASE_HOST=localhost
+DATABASE_PORT=5432
+DATABASE_USER=postgres
+DATABASE_PASSWORD=postgres
+DATABASE_NAME=morganna_db
+PORT=3001
+```
+
+**Frontend** (`.env.local`):
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3001/api
+```
 
 ## 🔌 API Endpoints
 
@@ -115,6 +215,7 @@ The backend provides a complete REST API for product management:
 ### API Examples
 
 #### Create a Product
+
 ```bash
 curl -X POST http://localhost:3001/api/products \\
   -H "Content-Type: application/json" \\
@@ -127,11 +228,13 @@ curl -X POST http://localhost:3001/api/products \\
 ```
 
 #### Get All Products
+
 ```bash
 curl http://localhost:3001/api/products
 ```
 
 #### Update a Product
+
 ```bash
 curl -X PATCH http://localhost:3001/api/products/1 \\
   -H "Content-Type: application/json" \\
@@ -142,36 +245,67 @@ curl -X PATCH http://localhost:3001/api/products/1 \\
 ```
 
 #### Delete a Product
+
 ```bash
 curl -X DELETE http://localhost:3001/api/products/1
 ```
 
-## 🛠️ Development
+## 🛠️ Development Options  
 
-### Running Individual Services
+### Option 1: Full Docker (Production-like)
 
-#### Backend Development
 ```bash
+# Start everything in Docker
+npm run dev
+
+# Or in detached mode
+npm run dev:detached
+```
+
+### Option 2: Local Development (Recommended for Development)
+
+```bash
+# Start database + apps locally with hot reload
+npm run dev:local
+```
+
+### Option 3: Manual Step-by-Step
+
+```bash
+# 1. Start database only
+npm run db:start
+
+# 2. Start backend (in new terminal)
 cd backend
 npm install
 npm run start:dev
-```
 
-#### Frontend Development
-```bash
+# 3. Start frontend (in another terminal)  
 cd frontend
 npm install
 npm run dev
 ```
 
-#### Database Only
+### Database Management
+
 ```bash
-docker-compose up postgres -d
+# Start database only
+npm run db:start
+
+# Stop database
+npm run db:stop
+
+# Reset database (removes all data)
+npm run db:reset
+
+# Check database logs
+docker logs morganna-postgres-local
 ```
 
 ### Available Scripts
 
 #### Backend Scripts
+
 - `npm run start:dev` - Start in development mode with hot reload
 - `npm run build` - Build for production
 - `npm run start:prod` - Start production server
@@ -179,6 +313,7 @@ docker-compose up postgres -d
 - `npm run test` - Run tests
 
 #### Frontend Scripts
+
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
 - `npm run start` - Start production server
@@ -201,6 +336,7 @@ docker-compose up postgres -d
 ## 🐳 Docker Commands
 
 ### Basic Operations
+
 ```bash
 # Start services
 docker-compose up
@@ -222,6 +358,7 @@ docker-compose logs -f backend
 ```
 
 ### Maintenance
+
 ```bash
 # Clean up containers and images
 docker-compose down --rmi all --volumes --remove-orphans
@@ -239,6 +376,7 @@ docker-compose exec postgres psql -U postgres -d morganna_db
 ### Environment Variables
 
 #### Backend Configuration
+
 - `DATABASE_HOST` - PostgreSQL host (default: postgres)
 - `DATABASE_PORT` - PostgreSQL port (default: 5432)
 - `DATABASE_USER` - PostgreSQL username (default: postgres)
@@ -253,6 +391,7 @@ docker-compose exec postgres psql -U postgres -d morganna_db
 ## 📊 Features Overview
 
 ### Frontend Features
+
 - **Responsive Design** - Works on desktop, tablet, and mobile
 - **Product Management** - Create, read, update, delete products
 - **Form Validation** - Client-side validation with error messages
@@ -261,6 +400,7 @@ docker-compose exec postgres psql -U postgres -d morganna_db
 - **Modal Forms** - Clean modal interfaces for product forms
 
 ### Backend Features
+
 - **RESTful API** - Standard REST endpoints with proper HTTP codes
 - **Data Validation** - Server-side validation using class-validator
 - **Database Integration** - TypeORM with PostgreSQL
@@ -284,6 +424,7 @@ For production deployment, consider the following:
 ### Common Issues
 
 #### Port Already in Use
+
 ```bash
 # Kill processes using ports 3000, 3001, or 5432
 sudo lsof -t -i:3000 | xargs kill -9
@@ -292,6 +433,8 @@ sudo lsof -t -i:5432 | xargs kill -9
 ```
 
 #### Database Connection Issues
+
+**For Docker deployment:**
 ```bash
 # Check if PostgreSQL container is running
 docker-compose ps
@@ -304,7 +447,58 @@ docker-compose down -v
 docker-compose up postgres -d
 ```
 
+**For local development:**
+```bash
+# Check if local database is running
+docker ps | grep morganna-postgres-local
+
+# Check database logs
+docker logs morganna-postgres-local
+
+# Reset local database
+npm run db:reset
+npm run db:start
+```
+
+#### Local Development Issues
+
+**Backend won't start:**
+
+```bash
+# Make sure database is running first
+npm run db:start
+
+# Check if backend dependencies are installed
+cd backend && npm install
+
+# Check if port 3001 is available
+netstat -ano | findstr :3001
+```
+
+**Frontend won't start:**
+
+```bash
+# Check if frontend dependencies are installed
+cd frontend && npm install
+
+# Check if port 3000 is available
+netstat -ano | findstr :3000
+
+# Clear Next.js cache
+cd frontend && rm -rf .next
+```
+
+**Database connection errors:**
+
+```bash
+# Verify database is accessible
+telnet localhost 5432
+# or
+pg_isready -h localhost -p 5432 -U postgres
+```
+
 #### Build Issues
+
 ```bash
 # Clean Docker cache and rebuild
 docker system prune -a

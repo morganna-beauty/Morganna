@@ -6,7 +6,17 @@
   "scripts": {
     "dev": "docker-compose up --build",
     "dev:detached": "docker-compose up --build -d",
+    "dev:local": "concurrently \"npm run db:start\" \"npm run backend:dev\" \"npm run frontend:dev\"",
+    "db:start": "docker-compose -f docker-compose.db-only.yml up -d",
+    "db:start:windows": "scripts\\start-db-windows.bat",
+    "db:stop": "docker-compose -f docker-compose.db-only.yml down",
+    "db:reset": "docker-compose -f docker-compose.db-only.yml down -v && docker volume rm morganna-db-data-local 2>/dev/null || true",
+    "db:logs": "docker logs morganna-postgres-local",
+    "docker:check": "scripts\\check-docker.bat",
+    "backend:dev": "cd backend && npm run start:local",
+    "frontend:dev": "cd frontend && npm run dev",
     "stop": "docker-compose down",
+    "stop:local": "npm run db:stop",
     "clean": "docker-compose down --rmi all --volumes --remove-orphans",
     "logs": "docker-compose logs -f",
     "logs:backend": "docker-compose logs -f backend",
@@ -25,5 +35,8 @@
     "typescript"
   ],
   "author": "Morganna Team",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
 }

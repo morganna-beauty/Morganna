@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { Navbar } from '@/components';
+import { Navbar, I18nProvider } from '@/components';
 import './globals.css';
 import { QueryProvider } from './providers/QueryProvider';
 
@@ -16,11 +16,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={`${inter.className} bg-gray-50 min-h-screen`}>
         <QueryProvider>
-          <Navbar />
+          <I18nProvider>
+            <Navbar />
 
-          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            {children}
-          </main>
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">{children}</main>
+          </I18nProvider>
         </QueryProvider>
       </body>
     </html>
