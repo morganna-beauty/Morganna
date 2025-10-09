@@ -18,10 +18,18 @@ dotenv.config({ path: '.env.local' });
 
 logger.log('🔧 Configurando entorno de desarrollo local...');
 logger.log('✅ Variables de entorno cargadas desde .env.local');
+logger.log(`🚀 Iniciando NestJS en modo desarrollo...`);
 
-const nest = spawn('npx', ['nest', 'start', '--watch'], {
+const nest = spawn('npm', ['run', 'start:dev'], {
   stdio: 'inherit',
   env: process.env,
+  shell: true,
+});
+
+nest.on('error', (error) => {
+  logger.error(`Error al iniciar el proceso: ${error.message}`);
+  logger.error('Asegúrate de que Node.js y npm estén instalados correctamente');
+  process.exit(1);
 });
 
 nest.on('close', (code) => {
