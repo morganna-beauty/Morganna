@@ -9,8 +9,7 @@ import { Roboto } from 'next/font/google';
 import { IoSearchSharp } from 'react-icons/io5';
 import { FaRegUser } from "react-icons/fa6";
 import { MdOutlineShoppingBag } from 'react-icons/md';
-import { LuUser } from 'react-icons/lu';
-import { NAV_LINKS } from '@/data/NavLinks';
+import NAV_LINKS from '@/data/NavLinks';
 
 const roboto = Roboto({
   subsets: ['latin'],
@@ -70,7 +69,6 @@ export const Navbar = () => {
               className="flex items-center justify-center w-12 h-12 rounded-full hover:bg-gray-100 transition-colors"
               aria-label="Shopping cart"
             >
-              {/* <LuUser size={24}/> */}
               <FaRegUser size={24}/>
 
             </button>
