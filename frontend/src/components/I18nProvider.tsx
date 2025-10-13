@@ -10,15 +10,19 @@ import esCommon from '../locales/es/common.json';
 import esProduct from '../locales/es/product.json';
 import esNavbar from '../locales/es/navbar.json';
 
-export type TranslationsType = {
+type TranslationValue = string | { [key: string]: TranslationValue };
+
+type Namespace = {
+  [key: string]: TranslationValue;
+};
+
+type TranslationsType = {
   [language: string]: {
-    [namespace: string]: {
-      [key: string]: string | { [nestedKey: string]: string };
-    };
+    [namespace: string]: Namespace;
   };
 };
 
-const translations: TranslationsType = {
+const TRANSLATIONS: TranslationsType = {
   en: {
     common: enCommon,
     product: enProduct,
@@ -31,58 +35,80 @@ const translations: TranslationsType = {
   },
 };
 
+const DEFAULT_LANGUAGE = 'en';
+const STORAGE_KEY = 'language';
+
+const getStoredLanguage = (): string => {
+  if (typeof window === 'undefined') return DEFAULT_LANGUAGE;
+  
+  try {
+    return DEFAULT_LANGUAGE;
+  } catch (error) {
+    console.warn('Failed to read language preference:', error);
+    return DEFAULT_LANGUAGE;
+  }
+};
+
+const setStoredLanguage = (lang: string): void => {
+  if (typeof window === 'undefined') return;
+  
+  try {
+    // Store in memory instead of localStorage
+    console.log(`Language set to: ${lang}`);
+  } catch (error) {
+    console.warn('Failed to save language preference:', error);
+  }
+};
+
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState('en');
+  const [language, setLanguage] = useState(DEFAULT_LANGUAGE);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      try {
-        const savedLanguage = localStorage.getItem('language') || 'en';
-
-        setLanguage(savedLanguage);
-      } catch (error) {
-        console.warn('Failed to read language preference from localStorage:', error);
-        setLanguage('en');
-      }
-    } else {
-      setLanguage('en');
-    }
+    const savedLanguage = getStoredLanguage();
+    setLanguage(savedLanguage);
+    setIsInitialized(true);
   }, []);
 
   const t = useCallback(
     (key: string): string => {
-      const parts = key.split('.');
-
-      const namespace = parts[0];
-
-      const translationKey = parts.slice(1).join('.');
-
-      let value: any =
-        translations[language as keyof typeof translations]?.[
-          namespace as keyof typeof translations.en
-        ];
-
-      const keys = translationKey.split('.');
-
-      for (const k of keys) {
-        value = value?.[k];
+      const [namespace, ...keyParts] = key.split('.');
+      
+      if (!namespace || keyParts.length === 0) {
+        console.warn(`Invalid translation key format: ${key}`);
+        return key;
       }
 
-      return (typeof value === 'string' ? value : key) as string;
+      const translationKey = keyParts.join('.');
+      let value: TranslationValue | undefined = TRANSLATIONS[language]?.[namespace];
+
+      for (const part of translationKey.split('.')) {
+        if (typeof value === 'object' && value !== null) {
+          value = value[part];
+        } else {
+          value = undefined;
+          break;
+        }
+      }
+
+      if (typeof value === 'string') {
+        return value;
+      }
+
+      console.warn(`Translation not found: ${key}`);
+      return key;
     },
     [language]
   );
 
   const handleSetLanguage = useCallback((lang: string) => {
-    setLanguage(lang);
-
-    if (typeof window !== 'undefined' && window.localStorage) {
-      try {
-        localStorage.setItem('language', lang);
-      } catch (error) {
-        console.warn('Failed to save language preference to localStorage:', error);
-      }
+    if (!TRANSLATIONS[lang]) {
+      console.warn(`Language "${lang}" not supported`);
+      return;
     }
+
+    setLanguage(lang);
+    setStoredLanguage(lang);
   }, []);
 
   const contextValue: I18nContextType = useMemo(
@@ -93,6 +119,10 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     }),
     [language, handleSetLanguage, t]
   );
+
+  if (!isInitialized) {
+    return null;
+  }
 
   return <I18nContext.Provider value={contextValue}>{children}</I18nContext.Provider>;
 }

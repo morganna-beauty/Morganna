@@ -1,39 +1,79 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useI18n } from '@/hooks/useI18n';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import logo from '../../public/logo.svg';
+import { Roboto } from 'next/font/google';
+import { IoSearchSharp } from 'react-icons/io5';
+import { FaRegUser } from "react-icons/fa6";
+import { MdOutlineShoppingBag } from 'react-icons/md';
+import { LuUser } from 'react-icons/lu';
+import { NAV_LINKS } from '@/data/NavLinks';
+
+const roboto = Roboto({
+  subsets: ['latin'],
+  weight: ['400', '500', '700'],
+});
 
 export const Navbar = () => {
   const { t } = useI18n();
 
   return (
-    <nav className="bg-white border-b border-gray-200 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex items-center">
+    <nav
+      className={`bg-white h-[100px] shadow-[0px_1px_2px_rgba(0,0,0,0.3),0px_1px_3px_1px_rgba(0,0,0,0.15)] ${roboto.className}`}
+    >
+      <div className="max-w-[1440px] mx-auto px-[60px] h-full">
+        <div className="flex items-center justify-between h-full">
+          <div className="flex items-center gap-8">
             <Link
               href="/"
-              className="text-2xl font-bold text-primary-600 hover:text-primary-700 transition-colors"
+              className="flex items-center h-[54px] w-[233.28px] transition-opacity hover:opacity-80"
+              aria-label={t('navbar.brand')}
             >
-              {t('navbar.brand')}
+              <Image src={logo} alt="Logo"></Image>
             </Link>
+
+            <div className="flex items-center gap-8">
+              {NAV_LINKS.map((link) => (
+                <Link
+                  key={link.key}
+                  href={link.href}
+                  className="font-roboto font-medium text-base leading-6 tracking-[0.15px] text-[#1D1B20] hover:text-gray-600 transition-colors"
+                >
+                  {t(`navbar.${link.key}`)}
+                </Link>
+              ))}
+            </div>
           </div>
 
-          <div className="flex items-center space-x-4">
-            <Link
-              href="/"
-              className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              className="flex items-center justify-center w-12 h-12 rounded-full hover:bg-gray-100 transition-colors"
+              aria-label="Search"
             >
-              {t('navbar.products')}
-            </Link>
+              <IoSearchSharp size={24}/>
+            </button>
 
-            <Link
-              href="/products/new"
-              className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+            <button
+              type="button"
+              className="flex items-center justify-center w-12 h-12 rounded-full hover:bg-gray-100 transition-colors"
+              aria-label="Shopping cart"
             >
-              {t('navbar.addProduct')}
-            </Link>
+              <MdOutlineShoppingBag size={24}/>
+            </button>
+
+            <button
+              type="button"
+              className="flex items-center justify-center w-12 h-12 rounded-full hover:bg-gray-100 transition-colors"
+              aria-label="Shopping cart"
+            >
+              {/* <LuUser size={24}/> */}
+              <FaRegUser size={24}/>
+
+            </button>
 
             <LanguageSwitcher />
           </div>

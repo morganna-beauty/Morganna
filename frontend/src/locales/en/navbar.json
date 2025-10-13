@@ -2,7 +2,11 @@
   "brand": "Morganna",
   "home": "Home",
   "products": "Products",
-  "about": "About",
+  "diagnostic": "Diagnostic",
+  "blog": "Blog",
+  "about": "About Us",
   "contact": "Contact",
-  "addProduct": "Add New Product"
+  "addProduct": "Add New Product",
+  "search": "Search",
+  "cart": "Cart"
 }

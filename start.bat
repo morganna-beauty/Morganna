@@ -1,5 +1,5 @@
 @echo off
-echo Starting Morganna Full-Stack Application...
+echo Starting Morganna Docker Services...
 echo.
 
 REM Check if Docker is running
@@ -11,12 +11,12 @@ if errorlevel 1 (
     exit /b 1
 )
 
-echo Docker is running. Starting services...
+echo Docker is running. Starting only Docker services...
 echo.
 
-REM Start the application
+REM Start Docker services defined in docker-compose.yml without frontend/backend local scripts
 docker-compose up --build
 
 echo.
-echo Application stopped.
+echo Docker services stopped.
 pause

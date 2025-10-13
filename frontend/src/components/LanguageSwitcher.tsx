@@ -1,46 +1,83 @@
 'use client';
 
-import { useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { useI18n } from '@/hooks/useI18n';
+import { LANGUAGES } from '@/data/Languages';
+
 
 export function LanguageSwitcher() {
   const { language, setLanguage } = useI18n();
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const currentLanguage = LANGUAGES.find(lang => lang.code === language) || LANGUAGES[0];
 
   const handleLanguageChange = useCallback(
-    (newLanguage: string) => {
-      setLanguage(newLanguage);
+    (langCode: string) => {
+      setLanguage(langCode);
+      setIsOpen(false);
     },
     [setLanguage]
   );
 
+  const toggleDropdown = useCallback(() => {
+    setIsOpen(prev => !prev);
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   return (
-    <div className="flex items-center space-x-2">
+    <div 
+      ref={dropdownRef} 
+      className="relative"
+    >
       <button
         type="button"
-        onClick={() => handleLanguageChange('en')}
-        aria-pressed={language === 'en'}
-        aria-label="Switch to English"
-        className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-          language === 'en'
-            ? 'bg-primary-600 text-white'
-            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-        }`}
+        onClick={toggleDropdown}
+        aria-expanded={isOpen}
+        aria-haspopup="true"
+        aria-label="Language selector"
+        className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-100 transition-colors duration-200"
       >
-        EN
+        {currentLanguage.icon}
       </button>
 
-      <button
-        onClick={() => handleLanguageChange('es')}
-        aria-pressed={language === 'es'}
-        aria-label="Switch to Spanish"
-        className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-          language === 'es'
-            ? 'bg-primary-600 text-white'
-            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-        }`}
-      >
-        ES
-      </button>
+      {isOpen && (
+        <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-50">
+          <div className="py-1">
+            {LANGUAGES.map((lang) => (
+              <button
+                key={lang.code}
+                type="button"
+                onClick={() => handleLanguageChange(lang.code)}
+                className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors ${
+                  language === lang.code
+                    ? 'bg-gray-100 text-gray-900 font-medium'
+                    : 'text-gray-700 hover:bg-gray-50'
+                }`}
+                role="menuitem"
+              >
+                <span className="flex-shrink-0">
+                  {lang.icon}
+                </span>
+                <span className="font-medium">{lang.name}</span>
+                {language === lang.code && (
+                  <span className="ml-auto text-blue-600">✓</span>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
