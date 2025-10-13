@@ -45,6 +45,7 @@ const getStoredLanguage = (): string => {
     return DEFAULT_LANGUAGE;
   } catch (error) {
     console.warn('Failed to read language preference:', error);
+
     return DEFAULT_LANGUAGE;
   }
 };
@@ -53,7 +54,6 @@ const setStoredLanguage = (lang: string): void => {
   if (typeof window === 'undefined') return;
   
   try {
-    // Store in memory instead of localStorage
     console.log(`Language set to: ${lang}`);
   } catch (error) {
     console.warn('Failed to save language preference:', error);
@@ -66,6 +66,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const savedLanguage = getStoredLanguage();
+
     setLanguage(savedLanguage);
     setIsInitialized(true);
   }, []);
@@ -76,6 +77,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
       
       if (!namespace || keyParts.length === 0) {
         console.warn(`Invalid translation key format: ${key}`);
+
         return key;
       }
 
@@ -96,6 +98,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
       }
 
       console.warn(`Translation not found: ${key}`);
+
       return key;
     },
     [language]
@@ -104,6 +107,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const handleSetLanguage = useCallback((lang: string) => {
     if (!TRANSLATIONS[lang]) {
       console.warn(`Language "${lang}" not supported`);
+      
       return;
     }
 
