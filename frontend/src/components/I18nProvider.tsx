@@ -36,24 +36,22 @@ const TRANSLATIONS: TranslationsType = {
 };
 
 const DEFAULT_LANGUAGE = 'en';
-const STORAGE_KEY = 'language';
 
 const getStoredLanguage = (): string => {
   if (typeof window === 'undefined') return DEFAULT_LANGUAGE;
-  
+
   try {
     return DEFAULT_LANGUAGE;
   } catch (error) {
     console.warn('Failed to read language preference:', error);
 
-    
-return DEFAULT_LANGUAGE;
+    return DEFAULT_LANGUAGE;
   }
 };
 
 const setStoredLanguage = (lang: string): void => {
   if (typeof window === 'undefined') return;
-  
+
   try {
     // Store in memory instead of localStorage
     console.log(`Language set to: ${lang}`);
@@ -76,12 +74,11 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const t = useCallback(
     (key: string): string => {
       const [namespace, ...keyParts] = key.split('.');
-      
+
       if (!namespace || keyParts.length === 0) {
         console.warn(`Invalid translation key format: ${key}`);
 
-        
-return key;
+        return key;
       }
 
       const translationKey = keyParts.join('.');
@@ -102,8 +99,7 @@ return key;
 
       console.warn(`Translation not found: ${key}`);
 
-      
-return key;
+      return key;
     },
     [language]
   );
@@ -112,8 +108,7 @@ return key;
     if (!TRANSLATIONS[lang]) {
       console.warn(`Language "${lang}" not supported`);
 
-      
-return;
+      return;
     }
 
     setLanguage(lang);
