@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Ejecutar lint-staged para verificar y corregir código
+npx lint-staged
+
+# Verificar que no hay errores de lint después de las correcciones
+echo "🔍 Verificando ESLint en frontend..."
+cd frontend && npm run lint
+
+echo "🔍 Verificando ESLint en backend..."
+cd ../backend && npm run lint
+
+echo "✅ Pre-commit hooks completados exitosamente!"
