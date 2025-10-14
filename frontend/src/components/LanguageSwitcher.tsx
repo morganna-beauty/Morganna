@@ -4,13 +4,13 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { useI18n } from '@/hooks/useI18n';
 import { LANGUAGES } from '@/data/Languages';
 
-
 export function LanguageSwitcher() {
   const { language, setLanguage } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
+
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const currentLanguage = LANGUAGES.find(lang => lang.code === language) || LANGUAGES[0];
+  const currentLanguage = LANGUAGES.find((lang) => lang.code === language) || LANGUAGES[0];
 
   const handleLanguageChange = useCallback(
     (langCode: string) => {
@@ -21,7 +21,7 @@ export function LanguageSwitcher() {
   );
 
   const toggleDropdown = useCallback(() => {
-    setIsOpen(prev => !prev);
+    setIsOpen((prev) => !prev);
   }, []);
 
   useEffect(() => {
@@ -32,14 +32,12 @@ export function LanguageSwitcher() {
     };
 
     document.addEventListener('mousedown', handleClickOutside);
+
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   return (
-    <div 
-      ref={dropdownRef} 
-      className="relative"
-    >
+    <div ref={dropdownRef} className="relative">
       <button
         type="button"
         onClick={toggleDropdown}
@@ -66,13 +64,11 @@ export function LanguageSwitcher() {
                 }`}
                 role="menuitem"
               >
-                <span className="flex-shrink-0">
-                  {lang.icon}
-                </span>
+                <span className="flex-shrink-0">{lang.icon}</span>
+
                 <span className="font-medium">{lang.name}</span>
-                {language === lang.code && (
-                  <span className="ml-auto text-blue-600">✓</span>
-                )}
+
+                {language === lang.code && <span className="ml-auto text-blue-600">✓</span>}
               </button>
             ))}
           </div>

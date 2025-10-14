@@ -36,24 +36,25 @@ const TRANSLATIONS: TranslationsType = {
 };
 
 const DEFAULT_LANGUAGE = 'en';
-const STORAGE_KEY = 'language';
 
 const getStoredLanguage = (): string => {
   if (typeof window === 'undefined') return DEFAULT_LANGUAGE;
-  
+
   try {
-    return DEFAULT_LANGUAGE;
+    const stored = localStorage.getItem('language');
+
+    return (stored || DEFAULT_LANGUAGE) as string;
   } catch (error) {
     console.warn('Failed to read language preference:', error);
+
     return DEFAULT_LANGUAGE;
   }
 };
 
 const setStoredLanguage = (lang: string): void => {
   if (typeof window === 'undefined') return;
-  
+
   try {
-    // Store in memory instead of localStorage
     console.log(`Language set to: ${lang}`);
   } catch (error) {
     console.warn('Failed to save language preference:', error);
@@ -66,16 +67,19 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const savedLanguage = getStoredLanguage();
+
     setLanguage(savedLanguage);
+
     setIsInitialized(true);
   }, []);
 
   const t = useCallback(
     (key: string): string => {
       const [namespace, ...keyParts] = key.split('.');
-      
+
       if (!namespace || keyParts.length === 0) {
         console.warn(`Invalid translation key format: ${key}`);
+
         return key;
       }
 
@@ -87,6 +91,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
           value = value[part];
         } else {
           value = undefined;
+
           break;
         }
       }
@@ -96,6 +101,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
       }
 
       console.warn(`Translation not found: ${key}`);
+
       return key;
     },
     [language]
@@ -104,10 +110,12 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const handleSetLanguage = useCallback((lang: string) => {
     if (!TRANSLATIONS[lang]) {
       console.warn(`Language "${lang}" not supported`);
+
       return;
     }
 
     setLanguage(lang);
+
     setStoredLanguage(lang);
   }, []);
 
