@@ -41,7 +41,9 @@ const getStoredLanguage = (): string => {
   if (typeof window === 'undefined') return DEFAULT_LANGUAGE;
 
   try {
-    return DEFAULT_LANGUAGE;
+    const stored = localStorage.getItem('language');
+
+    return (stored || DEFAULT_LANGUAGE) as string;
   } catch (error) {
     console.warn('Failed to read language preference:', error);
 
@@ -53,7 +55,6 @@ const setStoredLanguage = (lang: string): void => {
   if (typeof window === 'undefined') return;
 
   try {
-    // Store in memory instead of localStorage
     console.log(`Language set to: ${lang}`);
   } catch (error) {
     console.warn('Failed to save language preference:', error);
@@ -68,6 +69,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     const savedLanguage = getStoredLanguage();
 
     setLanguage(savedLanguage);
+
     setIsInitialized(true);
   }, []);
 
@@ -89,6 +91,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
           value = value[part];
         } else {
           value = undefined;
+
           break;
         }
       }
@@ -112,6 +115,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     }
 
     setLanguage(lang);
+    
     setStoredLanguage(lang);
   }, []);
 
