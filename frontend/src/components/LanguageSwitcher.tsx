@@ -32,7 +32,9 @@ export function LanguageSwitcher() {
     };
 
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+
+    
+return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   return (
@@ -69,7 +71,9 @@ export function LanguageSwitcher() {
                 <span className="flex-shrink-0">
                   {lang.icon}
                 </span>
+
                 <span className="font-medium">{lang.name}</span>
+
                 {language === lang.code && (
                   <span className="ml-auto text-blue-600">✓</span>
                 )}
