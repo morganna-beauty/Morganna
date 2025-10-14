@@ -12,6 +12,54 @@ A modern, full-stack web application for product management built with **Next.js
 - **Type Safety**: Full TypeScript implementation
 - **API Documentation**: RESTful API with proper HTTP status codes
 - **Error Handling**: Comprehensive error handling and validation
+- **Code Quality**: Pre-commit hooks with ESLint auto-fixing
+
+## 🔍 Code Quality & Pre-commit Hooks
+
+This project includes an automated pre-commit system that ensures code quality:
+
+### ✅ What happens on every commit:
+
+1. **Automatic ESLint verification** - Checks code style and quality
+2. **Auto-fix formatting issues** - Corrects spacing, quotes, and style automatically  
+3. **Frontend & Backend processing** - Processes Next.js and NestJS independently
+4. **Commit integration** - Fixed files are automatically included in your commit
+5. **Windows compatible** - Fully supports PowerShell and Windows environment
+
+### 🛠️ Pre-commit system includes:
+
+- **Husky** - Git hooks management
+- **lint-staged** - Run tasks only on staged files
+- **ESLint --fix** - Automatic code corrections
+
+### 📝 Available commands:
+
+```bash
+# Test the pre-commit system
+npm run test:precommit
+
+# Run linting on entire project  
+npm run lint
+
+# Run linting with auto-fix
+npm run lint:fix
+
+# Lint specific parts
+npm run lint:frontend     # Frontend only
+npm run lint:backend      # Backend only
+```
+
+### 🎯 How it works:
+
+The system runs automatically on `git commit` and will:
+- ✅ Fix formatting, spacing, and style issues
+- ✅ Include corrections in your commit automatically
+- ❌ Block commits if there are unfixable errors
+- ✅ Ensure consistent code quality across the team
+
+**No setup required** - Just commit normally and the system handles the rest!
+
+For detailed configuration see: [PRE-COMMIT-SETUP.md](./PRE-COMMIT-SETUP.md)
 
 ## 📋 Prerequisites
 
