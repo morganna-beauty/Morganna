@@ -1,8 +1,10 @@
-# Pre-commit Hooks Configuration
+# Pre-commit Hooks Configuration ✅ FUNCIONANDO
 
 ## 🎯 Propósito
 
 Este sistema de pre-commit hooks asegura que todo el código que se commitea cumpla con los estándares de calidad del proyecto ejecutando ESLint automáticamente antes de cada commit.
+
+**✅ ESTADO: COMPLETAMENTE CONFIGURADO Y FUNCIONAL**
 
 ## 🔧 Configuración
 
@@ -36,14 +38,16 @@ npm run lint
 npm run lint:fix
 ```
 
-## 📋 Qué hace el pre-commit hook:
+## 📋 Funcionamiento del pre-commit hook
+
+El sistema ejecuta automáticamente las siguientes tareas en cada commit:
 
 1. **Ejecuta lint-staged** en archivos modificados
-2. **Frontend**: `npm run lint --fix` en archivos `.js`, `.jsx`, `.ts`, `.tsx`
-3. **Backend**: `npm run lint` en archivos `.js`, `.ts`
-4. **Agrega automáticamente** los archivos corregidos al commit
-5. **Verifica** que no queden errores de ESLint
-6. **Permite el commit** solo si todo está correcto
+2. **Frontend**: `next lint --fix .` en archivos `.js`, `.jsx`, `.ts`, `.tsx`
+3. **Backend**: `npm run lint:fix` en archivos `.js`, `.ts`
+4. **Corrige automáticamente** errores de formato y estilo
+5. **Incluye las correcciones** en el commit actual
+6. **Permite el commit** solo si no hay errores bloqueantes
 
 ## 🛠️ Scripts disponibles:
 
@@ -57,22 +61,20 @@ npm run lint:fix
 }
 ```
 
-## 🔍 Configuración de lint-staged:
+## 🔍 Configuración actual de lint-staged
 
 ```json
 {
   "lint-staged": {
-    "frontend/**/*.{js,jsx,ts,tsx}": [
-      "bash -c 'cd frontend && npm run lint -- --fix --max-warnings 0'",
-      "git add"
-    ],
-    "backend/**/*.{js,ts}": [
-      "bash -c 'cd backend && npm run lint'",
-      "git add"
-    ]
+    "frontend/**/*.{js,jsx,ts,tsx}": "npm run precommit:frontend",
+    "backend/**/*.{js,ts}": "npm run precommit:backend"
   }
 }
 ```
+
+**Scripts de pre-commit configurados:**
+- `precommit:frontend`: `cd frontend && npm run lint:fix .`
+- `precommit:backend`: `cd backend && npm run lint:fix`
 
 ## ✅ Verificación:
 
