@@ -54,12 +54,10 @@
   },
   "lint-staged": {
     "frontend/**/*.{js,jsx,ts,tsx}": [
-      "npm run precommit:frontend",
-      "git add"
+      "npm run precommit:frontend"
     ],
     "backend/**/*.{js,ts}": [
-      "npm run precommit:backend",
-      "git add"
+      "npm run precommit:backend"
     ]
   }
 }
