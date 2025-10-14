@@ -115,7 +115,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     }
 
     setLanguage(lang);
-    
+
     setStoredLanguage(lang);
   }, []);
 
