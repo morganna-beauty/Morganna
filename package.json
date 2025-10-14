@@ -31,10 +31,9 @@
     "lint:frontend": "cd frontend && npm run lint",
     "lint:backend": "cd backend && npm run lint:fix",
     "lint:fix:frontend": "cd frontend && npm run lint:fix",
-    "lint:fix:frontend:staged": "cd frontend && npm run lint:fix:staged",
     "lint:fix:backend": "cd backend && npm run lint:fix",
-    "precommit:frontend": "cd frontend && npm run lint:fix .",
-    "precommit:backend": "cd backend && npm run lint:fix",
+    "precommit:frontend": "cd frontend && npm run lint:fix:staged --",
+    "precommit:backend": "cd backend && npm run lint:fix:staged --",
     "test:precommit": "npx lint-staged",
     "prepare": "husky"
   },
@@ -54,7 +53,13 @@
     "npm-run-all": "^4.1.5"
   },
   "lint-staged": {
-    "frontend/**/*.{js,jsx,ts,tsx}": "npm run precommit:frontend",
-    "backend/**/*.{js,ts}": "npm run precommit:backend"
+    "frontend/**/*.{js,jsx,ts,tsx}": [
+      "npm run precommit:frontend",
+      "git add"
+    ],
+    "backend/**/*.{js,ts}": [
+      "npm run precommit:backend",
+      "git add"
+    ]
   }
 }
