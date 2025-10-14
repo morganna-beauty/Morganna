@@ -3,8 +3,9 @@
 import { useState, useCallback, useMemo } from 'react';
 import { useProducts } from '@/hooks';
 import { Product, CreateProductRequest } from '@/types';
-import { ProductForm, ProductList } from '@/components';
+import { ProductForm, ProductList, Tooltip } from '@/components';
 import { useI18n } from '@/hooks/useI18n';
+import { HiPlus } from 'react-icons/hi';
 
 export default function HomePage() {
   const { t } = useI18n();
@@ -82,7 +83,11 @@ export default function HomePage() {
 
         <div className="text-gray-600">{error.message}</div>
 
-        <button type="button" onClick={() => window.location.reload()} className="mt-4 btn btn-primary">
+        <button
+          type="button"
+          onClick={() => window.location.reload()}
+          className="mt-4 btn btn-primary"
+        >
           {t('common.retry')}
         </button>
       </div>
@@ -102,9 +107,19 @@ export default function HomePage() {
           <p className="text-gray-600 mt-2">{t('product.manageInventory')}</p>
         </div>
 
-        <button type="button" onClick={handleOpenForm} className="btn btn-primary">
-          {t('navbar.addProduct')}
-        </button>
+        <Tooltip content={t('navbar.addProduct')} position="top">
+          <button
+            type="button"
+            onClick={handleOpenForm}
+            className="btn btn-primary flex items-center gap-2 hover:shadow-lg transition-all duration-200"
+          >
+            <HiPlus size={20} />
+
+            <span className="hidden sm:inline">{t('navbar.addProduct')}</span>
+
+            <span className="sm:hidden">Add</span>
+          </button>
+        </Tooltip>
       </div>
 
       {isFormOpen && (
