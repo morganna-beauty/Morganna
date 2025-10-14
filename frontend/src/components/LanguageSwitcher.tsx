@@ -77,3 +77,5 @@ export function LanguageSwitcher() {
     </div>
   );
 }
+
+console.log("test");
