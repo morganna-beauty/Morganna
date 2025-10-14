@@ -8,6 +8,8 @@ import { LANGUAGES } from '@/data/Languages';
 export function LanguageSwitcher() {
   const { language, setLanguage } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
+
+  console.log("Testing lint fix");
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const currentLanguage = LANGUAGES.find(lang => lang.code === language) || LANGUAGES[0];
@@ -33,8 +35,7 @@ export function LanguageSwitcher() {
 
     document.addEventListener('mousedown', handleClickOutside);
 
-    
-return () => document.removeEventListener('mousedown', handleClickOutside);
+     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   return (
