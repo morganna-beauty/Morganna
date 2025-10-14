@@ -1,12 +1,5 @@
-/**
- * Custom hook for responsive design utilities
- *
- * Provides utilities for detecting screen sizes and managing responsive state
- */
-
 import { useState, useEffect } from 'react';
 
-// Breakpoint definitions
 const breakpoints = {
   sm: 640,
   md: 768,
@@ -44,15 +37,12 @@ export const useResponsive = () => {
       setIsDesktop(width >= breakpoints.lg);
     };
 
-    // Set initial values
     if (typeof window !== 'undefined') {
       updateScreenSize();
     }
 
-    // Add event listener
     window.addEventListener('resize', updateScreenSize);
 
-    // Cleanup
     return () => window.removeEventListener('resize', updateScreenSize);
   }, []);
 
@@ -65,7 +55,6 @@ export const useResponsive = () => {
   };
 };
 
-// Hook for media queries
 export const useMediaQuery = (query: string) => {
   const [matches, setMatches] = useState(false);
 
@@ -86,16 +75,13 @@ export const useMediaQuery = (query: string) => {
   return matches;
 };
 
-// Pre-defined media query hooks
 export const useIsMobile = () => useMediaQuery('(max-width: 767px)');
 
 export const useIsTablet = () => useMediaQuery('(min-width: 768px) and (max-width: 1023px)');
 
 export const useIsDesktop = () => useMediaQuery('(min-width: 1024px)');
 
-// Responsive utilities
 export const responsiveUtils = {
-  // Get responsive text size classes
   getTextSize: (size: 'sm' | 'md' | 'lg' | 'xl') => {
     const sizes = {
       sm: 'text-sm sm:text-base',
@@ -107,7 +93,6 @@ export const responsiveUtils = {
     return sizes[size];
   },
 
-  // Get responsive spacing classes
   getSpacing: (size: 'sm' | 'md' | 'lg') => {
     const spacing = {
       sm: 'p-4 sm:p-6',
@@ -118,7 +103,6 @@ export const responsiveUtils = {
     return spacing[size];
   },
 
-  // Get responsive grid classes
   getGrid: (cols: 2 | 3 | 4) => {
     const grids = {
       2: 'grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6',
@@ -129,7 +113,6 @@ export const responsiveUtils = {
     return grids[cols];
   },
 
-  // Get responsive container classes
   getContainer: (type: 'full' | 'constrained') => {
     return type === 'full'
       ? 'w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-[60px]'

@@ -18,5 +18,6 @@
   "createNew": "Create New Product",
   "update": "Update Product",
   "edit": "Edit Product",
-  "manageInventory": "Manage your product inventory"
+  "manageInventory": "Manage your product inventory",
+  "scrollHint": "Scroll horizontally to see more columns"
 }

@@ -4,6 +4,8 @@ import { useCallback, useMemo } from 'react';
 import { Product } from '@/types';
 import { formatCurrency, formatDate } from '@/lib';
 import { useI18n } from '@/hooks/useI18n';
+import { useIsDesktop } from '@/hooks/useResponsive';
+import { HiPencil, HiTrash } from 'react-icons/hi';
 
 interface ProductListProps {
   products: Product[];
@@ -14,24 +16,7 @@ interface ProductListProps {
 
 export const ProductList = ({ products, onEdit, onDelete, loading }: ProductListProps) => {
   const { t } = useI18n();
-
-  const handleEdit = useCallback(
-    (product: Product) => {
-      if (onEdit) {
-        onEdit(product);
-      }
-    },
-    [onEdit]
-  );
-
-  const handleDelete = useCallback(
-    (id: number) => {
-      if (onDelete) {
-        onDelete(id);
-      }
-    },
-    [onDelete]
-  );
+  const isDesktop = useIsDesktop();
 
   const loadingComponent = useMemo(
     () => (
@@ -63,91 +48,119 @@ export const ProductList = ({ products, onEdit, onDelete, loading }: ProductList
 
   return (
     <div className="bg-white shadow-sm rounded-lg overflow-hidden">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
-          <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              {t('product.product')}
-            </th>
+      {/* Mobile/Tablet: Show scroll hint */}
+      {!isDesktop && (
+        <div className="bg-blue-50 border-b border-blue-200 px-4 py-2 text-xs text-blue-700 flex items-center justify-between">
+          <span>💡 {t('product.scrollHint')}</span>
 
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              {t('product.price')}
-            </th>
+          <span className="text-blue-500">&larr;&rarr;</span>
+        </div>
+      )}
 
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              {t('product.stock')}
-            </th>
+      {/* Horizontal scroll container for mobile/tablet */}
 
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              {t('product.created')}
-            </th>
+      <div
+        className={`${!isDesktop ? 'overflow-x-auto pb-1' : ''}`}
+        style={{
+          scrollbarWidth: 'thin',
+          scrollbarColor: '#d1d5db #f3f4f6',
+          ...(!isDesktop && {
+            WebkitOverflowScrolling: 'touch',
+          }),
+        }}
+      >
+        <table
+          className={`divide-y divide-gray-200 ${isDesktop ? 'min-w-full' : 'min-w-[700px] w-full'}`}
+        >
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                {t('product.product')}
+              </th>
 
-            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-              {t('common.actions')}
-            </th>
-          </tr>
-        </thead>
+              <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                {t('product.price')}
+              </th>
 
-        <tbody className="bg-white divide-y divide-gray-200">
-          {products.map((product) => (
-            <tr key={product.id} className="hover:bg-gray-50 transition-colors">
-              <td className="px-6 py-4 whitespace-nowrap">
-                <div>
-                  <div className="text-sm font-medium text-gray-900">{product.name}</div>
+              <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                {t('product.stock')}
+              </th>
 
-                  {product.description && (
-                    <div className="text-sm text-gray-500 truncate max-w-xs">
-                      {product.description}
-                    </div>
-                  )}
-                </div>
-              </td>
+              <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                {t('product.created')}
+              </th>
 
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {formatCurrency(product.price)}
-              </td>
-
-              <td className="px-6 py-4 whitespace-nowrap">
-                <span
-                  className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                    product.stock > 10
-                      ? 'bg-green-100 text-green-800'
-                      : product.stock > 0
-                        ? 'bg-yellow-100 text-yellow-800'
-                        : 'bg-red-100 text-red-800'
-                  }`}
-                >
-                  {`${product.stock} ${t('product.units')}`}
-                </span>
-              </td>
-
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {formatDate(product.createdAt)}
-              </td>
-
-              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                {onEdit && (
-                  <button
-                    onClick={() => handleEdit(product)}
-                    className="text-primary-600 hover:text-primary-900 transition-colors"
-                  >
-                    {t('common.edit')}
-                  </button>
-                )}
-
-                {onDelete && (
-                  <button
-                    onClick={() => handleDelete(product.id)}
-                    className="text-red-600 hover:text-red-900 transition-colors"
-                  >
-                    {t('common.delete')}
-                  </button>
-                )}
-              </td>
+              <th className="px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider sticky right-0 bg-gray-50">
+                {t('common.actions')}
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+
+          <tbody className="bg-white divide-y divide-gray-200">
+            {products.map((product) => (
+              <tr key={product.id} className="hover:bg-gray-50 transition-colors">
+                <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
+                  <div>
+                    <div className="text-sm font-medium text-gray-900">{product.name}</div>
+
+                    {product.description && (
+                      <div className="text-sm text-gray-500 truncate max-w-xs">
+                        {product.description}
+                      </div>
+                    )}
+                  </div>
+                </td>
+
+                <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {formatCurrency(product.price)}
+                </td>
+
+                <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
+                  <span
+                    className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                      product.stock > 10
+                        ? 'bg-green-100 text-green-800'
+                        : product.stock > 0
+                          ? 'bg-yellow-100 text-yellow-800'
+                          : 'bg-red-100 text-red-800'
+                    }`}
+                  >
+                    {`${product.stock} ${t('product.units')}`}
+                  </span>
+                </td>
+
+                <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {formatDate(product.createdAt)}
+                </td>
+
+                <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2 sticky right-0 bg-white">
+                  {onEdit && (
+                    <button
+                      onClick={() => onEdit(product)}
+                      className="inline-flex items-center justify-center w-8 h-8 text-primary-600 hover:text-primary-900 hover:bg-primary-50 rounded-full transition-all duration-200"
+                      title={t('common.edit')}
+                      aria-label={t('common.edit')}
+                    >
+                      <HiPencil className="w-6 h-6" />
+                    </button>
+                  )}
+
+                  {onDelete && (
+                    <button
+                      onClick={() => onDelete(product.id)}
+                      className="inline-flex items-center justify-center w-8 h-8 text-red-600 hover:text-red-900 hover:bg-red-50 rounded-full transition-all duration-200"
+                      title={t('common.delete')}
+                      aria-label={t('common.delete')}
+                    >
+                      <HiTrash className="w-6 h-6" />
+                    </button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
