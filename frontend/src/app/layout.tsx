@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import { Navbar, I18nProvider } from '@/components';
 import './globals.css';
 import { QueryProvider } from './providers/QueryProvider';
+import Footer from '@/components/Footer';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -19,7 +20,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <I18nProvider>
             <Navbar />
 
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">{children}</main>
+            <main>{children}</main>
+            
+            <Footer />
+
           </I18nProvider>
         </QueryProvider>
       </body>

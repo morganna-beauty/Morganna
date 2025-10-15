@@ -4,13 +4,8 @@ import { useCallback, useMemo } from 'react';
 import { Product } from '@/types';
 import { formatCurrency, formatDate } from '@/lib';
 import { useI18n } from '@/hooks/useI18n';
+import ProductListProps from '@/interface/ProductList';
 
-interface ProductListProps {
-  products: Product[];
-  onEdit?: (product: Product) => void;
-  onDelete?: (id: number) => void;
-  loading?: boolean;
-}
 
 export const ProductList = ({ products, onEdit, onDelete, loading }: ProductListProps) => {
   const { t } = useI18n();
