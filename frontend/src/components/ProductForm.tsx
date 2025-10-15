@@ -3,13 +3,8 @@
 import { useState, useCallback } from 'react';
 import { Product, CreateProductRequest } from '@/types';
 import { useI18n } from '@/hooks/useI18n';
+import ProductFormProps from '@/interface/ProductForm';
 
-interface ProductFormProps {
-  product?: Product;
-  onSubmit: (data: CreateProductRequest) => Promise<void>;
-  onCancel?: () => void;
-  isEdit?: boolean;
-}
 
 export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: ProductFormProps) => {
   const { t } = useI18n();

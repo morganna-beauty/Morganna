@@ -1,26 +1,8 @@
-'use client'
+'use client';
 
-import ProductCard from "@/components/ProductCard";
+import ProductCard from '@/components/ProductCard';
+import PRODUCTS from '@/data/Products';
 import { useI18n } from '@/hooks/useI18n';
-
-
-const PRODUCTS = [
-  {
-    id: 1,
-    title: 'Champú nutritivo',
-    description: 'Para un cabello suave y brillante',
-  },
-  {
-    id: 2,
-    title: 'Acondicionador reparador',
-    description: 'Repara el cabello dañado',
-  },
-  {
-    id: 3,
-    title: 'Mascarilla hidratante',
-    description: 'Hidratación profunda para tu cabello',
-  },
-];
 
 const BestSellersSection = () => {
   const { t } = useI18n();
@@ -33,15 +15,11 @@ const BestSellersSection = () => {
 
       <div className="flex flex-row items-start gap-12 w-full max-w-[1320px]">
         {PRODUCTS.map((product) => (
-          <ProductCard
-            key={product.id}
-            title={product.title}
-            description={product.description}
-          />
+          <ProductCard key={product.id} title={product.title} description={product.description} />
         ))}
       </div>
     </section>
   );
 };
 
-export default BestSellersSection
+export default BestSellersSection;

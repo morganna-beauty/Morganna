@@ -1,8 +1,5 @@
-interface ProductCardProps {
-  title: string;
-  description: string;
-  imageSrc?: string;
-}
+import ProductCardProps from "@/interface/ProductCard";
+
 
 function ProductCard({ title, description, imageSrc }: ProductCardProps) {
   return (

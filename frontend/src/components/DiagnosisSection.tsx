@@ -1,11 +1,11 @@
-'use client'
+'use client';
 
 import Star from '@/Icons/Star';
 import { useI18n } from '@/hooks/useI18n';
 
 const DiagnosisSection = () => {
-    const { t } = useI18n();
-  
+  const { t } = useI18n();
+
   return (
     <section className="flex flex-col items-center px-[60px] py-24 gap-16 w-full h-[424px] bg-[#E8E8E8]">
       <div className="flex flex-col justify-center items-center gap-8 w-[834px]">
@@ -21,9 +21,9 @@ const DiagnosisSection = () => {
 
         <button className="flex flex-row justify-center items-center w-[203px] h-[48px]">
           <div className="flex flex-row justify-center items-center px-4 py-[10px] gap-2 w-[203px] h-[40px] bg-[#215E6B] rounded-[100px] hover:opacity-90 transition-opacity">
-            <Star  />
+            <Star />
 
-{/* className="w-5 h-5" */}
+            {/* className="w-5 h-5" */}
             <span className="font-roboto font-medium text-sm leading-5 tracking-[0.1px] text-white">
               {t('routine.button')}
             </span>
@@ -34,4 +34,4 @@ const DiagnosisSection = () => {
   );
 };
 
-export default DiagnosisSection
+export default DiagnosisSection;

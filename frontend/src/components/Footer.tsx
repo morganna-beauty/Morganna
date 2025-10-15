@@ -1,14 +1,8 @@
-'use client'
+'use client';
 
-import { useI18n } from "@/hooks";
+import FOOTER_LINKS from '@/data/Footer';
+import { useI18n } from '@/hooks';
 
-
-const FOOTER_LINKS = [
-  { id: 1, label: 'footer.privacy', href: '/privacy' },
-  { id: 2, label: 'footer.terms', href: '/terms' },
-  { id: 3, label: 'footer.contact', href: '/contact' },
-];
- 
 const Footer = () => {
   const { t } = useI18n();
 
@@ -33,4 +27,4 @@ const Footer = () => {
   );
 };
 
-export default Footer
+export default Footer;
