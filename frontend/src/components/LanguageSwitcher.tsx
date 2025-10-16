@@ -3,11 +3,12 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useI18n } from '@/hooks/useI18n';
 import { LANGUAGES } from '@/data/Languages';
+import { useIsDesktop } from '@/hooks/useResponsive';
 
 export function LanguageSwitcher() {
   const { language, setLanguage } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
-
+  const isDesktop = useIsDesktop();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const currentLanguage = LANGUAGES.find((lang) => lang.code === language) || LANGUAGES[0];
@@ -50,7 +51,11 @@ export function LanguageSwitcher() {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-50">
+        <div
+          className={`absolute right-0 w-48 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-50 ${
+            isDesktop ? 'top-full mt-2' : 'bottom-full mb-2'
+          }`}
+        >
           <div className="py-1">
             {LANGUAGES.map((lang) => (
               <button
