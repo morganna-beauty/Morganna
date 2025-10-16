@@ -1,5 +1,6 @@
 {
   "noProducts": "No se encontraron productos",
+  "inventory": "Inventario",
   "createFirst": "Crea tu primer producto para comenzar",
   "product": "Producto",
   "name": "Nombre del Producto",
