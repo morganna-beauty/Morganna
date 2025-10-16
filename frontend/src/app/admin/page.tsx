@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { useState, useCallback, useMemo } from 'react';
 import { useProducts } from '@/hooks';
@@ -74,8 +74,12 @@ export default function AdminPage() {
         <div className="text-red-500 text-lg mb-4">{t('common.errorLoading')}</div>
 
         <div className="text-gray-600">{error.message}</div>
-        
-        <button type="button" onClick={() => window.location.reload()} className="mt-4 btn btn-primary">
+
+        <button
+          type="button"
+          onClick={() => window.location.reload()}
+          className="mt-4 btn btn-primary"
+        >
           {t('common.retry')}
         </button>
       </div>
@@ -86,7 +90,7 @@ export default function AdminPage() {
 
   return (
     <>
-      <div className="flex items-center justify-between mt-6 mb-4">
+      <div className="flex items-center justify-between mt-6 mb-4 px-[60px]">
         <div>
           <h2 className="text-2xl font-bold">{t('product.inventory')}</h2>
 
@@ -123,13 +127,14 @@ export default function AdminPage() {
         </div>
       )}
 
-      <ProductList
-        products={products}
-        onEdit={handleEditProduct}
-        onDelete={handleDeleteProduct}
-        loading={loading}
-      />
+      <div className="px-[60px]">
+        <ProductList
+          products={products}
+          onEdit={handleEditProduct}
+          onDelete={handleDeleteProduct}
+          loading={loading}
+        />
+      </div>
     </>
   );
 }
- 
