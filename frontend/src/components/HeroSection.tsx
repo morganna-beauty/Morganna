@@ -19,7 +19,8 @@ const HeroSection = () => {
           </p>
         </div>
 
-        <button className="flex flex-row justify-center items-center w-[203px] h-[48px]">
+        <button type="button" className="flex flex-row justify-center items-center w-[203px] h-[48px]">
+
           <div className="flex flex-row justify-center items-center px-4 py-[10px] gap-2 w-[203px] h-[40px] bg-[#215E6B] rounded-[100px] hover:opacity-90 transition-opacity">
             <Star className="w-5 h-5"/>
 

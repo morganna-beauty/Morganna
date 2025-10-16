@@ -12,17 +12,20 @@ export default function AdminPage() {
   const { products, loading, error, createProduct, updateProduct, deleteProduct } = useProducts();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const handleCreateProduct = useCallback(
     async (data: CreateProductRequest) => {
       try {
+        setFormError(null);
         await createProduct(data);
         setIsFormOpen(false);
       } catch (error) {
         console.error('Error creating product:', error);
+        setFormError(t('common.errorCreating'));
       }
     },
-    [createProduct]
+    [createProduct, t]
   );
 
   const handleEditProduct = useCallback((product: Product) => {
