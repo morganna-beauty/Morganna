@@ -3,7 +3,6 @@ import { Inter } from 'next/font/google';
 import { Navbar, I18nProvider } from '@/components';
 import './globals.css';
 import { QueryProvider } from './providers/QueryProvider';
-import Footer from '@/components/Footer';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -22,7 +21,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
             <main>{children}</main>
             
-            <Footer />
 
           </I18nProvider>
         </QueryProvider>

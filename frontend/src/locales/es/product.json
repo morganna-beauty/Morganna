@@ -1,5 +1,6 @@
 {
   "noProducts": "No se encontraron productos",
+  "inventory": "Inventario",
   "createFirst": "Crea tu primer producto para comenzar",
   "product": "Producto",
   "name": "Nombre del Producto",
@@ -18,5 +19,6 @@
   "createNew": "Crear Nuevo Producto",
   "update": "Actualizar Producto",
   "edit": "Editar Producto",
-  "manageInventory": "Gestiona tu inventario de productos"
+  "manageInventory": "Gestiona tu inventario de productos",
+  "scrollHint": "Desliza horizontalmente para ver más columnas"
 }

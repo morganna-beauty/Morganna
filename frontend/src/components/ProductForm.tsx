@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { Product, CreateProductRequest } from '@/types';
+import { CreateProductRequest } from '@/types';
 import { useI18n } from '@/hooks/useI18n';
 import ProductFormProps from '@/interface/ProductForm';
 
