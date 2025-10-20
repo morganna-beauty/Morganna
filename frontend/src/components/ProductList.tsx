@@ -1,18 +1,11 @@
 'use client';
 
-import { useCallback, useMemo } from 'react';
-import { Product } from '@/types';
+import { useMemo } from 'react';
 import { formatCurrency, formatDate } from '@/lib';
 import { useI18n } from '@/hooks/useI18n';
+import ProductListProps from '@/interface/ProductList';
 import { useIsDesktop } from '@/hooks/useResponsive';
 import { HiPencil, HiTrash } from 'react-icons/hi';
-
-interface ProductListProps {
-  products: Product[];
-  onEdit?: (product: Product) => void;
-  onDelete?: (id: number) => void;
-  loading?: boolean;
-}
 
 export const ProductList = ({ products, onEdit, onDelete, loading }: ProductListProps) => {
   const { t } = useI18n();
@@ -37,7 +30,7 @@ export const ProductList = ({ products, onEdit, onDelete, loading }: ProductList
     ),
     [t]
   );
-
+  
   if (loading) {
     return loadingComponent;
   }
@@ -48,7 +41,6 @@ export const ProductList = ({ products, onEdit, onDelete, loading }: ProductList
 
   return (
     <div className="bg-white shadow-sm rounded-lg overflow-hidden">
-      {/* Mobile/Tablet: Show scroll hint */}
       {!isDesktop && (
         <div className="bg-blue-50 border-b border-blue-200 px-4 py-2 text-xs text-blue-700 flex items-center justify-between">
           <span>💡 {t('product.scrollHint')}</span>
@@ -56,8 +48,6 @@ export const ProductList = ({ products, onEdit, onDelete, loading }: ProductList
           <span className="text-blue-500">&larr;&rarr;</span>
         </div>
       )}
-
-      {/* Horizontal scroll container for mobile/tablet */}
 
       <div
         className={`${!isDesktop ? 'overflow-x-auto pb-1' : ''}`}
@@ -108,6 +98,7 @@ export const ProductList = ({ products, onEdit, onDelete, loading }: ProductList
                         {product.description}
                       </div>
                     )}
+
                   </div>
                 </td>
 
