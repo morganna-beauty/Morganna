@@ -33,9 +33,11 @@ function ProductCard({ title, description, imageSrc }: ProductCardProps) {
           {title}
         </h3>
 
-        <p className="font-roboto font-medium text-base leading-6 tracking-[0.15px] text-[#808080] w-full">
-          {description}
-        </p>
+        {description && (
+          <p className="font-roboto font-medium text-base leading-6 tracking-[0.15px] text-[#808080] w-full">
+            {description}
+          </p>
+        )}
       </div>
     </div>
   );

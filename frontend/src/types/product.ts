@@ -1,15 +1,16 @@
 export interface Product {
   id: number;
-  name: string;
+  title: string;
   description?: string;
   price: number;
   stock: number;
   createdAt: string;
   updatedAt: string;
+  imageSrc?: string;
 }
 
 export interface CreateProductRequest {
-  name: string;
+  title: string;
   description?: string;
   price: number;
   stock?: number;
