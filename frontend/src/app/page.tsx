@@ -5,7 +5,7 @@ import HeroSection from '@/components/HeroSection';
 import productsData from '@/data/products.json';
 import { Product } from '@/types';
 
-const products: Product[] = productsData;
+const products = productsData as Product[];
 
 function HomePage() {
   return (
@@ -17,7 +17,6 @@ function HomePage() {
       <DiagnosisSection />
 
       <Footer />
-
     </>
   );
 }

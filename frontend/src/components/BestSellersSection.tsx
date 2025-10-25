@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import ProductCard from '@/components/ProductCard';
 import { useI18n } from '@/hooks/useI18n';
 import { Product } from '@/types';
+import BestSellersCard from './BestSellersCard';
 
 interface Props {
   products: Product[];
@@ -38,11 +38,7 @@ const BestSellersSection = ({products}: Props) => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 w-full mx-auto transition-all duration-500">
         {visibleProducts.map((product) => (
           <div key={product.id} className="w-full max-w-[400px] mx-auto">
-            <ProductCard
-              title={product.title || ''}
-              description={product?.description || ''}
-              imageSrc={product.imageSrc || ''}
-            />
+            <BestSellersCard product={product} />
           </div>
         ))}
       </div>

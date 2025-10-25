@@ -1,46 +1,42 @@
-import ProductCardProps from "@/interface/ProductCard";
-import Image from "next/image";
+import { Product } from '@/types';
+import Image from 'next/image';
 
-function ProductCard({ title, description, imageSrc }: ProductCardProps) {
+interface ProductCardProps {
+  product: Product;
+}
+
+const ProductCard = ({ product }: ProductCardProps) => {
   return (
-    <div
-      className="
-        flex flex-col justify-center items-start gap-6
-        w-full max-w-[400px] h-auto
-      "
-    >
-      <div
-        className="
-          flex flex-row items-start gap-[10px]
-          w-full h-[611px] bg-[#E8E8E8] rounded-2xl
-          md:h-[500px]
-          lg:h-[611px]
-        "
-      >
-        {imageSrc && (
+    <div className="flex flex-col justify-between items-start w-full max-w-[300px] h-[420px] rounded-2xl overflow-hidden mx-auto sm:mx-0">
+      <div className="w-full h-[300px] bg-[#F2F2F2] rounded-2xl overflow-hidden flex justify-center items-center">
+        {product.imageSrc ? (
           <Image
-            src={imageSrc}
-            alt={title}
-            className="w-full h-full object-cover rounded-2xl"
-            width={400}
-            height={611}
+            src={product.imageSrc}
+            alt={product.title}
+            width={300}
+            height={300}
+            className="w-full h-full object-cover object-center"
           />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">
+          
+          </div>
         )}
       </div>
 
-      <div className="flex flex-col justify-center items-start gap-2 w-full lg:items-center">
-        <h3 className="font-roboto font-medium text-[22px] leading-[28px] text-black w-full">
-          {title}
+      <div className="flex flex-col justify-start items-start gap-2 p-3 w-full">
+        <h3 className="font-roboto font-medium text-lg sm:text-xl text-black w-full line-clamp-2">
+          {product.title}
         </h3>
 
-        {description && (
-          <p className="font-roboto font-medium text-base leading-6 tracking-[0.15px] text-[#808080] w-full">
-            {description}
+        {product.description && (
+          <p className="font-roboto text-sm text-[#808080] line-clamp-3 w-full">
+            {product.description}
           </p>
         )}
       </div>
     </div>
   );
-}
+};
 
 export default ProductCard;

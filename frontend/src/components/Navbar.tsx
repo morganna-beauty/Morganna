@@ -47,14 +47,12 @@ export const Navbar = () => {
       <nav className={`bg-white h-[100px] shadow-[0px_1px_2px_rgba(0,0,0,0.3),0px_1px_3px_1px_rgba(0,0,0,0.15)] relative z-40 ${roboto.className}`}>
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-[60px] h-full">
           <div className="flex items-center justify-between h-full">
-            {/* Logo */}
             <div className="flex items-center">
               <Link href="/" className="flex items-center h-[54px] w-auto max-w-[233.28px] transition-opacity hover:opacity-80" aria-label={t('navbar.brand')}>
                 <Image src={logo} alt="Logo" className="h-full w-auto" />
               </Link>
             </div>
 
-            {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-8 ml-8">
               {NAV_LINKS.map((link) => (
                 <Link
@@ -67,7 +65,6 @@ export const Navbar = () => {
               ))}
             </div>
 
-            {/* Desktop Right Actions */}
             <div className="hidden md:flex items-center gap-2 ml-auto">
               <button type="button" className="flex items-center justify-center w-12 h-12 rounded-full hover:bg-gray-100 transition-colors" aria-label="Search">
                 <IoSearchSharp size={24} />
@@ -86,7 +83,6 @@ export const Navbar = () => {
               </div>
             </div>
 
-            {/* Mobile/Tablet Right Actions */}
             <div className="flex md:hidden items-center gap-1 ml-auto">
               <button type="button" className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 transition-colors" aria-label="Search">
                 <IoSearchSharp size={20} />
@@ -110,15 +106,12 @@ export const Navbar = () => {
         </div>
       </nav>
 
-      {/* Mobile/Tablet Menu Overlay */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden" onClick={closeMobileMenu} />
       )}
 
-      {/* Mobile/Tablet Menu Drawer */}
       <div className={`fixed top-[100px] right-0 h-[calc(100vh-100px)] w-80 max-w-[90vw] bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-50 lg:hidden ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         <div className="flex flex-col h-full overflow-y-auto">
-          {/* Navigation Links */}
           <div className="flex-1 px-6 py-8">
             <div className="space-y-1">
               {NAV_LINKS.map((link) => (
@@ -134,7 +127,6 @@ export const Navbar = () => {
             </div>
           </div>
 
-          {/* Mobile Menu Footer */}
           <div className="px-6 py-6 border-t border-gray-200 bg-gray-50">
             <div className="flex items-center justify-between">
               <button type="button" className="flex items-center justify-center w-12 h-12 rounded-full hover:bg-gray-200 transition-colors" aria-label="User account" onClick={closeMobileMenu}>

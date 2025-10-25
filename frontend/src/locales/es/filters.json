@@ -1,0 +1,22 @@
+{
+    "title": "Todos los Productos",
+    "orderBy": "Ordenar por",
+    "notFound": "No se encontraron productos",
+    "filter": "Filtros",
+    "liso": "Liso",
+    "rizado": "Rizado",
+    "ondulado": "Ondulado",
+    "afro": "Afro",
+
+    "hairType": "Tipo de Cabello",
+    "concern": "Preocupación",
+    "marca": "Marca",
+
+    "cabelloSeco": "Cabello Seco",
+    "danoReparacion": "Daño y Reparación",
+    "controlFriz": "Control de Friz",
+    "volumen": "Volumen",
+
+    "marcaA": "Marca A",
+    "marcaB": "Marca B"
+}
