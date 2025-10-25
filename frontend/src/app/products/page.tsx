@@ -26,7 +26,7 @@ function ProductsPage() {
   const [showFilters, setShowFilters] = useState(false);
 
   return (
-    <section className="relative flex flex-col lg:flex-row justify-center lg:justify-between items-start px-5 md:px-8 lg:px-[60px] py-8 md:py-12 lg:py-[60px] gap-6 md:gap-8 w-full min-h-screen mt-16">
+    <section className="relative flex flex-col lg:flex-row justify-center lg:justify-between items-start px-5 md:px-8 lg:px-[60px] py-8 md:py-12 lg:py-[60px] gap-6 md:gap-8 w-full min-h-screen mt-[10px]">
       {/* Sidebar visible solo en escritorio */}
       <div className="hidden lg:block">
         <FilterSidebar
