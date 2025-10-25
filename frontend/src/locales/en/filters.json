@@ -1,0 +1,22 @@
+{
+    "title": "All Products",
+    "orderBy": "Sort by",
+    "notFound": "No products found",
+    "filter": "Filters",
+    "liso": "Straight",
+    "rizado": "Curly",
+    "ondulado": "Wavy",
+    "afro": "Afro",
+
+    "hairType": "Hair Type",
+    "concern": "Concern",
+    "marca": "Brand",
+
+    "cabelloSeco": "Dry Hair",
+    "danoReparacion": "Damage & Repair",
+    "controlFriz": "Frizz Control",
+    "volumen": "Volume",
+
+    "marcaA": "Brand A",
+    "marcaB": "Brand B"
+}

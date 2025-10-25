@@ -1,0 +1,97 @@
+'use client';
+
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import productsData from '@/data/products.json';
+import { Product } from '@/types';
+import FilterSidebar from '@/components/FilterSidebar';
+import ProductGrid from '@/components/ProductGrid';
+import { useFilteredProducts } from '@/hooks/useFilteredProducts';
+
+const products = productsData as Product[];
+
+function ProductsPage() {
+  const {
+    sortedProducts,
+    selectedHairType,
+    selectedConcern,
+    selectedBrand,
+    sortBy,
+    setSelectedHairType,
+    setSelectedConcern,
+    setSelectedBrand,
+    setSortBy,
+  } = useFilteredProducts(products);
+
+  const [showFilters, setShowFilters] = useState(false);
+
+  return (
+    <section className="relative flex flex-col lg:flex-row justify-center lg:justify-between items-start px-5 md:px-8 lg:px-[60px] py-8 md:py-12 lg:py-[60px] gap-6 md:gap-8 w-full min-h-screen mt-[10px]">
+      {/* Sidebar visible solo en escritorio */}
+      <div className="hidden lg:block">
+        <FilterSidebar
+          selectedHairType={selectedHairType}
+          selectedConcern={selectedConcern}
+          selectedBrand={selectedBrand}
+          onHairTypeChange={setSelectedHairType}
+          onConcernChange={setSelectedConcern}
+          onBrandChange={setSelectedBrand}
+        />
+      </div>
+
+      {/* Grid de productos */}
+      <ProductGrid
+        products={sortedProducts}
+        sortBy={sortBy}
+        onSortChange={setSortBy}
+        showFilters={showFilters}
+        onToggleFilters={() => setShowFilters(!showFilters)}
+      />
+
+      {/* Panel de filtros móvil */}
+      <AnimatePresence>
+        {showFilters && (
+          <>
+            <motion.div
+              className="fixed inset-0 bg-black/40 z-40"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowFilters(false)}
+            />
+
+            <motion.aside
+              className="fixed top-0 left-0 h-full w-[85%] sm:w-[360px] bg-white z-50 shadow-lg overflow-y-auto p-6"
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', stiffness: 200, damping: 24 }}
+            >
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-medium text-black">Filtros</h2>
+                
+                <button
+                  onClick={() => setShowFilters(false)}
+                  className="text-sm text-gray-500 hover:text-black transition"
+                >
+                  Cerrar ✕
+                </button>
+              </div>
+
+              <FilterSidebar
+                selectedHairType={selectedHairType}
+                selectedConcern={selectedConcern}
+                selectedBrand={selectedBrand}
+                onHairTypeChange={setSelectedHairType}
+                onConcernChange={setSelectedConcern}
+                onBrandChange={setSelectedBrand}
+              />
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
+    </section>
+  );
+}
+
+export default ProductsPage;

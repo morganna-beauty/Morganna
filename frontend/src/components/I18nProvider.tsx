@@ -10,6 +10,7 @@ import enHero from '../locales/en/hero.json';
 import enBestSellers from '../locales/en/bestsellers.json';
 import enRoutine from '../locales/en/routine.json';
 import enFooter from '../locales/en/footer.json';
+import enFilter from '../locales/en/filters.json';
 import esCommon from '../locales/es/common.json';
 import esProduct from '../locales/es/product.json';
 import esNavbar from '../locales/es/navbar.json';
@@ -17,7 +18,7 @@ import esHero from '../locales/es/hero.json';
 import esBestSellers from '../locales/es/bestsellers.json';
 import esRoutine from '../locales/es/routine.json';
 import esFooter from '../locales/es/footer.json';
-
+import esFilters from '../locales/es/filters.json';
 
 type TranslationValue = string | { [key: string]: TranslationValue };
 
@@ -39,7 +40,8 @@ const TRANSLATIONS: TranslationsType = {
     hero: enHero,
     bestsellers: enBestSellers,
     routine: enRoutine,
-    footer: enFooter
+    footer: enFooter,
+    filters: enFilter
   },
   es: {
     common: esCommon,
@@ -48,7 +50,8 @@ const TRANSLATIONS: TranslationsType = {
     hero: esHero,
     bestsellers: esBestSellers,
     routine: esRoutine,
-    footer: esFooter
+    footer: esFooter,
+    filters: esFilters
   },
 };
 

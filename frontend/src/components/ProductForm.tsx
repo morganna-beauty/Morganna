@@ -9,7 +9,7 @@ import ProductFormProps from '@/interface/ProductForm';
 export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: ProductFormProps) => {
   const { t } = useI18n();
   const [formData, setFormData] = useState<CreateProductRequest>({
-    name: product?.name || '',
+    title: product?.title || '',
     description: product?.description || '',
     price: product?.price || 0,
     stock: product?.stock ?? 0,
@@ -20,7 +20,7 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
   const validateForm = useCallback(() => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.name.trim()) {
+    if (!formData.title.trim()) {
       newErrors.name = t('product.nameRequired');
     }
 
@@ -35,7 +35,7 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
     setErrors(newErrors);
 
     return Object.keys(newErrors).length === 0;
-  }, [formData.name, formData.price, formData.stock, t]);
+  }, [formData.title, formData.price, formData.stock, t]);
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -89,7 +89,7 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
             type="text"
             id="name"
             name="name"
-            value={formData.name}
+            value={formData.title}
             onChange={handleChange}
             className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 ${
               errors.name ? 'border-red-500' : 'border-gray-300'
