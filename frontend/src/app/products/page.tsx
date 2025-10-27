@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import productsData from '@/data/products.json';
 import { Product } from '@/types';
@@ -25,9 +25,16 @@ function ProductsPage() {
 
   const [showFilters, setShowFilters] = useState(false);
 
+  const handleToggleFilters = useCallback(() => {
+    setShowFilters((prev) => !prev);
+  }, []);
+
+  const handleCloseFilters = useCallback(() => {
+    setShowFilters(false);
+  }, []);
+
   return (
-    <section className="relative flex flex-col lg:flex-row justify-center lg:justify-between items-start px-5 md:px-8 lg:px-[60px] py-8 md:py-12 lg:py-[60px] gap-6 md:gap-8 w-full min-h-screen mt-[10px]">
-      {/* Sidebar visible solo en escritorio */}
+    <section className="relative flex flex-col lg:flex-row justify-center items-start px-5 md:px-8 lg:px-[60px] py-8 md:py-12 lg:py-[60px] gap-6 md:gap-8 w-full min-h-screen mt-[10px]">
       <div className="hidden lg:block">
         <FilterSidebar
           selectedHairType={selectedHairType}
@@ -39,16 +46,14 @@ function ProductsPage() {
         />
       </div>
 
-      {/* Grid de productos */}
       <ProductGrid
         products={sortedProducts}
         sortBy={sortBy}
         onSortChange={setSortBy}
         showFilters={showFilters}
-        onToggleFilters={() => setShowFilters(!showFilters)}
+        onToggleFilters={handleToggleFilters}
       />
 
-      {/* Panel de filtros móvil */}
       <AnimatePresence>
         {showFilters && (
           <>
@@ -57,7 +62,7 @@ function ProductsPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setShowFilters(false)}
+              onClick={handleCloseFilters}
             />
 
             <motion.aside
@@ -69,9 +74,9 @@ function ProductsPage() {
             >
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-medium text-black">Filtros</h2>
-                
+
                 <button
-                  onClick={() => setShowFilters(false)}
+                  onClick={handleCloseFilters}
                   className="text-sm text-gray-500 hover:text-black transition"
                 >
                   Cerrar ✕
