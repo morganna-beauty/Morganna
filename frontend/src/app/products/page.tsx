@@ -34,7 +34,9 @@ function ProductsPage() {
   }, []);
 
   return (
-    <section className="relative flex flex-col lg:flex-row justify-center items-start px-5 md:px-8 lg:px-[60px] py-8 md:py-12 lg:py-[60px] gap-6 md:gap-8 w-full min-h-screen mt-[10px]">
+    <section className="relative flex flex-col lg:flex-row justify-start lg:justify-between items-start px-4 sm:px-6 lg:px-[60px] pt-8 md:pt-12 lg:pt-[60px] pb-8 md:pb-12 lg:pb-[60px] gap-6 md:gap-8 w-full min-h-screen max-w-[1440px] mx-auto">
+      {' '}
+
       <div className="hidden lg:block">
         <FilterSidebar
           selectedHairType={selectedHairType}
@@ -53,7 +55,7 @@ function ProductsPage() {
         showFilters={showFilters}
         onToggleFilters={handleToggleFilters}
       />
-
+      
       <AnimatePresence>
         {showFilters && (
           <>

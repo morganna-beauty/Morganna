@@ -72,14 +72,6 @@ const ProductGrid = ({
           </div>
         </div>
 
-        <button
-          onClick={onToggleFilters}
-          className="sm:hidden p-2 rounded-full hover:bg-gray-100 active:scale-95 transition"
-          title="Mostrar filtros"
-        >
-          <FilterIcon className="w-5 h-5 text-[#808080]" />
-        </button>
-
         <div className="hidden sm:flex flex-row items-center gap-3 w-full sm:w-auto">
           <button
             onClick={onToggleFilters}
