@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import FilterSection from "@/components/FilterSection";
 import { useI18n } from "@/hooks";
 
@@ -18,27 +19,26 @@ const FilterSidebar = ({
   onConcernChange,
   onBrandChange,
 }: FilterSidebarProps) => {
+  const { t } = useI18n();
 
-    const { t } = useI18n();
-  
-  const hairTypeOptions = [
+  const hairTypeOptions = useMemo(() => [
     { id: 'liso', label: 'filters.liso' },
     { id: 'ondulado', label: 'filters.ondulado' },
     { id: 'rizado', label: 'filters.rizado' },
     { id: 'afro', label: 'filters.afro' },
-  ];
+  ], []);
 
-  const concernOptions = [
+  const concernOptions = useMemo(() => [
     { id: 'cabelloSeco', label: 'filters.cabelloSeco' },
     { id: 'danoReparacion', label: 'filters.danoReparacion' },
     { id: 'controlFriz', label: 'filters.controlFriz' },
     { id: 'volumen', label: 'filters.volumen' },
-  ];
+  ], []);
 
-  const brandOptions = [
+  const brandOptions = useMemo(() => [
     { id: 'marcaA', label: 'filters.marcaA' },
     { id: 'marcaB', label: 'filters.marcaB' },
-  ];
+  ], []);
 
   return (
     <aside className="flex flex-col justify-start items-start p-0 gap-6 md:gap-8 w-full lg:w-[169px] bg-white lg:bg-transparent rounded-lg lg:rounded-none lg:p-0">
