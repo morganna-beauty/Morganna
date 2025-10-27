@@ -30,7 +30,7 @@ export const ProductList = ({ products, onEdit, onDelete, loading }: ProductList
     ),
     [t]
   );
-  
+
   if (loading) {
     return loadingComponent;
   }
@@ -60,12 +60,16 @@ export const ProductList = ({ products, onEdit, onDelete, loading }: ProductList
         }}
       >
         <table
-          className={`divide-y divide-gray-200 ${isDesktop ? 'min-w-full' : 'min-w-[700px] w-full'}`}
+          className={`divide-y divide-gray-200 ${isDesktop ? 'min-w-full' : 'min-w-[900px] w-full'}`}
         >
           <thead className="bg-gray-50">
             <tr>
               <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 {t('product.product')}
+              </th>
+
+              <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Tipo/Preocupación
               </th>
 
               <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -90,15 +94,51 @@ export const ProductList = ({ products, onEdit, onDelete, loading }: ProductList
             {products.map((product) => (
               <tr key={product.id} className="hover:bg-gray-50 transition-colors">
                 <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
-                  <div>
-                    <div className="text-sm font-medium text-gray-900">{product.title}</div>
-
-                    {product.description && (
-                      <div className="text-sm text-gray-500 truncate max-w-xs">
-                        {product.description}
+                  <div className="flex items-center">
+                    {product.imageSrc && (
+                      <div className="flex-shrink-0 h-10 w-10">
+                        <img
+                          className="h-10 w-10 rounded-full object-cover"
+                          src={product.imageSrc}
+                          alt={product.title}
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.display = 'none';
+                          }}
+                        />
                       </div>
                     )}
 
+                    <div className={product.imageSrc ? 'ml-4' : ''}>
+                      <div className="text-sm font-medium text-gray-900">{product.title}</div>
+
+                      {product.brand && (
+                        <div className="text-sm text-gray-500">{product.brand}</div>
+                      )}
+
+                      {product.description && (
+                        <div className="text-sm text-gray-500 truncate max-w-xs">
+                          {product.description}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </td>
+
+                <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm text-gray-900">
+                    {product.hairType && (
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mb-1">
+                        {product.hairType.charAt(0).toUpperCase() + product.hairType.slice(1)}
+                      </span>
+                    )}
+
+                    {product.concern && (
+                      <div>
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                          {product.concern}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </td>
 

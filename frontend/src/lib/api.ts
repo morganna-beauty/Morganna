@@ -1,5 +1,11 @@
 import axios from 'axios';
-import { Product, CreateProductRequest, UpdateProductRequest } from '@/types/product';
+import {
+  Product,
+  CreateProductRequest,
+  UpdateProductRequest,
+  FilterProductsRequest,
+  FilterOptions,
+} from '@/types/product';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 
@@ -11,8 +17,15 @@ const api = axios.create({
 });
 
 export const productsApi = {
-  getProducts: async (): Promise<Product[]> => {
-    const response = await api.get<Product[]>('/products');
+  getProducts: async (filters?: FilterProductsRequest): Promise<Product[]> => {
+    const params = new URLSearchParams();
+
+    if (filters?.hairType) params.append('hairType', filters.hairType);
+    if (filters?.concern) params.append('concern', filters.concern);
+    if (filters?.brand) params.append('brand', filters.brand);
+    if (filters?.search) params.append('search', filters.search);
+
+    const response = await api.get<Product[]>(`/products?${params.toString()}`);
 
     return response.data;
   },
@@ -37,6 +50,12 @@ export const productsApi = {
 
   deleteProduct: async (id: number): Promise<void> => {
     await api.delete(`/products/${id}`);
+  },
+
+  getFilterOptions: async (): Promise<FilterOptions> => {
+    const response = await api.get<FilterOptions>('/products/filters/options');
+
+    return response.data;
   },
 };
 

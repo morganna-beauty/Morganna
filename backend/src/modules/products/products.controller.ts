@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   HttpStatus,
   HttpCode,
+  Query,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -16,10 +17,12 @@ import {
   ApiResponse,
   ApiParam,
   ApiBody,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { FilterProductsDto } from './dto/filter-products.dto';
 
 @ApiTags('products')
 @Controller('products')
@@ -37,13 +40,25 @@ export class ProductsController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all products' })
+  @ApiOperation({ summary: 'Get all products with optional filters' })
+  @ApiQuery({
+    name: 'hairType',
+    required: false,
+    enum: ['liso', 'ondulado', 'rizado', 'afro'],
+  })
+  @ApiQuery({
+    name: 'concern',
+    required: false,
+    enum: ['cabelloSeco', 'danoReparacion', 'controlFriz', 'volumen'],
+  })
+  @ApiQuery({ name: 'brand', required: false, type: String })
+  @ApiQuery({ name: 'search', required: false, type: String })
   @ApiResponse({
     status: 200,
     description: 'List of products retrieved successfully',
   })
-  findAll() {
-    return this.productsService.findAll();
+  findAll(@Query() filterDto: FilterProductsDto) {
+    return this.productsService.findAll(filterDto);
   }
 
   @Get(':id')
@@ -76,5 +91,23 @@ export class ProductsController {
   @ApiResponse({ status: 404, description: 'Product not found' })
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.productsService.remove(id);
+  }
+
+  @Get('filters/options')
+  @ApiOperation({ summary: 'Get available filter options' })
+  @ApiResponse({
+    status: 200,
+    description: 'Filter options retrieved successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        hairTypes: { type: 'array', items: { type: 'string' } },
+        concerns: { type: 'array', items: { type: 'string' } },
+        brands: { type: 'array', items: { type: 'string' } },
+      },
+    },
+  })
+  getFilterOptions() {
+    return this.productsService.getFilterOptions();
   }
 }

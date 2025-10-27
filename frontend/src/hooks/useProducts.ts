@@ -1,82 +1,114 @@
-import { useCallback, useMemo } from 'react'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { productsApi } from '@/lib'
-import { Product, CreateProductRequest, UpdateProductRequest } from '@/types'
-import { PRODUCTS_QUERY_KEY } from '@/lib/constants/queryKeys'
+import { useCallback, useMemo, useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { productsApi } from '@/lib';
+import {
+  Product,
+  CreateProductRequest,
+  UpdateProductRequest,
+  FilterProductsRequest,
+  FilterOptions,
+} from '@/types';
+import { PRODUCTS_QUERY_KEY } from '@/lib/constants/queryKeys';
 
 export function useProducts() {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
+  const [filters, setFilters] = useState<FilterProductsRequest>({});
 
-  const { data: products = [], isLoading, error } = useQuery<Product[], Error>({
-    queryKey: PRODUCTS_QUERY_KEY,
-    queryFn: productsApi.getProducts,
-  })
+  const {
+    data: products = [],
+    isLoading,
+    error,
+  } = useQuery<Product[], Error>({
+    queryKey: [...PRODUCTS_QUERY_KEY, filters],
+    queryFn: () => productsApi.getProducts(filters),
+  });
+
+  const { data: filterOptions } = useQuery<FilterOptions, Error>({
+    queryKey: ['products', 'filter-options'],
+    queryFn: productsApi.getFilterOptions,
+  });
+
+  const updateFilters = useCallback((newFilters: FilterProductsRequest) => {
+    setFilters(newFilters);
+  }, []);
+
+  const clearFilters = useCallback(() => {
+    setFilters({});
+  }, []);
 
   const createProduct = useCallback(
     async (newProductData: CreateProductRequest) => {
       try {
-        const newProduct = await productsApi.createProduct(newProductData)
+        const newProduct = await productsApi.createProduct(newProductData);
 
-        queryClient.setQueryData<Product[]>(PRODUCTS_QUERY_KEY, (currentProducts = []) => [
-          newProduct,
-          ...currentProducts,
-        ])
+        // Invalidate all product queries to refetch with current filters
+        queryClient.invalidateQueries({ queryKey: PRODUCTS_QUERY_KEY });
 
-        return newProduct
+        return newProduct;
       } catch (err) {
-        console.error('Error creating product:', err)
-        throw err
+        console.error('Error creating product:', err);
+        throw err;
       }
     },
     [queryClient]
-  )
+  );
 
   const updateProduct = useCallback(
     async (productId: number, updatedProductData: UpdateProductRequest) => {
       try {
-        const updatedProduct = await productsApi.updateProduct(productId, updatedProductData)
+        const updatedProduct = await productsApi.updateProduct(productId, updatedProductData);
 
-        queryClient.setQueryData<Product[]>(PRODUCTS_QUERY_KEY, (currentProducts = []) =>
-          currentProducts.map((product) =>
-            product.id === updatedProduct.id ? updatedProduct : product
-          )
-        )
+        queryClient.invalidateQueries({ queryKey: PRODUCTS_QUERY_KEY });
 
-        return updatedProduct
+        return updatedProduct;
       } catch (err) {
-        console.error('Error updating product:', err)
-        throw err
+        console.error('Error updating product:', err);
+        throw err;
       }
     },
     [queryClient]
-  )
+  );
 
   const deleteProduct = useCallback(
     async (productId: number) => {
       try {
-        await productsApi.deleteProduct(productId)
+        await productsApi.deleteProduct(productId);
 
-        queryClient.setQueryData<Product[]>(PRODUCTS_QUERY_KEY, (currentProducts = []) =>
-          currentProducts.filter((product) => product.id !== productId)
-        )
+        queryClient.invalidateQueries({ queryKey: PRODUCTS_QUERY_KEY });
       } catch (err) {
-        console.error('Error deleting product:', err)
-        throw err
+        console.error('Error deleting product:', err);
+        throw err;
       }
     },
     [queryClient]
-  )
+  );
 
   return useMemo(
     () => ({
       products,
       loading: isLoading,
       error,
+      filters,
+      filterOptions: filterOptions || { hairTypes: [], concerns: [], brands: [] },
+      updateFilters,
+      clearFilters,
       createProduct,
       updateProduct,
       deleteProduct,
-      refetch: () => queryClient.invalidateQueries({ queryKey: PRODUCTS_QUERY_KEY })
+      refetch: () => queryClient.invalidateQueries({ queryKey: PRODUCTS_QUERY_KEY }),
     }),
-    [products, isLoading, error, createProduct, updateProduct, deleteProduct, queryClient]
-  )
+    [
+      products,
+      isLoading,
+      error,
+      filters,
+      filterOptions,
+      updateFilters,
+      clearFilters,
+      createProduct,
+      updateProduct,
+      deleteProduct,
+      queryClient,
+    ]
+  );
 }

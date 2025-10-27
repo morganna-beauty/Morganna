@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { HairType, Concern } from '../enums/product.enums';
 
 @Entity('products')
 export class Product {
@@ -12,7 +13,7 @@ export class Product {
   id: number;
 
   @Column({ length: 255 })
-  name: string;
+  title: string;
 
   @Column('text', { nullable: true })
   description: string;
@@ -28,4 +29,24 @@ export class Product {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @Column({ length: 500, nullable: true })
+  imageSrc: string;
+
+  @Column({
+    type: 'enum',
+    enum: HairType,
+    nullable: true,
+  })
+  hairType: HairType;
+
+  @Column({
+    type: 'enum',
+    enum: Concern,
+    nullable: true,
+  })
+  concern: Concern;
+
+  @Column({ length: 100, nullable: true })
+  brand: string;
 }

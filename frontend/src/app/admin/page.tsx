@@ -4,12 +4,23 @@ import { useState, useCallback, useMemo } from 'react';
 import { useProducts } from '@/hooks';
 import { Product, CreateProductRequest } from '@/types';
 import { ProductForm, ProductList, Tooltip } from '@/components';
+import { ProductFilters } from '@/components/ProductFilters';
 import { useI18n } from '@/hooks/useI18n';
 import { HiPlus } from 'react-icons/hi';
 
 export default function AdminPage() {
   const { t } = useI18n();
-  const { products, loading, error, createProduct, updateProduct, deleteProduct } = useProducts();
+  const {
+    products,
+    loading,
+    error,
+    filters,
+    filterOptions,
+    updateFilters,
+    createProduct,
+    updateProduct,
+    deleteProduct,
+  } = useProducts();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
@@ -130,7 +141,13 @@ export default function AdminPage() {
         </div>
       )}
 
-      <div className="px-[60px]">
+      <div className="px-[60px] space-y-6">
+        <ProductFilters
+          filters={filters}
+          onFiltersChange={updateFilters}
+          filterOptions={filterOptions}
+        />
+
         <ProductList
           products={products}
           onEdit={handleEditProduct}
