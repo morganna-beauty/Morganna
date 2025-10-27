@@ -7,6 +7,9 @@ export interface Product {
   createdAt: string;
   updatedAt: string;
   imageSrc?: string;
+  hairType?: 'liso' | 'ondulado' | 'rizado' | 'afro';
+  concern?: 'cabelloSeco' | 'danoReparacion' | 'controlFriz' | 'volumen';
+  brand?: string;
 }
 
 export interface CreateProductRequest {
@@ -14,6 +17,9 @@ export interface CreateProductRequest {
   description?: string;
   price: number;
   stock?: number;
+  hairType?: string;
+  concern?: string;
+  brand?: string;
 }
 
 export interface UpdateProductRequest extends Partial<CreateProductRequest> {}
