@@ -1,7 +1,4 @@
-import BestSellersSection from '@/components/BestSellersSection';
-import DiagnosisSection from '@/components/DiagnosisSection';
-import Footer from '@/components/Footer';
-import HeroSection from '@/components/HeroSection';
+import { HeroSection, Footer, DiagnosisSection, BestSellersSection } from '@/components';
 import productsData from '@/data/products.json';
 import { Product } from '@/types';
 

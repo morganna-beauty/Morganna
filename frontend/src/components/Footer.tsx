@@ -4,7 +4,7 @@ import FOOTER_LINKS from '@/data/Footer';
 import { useI18n } from '@/hooks';
 import Link from 'next/link';
 
-const Footer = () => {
+export const Footer = () => {
   const { t } = useI18n();
 
   return (
@@ -51,5 +51,3 @@ const Footer = () => {
     </footer>
   );
 };
-
-export default Footer;

@@ -9,7 +9,7 @@ interface Props {
   products: Product[];
 }
 
-const BestSellersSection = ({products}: Props) => {
+export const BestSellersSection = ({ products }: Props) => {
   const { t } = useI18n();
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -50,9 +50,7 @@ const BestSellersSection = ({products}: Props) => {
               key={index}
               onClick={() => setCurrentIndex(index * 3)}
               className={`w-2 h-2 rounded-full transition-all ${
-                currentIndex === index * 3
-                  ? 'bg-black w-8'
-                  : 'bg-gray-300 hover:bg-gray-400'
+                currentIndex === index * 3 ? 'bg-black w-8' : 'bg-gray-300 hover:bg-gray-400'
               }`}
               aria-label={`Ver grupo ${index + 1}`}
             />
@@ -62,5 +60,3 @@ const BestSellersSection = ({products}: Props) => {
     </section>
   );
 };
-
-export default BestSellersSection;

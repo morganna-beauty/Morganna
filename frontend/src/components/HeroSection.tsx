@@ -3,7 +3,7 @@
 import { useI18n } from '@/hooks/useI18n';
 import Star from '@/Icons/Star';
 
-const HeroSection = () => {
+export const HeroSection = () => {
   const { t } = useI18n();
 
   return (
@@ -40,5 +40,3 @@ const HeroSection = () => {
     </section>
   );
 };
-
-export default HeroSection;

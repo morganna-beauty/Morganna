@@ -3,11 +3,11 @@
 import Star from '@/Icons/Star';
 import { useI18n } from '@/hooks/useI18n';
 
-const DiagnosisSection = () => {
+export const DiagnosisSection = () => {
   const { t } = useI18n();
 
   return (
-    <section 
+    <section
       className="flex flex-col items-center px-5 md:px-12 lg:px-[60px] py-[60px] md:py-20 lg:py-24 gap-[10px] lg:gap-16 w-full h-[924px] md:min-h-[500px] lg:h-[424px] bg-cover bg-right md:bg-center bg-no-repeat"
       style={{
         backgroundImage: "url('/routine_desktop.png')",
@@ -24,12 +24,12 @@ const DiagnosisSection = () => {
           </p>
         </div>
 
-        <button 
-          type="button" 
+        <button
+          type="button"
           className="flex flex-row justify-center items-center w-[203px] h-12 hover:opacity-90 transition-opacity relative top-[30px]"
         >
           <div className="flex flex-row justify-center items-center px-4 py-[10px] gap-2 w-[203px] h-10 bg-[#215E6B] rounded-[100px]">
-            <Star className="w-5 h-5 text-white flex-none"/>
+            <Star className="w-5 h-5 text-white flex-none" />
 
             <span className="font-roboto font-medium text-sm leading-5 tracking-[0.1px] text-white flex-none">
               {t('routine.button')}
@@ -40,5 +40,3 @@ const DiagnosisSection = () => {
     </section>
   );
 };
-
-export default DiagnosisSection;
