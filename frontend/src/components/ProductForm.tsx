@@ -3,8 +3,8 @@
 import { useState, useCallback } from 'react';
 import { CreateProductRequest } from '@/types';
 import { useI18n } from '@/hooks/useI18n';
+import { ImageUpload } from './ImageUpload';
 import ProductFormProps from '@/interface/ProductForm';
-
 
 export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: ProductFormProps) => {
   const { t } = useI18n();
@@ -13,6 +13,10 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
     description: product?.description || '',
     price: product?.price || 0,
     stock: product?.stock ?? 0,
+    imageSrc: product?.imageSrc,
+    hairType: product?.hairType,
+    concern: product?.concern,
+    brand: product?.brand || '',
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -58,7 +62,7 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
   );
 
   const handleChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
       const { name, value } = e.target;
 
       setFormData((prev) => ({
@@ -72,6 +76,13 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
     },
     [errors]
   );
+
+  const handleImageSelect = useCallback((imageUrl: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      imageSrc: imageUrl,
+    }));
+  }, []);
 
   return (
     <div className="bg-white shadow-sm rounded-lg p-6">
@@ -87,8 +98,8 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
 
           <input
             type="text"
-            id="name"
-            name="name"
+            id="title"
+            name="title"
             value={formData.title}
             onChange={handleChange}
             className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 ${
@@ -158,6 +169,86 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
             />
 
             {errors.stock && <p className="mt-1 text-sm text-red-600">{errors.stock}</p>}
+          </div>
+        </div>
+
+        {/* Imagen del producto */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Imagen del producto
+          </label>
+
+          <ImageUpload
+            onImageSelect={handleImageSelect}
+            currentImage={formData.imageSrc}
+            className="w-full"
+          />
+        </div>
+
+        {/* Campos adicionales */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div>
+            <label htmlFor="hairType" className="block text-sm font-medium text-gray-700 mb-1">
+              Tipo de cabello
+            </label>
+
+            <select
+              id="hairType"
+              name="hairType"
+              value={formData.hairType || ''}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+            >
+              <option value="">Seleccionar tipo</option>
+
+              <option value="liso">Liso</option>
+
+              <option value="ondulado">Ondulado</option>
+
+              <option value="rizado">Rizado</option>
+
+              <option value="afro">Afro</option>
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="concern" className="block text-sm font-medium text-gray-700 mb-1">
+              Preocupación
+            </label>
+
+            <select
+              id="concern"
+              name="concern"
+              value={formData.concern || ''}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+            >
+              <option value="">Seleccionar preocupación</option>
+
+              <option value="cabelloSeco">Cabello Seco</option>
+
+              <option value="danoReparacion">Daño y Reparación</option>
+
+              <option value="controlFriz">Control de Friz</option>
+
+              <option value="volumen">Volumen</option>
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="brand" className="block text-sm font-medium text-gray-700 mb-1">
+              Marca
+            </label>
+
+            <input
+              type="text"
+              id="brand"
+              name="brand"
+              value={formData.brand || ''}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+              placeholder="Nombre de la marca"
+            />
           </div>
         </div>
 
