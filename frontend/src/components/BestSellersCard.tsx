@@ -1,11 +1,12 @@
 import { Product } from '@/types';
 import Image from 'next/image';
+import { memo } from 'react';
 
 interface BestSellersCardProps {
   product: Product;
 }
 
-const BestSellersCard = ({ product }: BestSellersCardProps) => {
+const BestSellersCard = memo(({ product }: BestSellersCardProps) => {
   return (
     <div className="flex flex-col justify-center items-start p-0 gap-6 w-[408px] h-[695px] flex-grow">
       <div className="flex flex-row items-start gap-[10px] w-[408px] h-[611px] bg-[#E8E8E8] rounded-2xl">
@@ -33,6 +34,8 @@ const BestSellersCard = ({ product }: BestSellersCardProps) => {
       </div>
     </div>
   );
-};
+});
+
+BestSellersCard.displayName = 'BestSellersCard';
 
 export default BestSellersCard;

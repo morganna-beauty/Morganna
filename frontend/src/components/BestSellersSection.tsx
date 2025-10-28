@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useI18n } from '@/hooks/useI18n';
 import { Product } from '@/types';
 import BestSellersCard from './BestSellersCard';
@@ -13,21 +13,26 @@ export const BestSellersSection = ({ products }: Props) => {
   const { t } = useI18n();
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  const updateIndex = useCallback(() => {
+    setCurrentIndex((prevIndex) => {
+      const maxIndex = products.length - 3;
+
+      return prevIndex >= maxIndex ? 0 : prevIndex + 3;
+    });
+  }, [products.length]);
+
   useEffect(() => {
     if (products.length <= 3) return;
 
-    const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => {
-        const maxIndex = products.length - 3;
-
-        return prevIndex >= maxIndex ? 0 : prevIndex + 3;
-      });
-    }, 5000);
+    const interval = setInterval(updateIndex, 5000);
 
     return () => clearInterval(interval);
-  }, [products.length]);
+  }, [products.length, updateIndex]);
 
-  const visibleProducts = products.slice(currentIndex, currentIndex + 3);
+  const visibleProducts = useMemo(
+    () => products.slice(currentIndex, currentIndex + 3),
+    [products, currentIndex]
+  );
 
   return (
     <section className="flex flex-col items-center px-5 md:px-12 lg:px-16 xl:px-[60px] py-24 gap-16 w-full overflow-x-hidden">

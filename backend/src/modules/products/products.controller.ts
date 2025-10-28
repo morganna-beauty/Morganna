@@ -40,7 +40,9 @@ export class ProductsController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all products with optional filters' })
+  @ApiOperation({
+    summary: 'Get all products with optional filters and sorting',
+  })
   @ApiQuery({
     name: 'hairType',
     required: false,
@@ -53,6 +55,18 @@ export class ProductsController {
   })
   @ApiQuery({ name: 'brand', required: false, type: String })
   @ApiQuery({ name: 'search', required: false, type: String })
+  @ApiQuery({
+    name: 'sortBy',
+    required: false,
+    enum: ['price', 'popularity'],
+    description: 'Sort products by field',
+  })
+  @ApiQuery({
+    name: 'order',
+    required: false,
+    enum: ['ASC', 'DESC'],
+    description: 'Sort order (ascending or descending)',
+  })
   @ApiResponse({
     status: 200,
     description: 'List of products retrieved successfully',

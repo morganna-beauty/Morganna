@@ -1,40 +1,58 @@
-import { useState, useMemo } from 'react';
-import { Product } from '@/types';
+import { useState, useMemo, useCallback, useEffect } from 'react';
+import { FilterProductsRequest, SortBy, Order, HairType, Concern } from '@/types';
+import { useProducts } from './useProducts';
 
-export function useFilteredProducts(products: Product[]) {
+export function useFilteredProducts() {
   const [selectedHairType, setSelectedHairType] = useState('');
   const [selectedConcern, setSelectedConcern] = useState('');
   const [selectedBrand, setSelectedBrand] = useState('');
   const [sortBy, setSortBy] = useState('default');
 
-  const filteredProducts = useMemo(() => {
-    return products.filter((product) => {
-      if (selectedHairType && product.hairType !== selectedHairType) return false;
-      if (selectedConcern && product.concern !== selectedConcern) return false;
-      if (selectedBrand && product.brand !== selectedBrand) return false;
+  const filters = useMemo(() => {
+    const filterRequest: FilterProductsRequest = {};
 
-      return true;
-    });
-  }, [products, selectedHairType, selectedConcern, selectedBrand]);
-
-  const sortedProducts = useMemo(() => {
-    const sorted = [...filteredProducts];
+    if (selectedHairType) filterRequest.hairType = selectedHairType as HairType;
+    if (selectedConcern) filterRequest.concern = selectedConcern as Concern;
+    if (selectedBrand) filterRequest.brand = selectedBrand;
 
     switch (sortBy) {
       case 'priceLowToHigh':
-        return sorted.sort((a, b) => a.price - b.price);
+        filterRequest.sortBy = 'price' as any;
+        filterRequest.order = 'ASC' as any;
+        break;
       case 'priceHighToLow':
-        return sorted.sort((a, b) => b.price - a.price);
-      case 'popularity':
-        return sorted.sort((a, b) => b.stock - a.stock);
+        filterRequest.sortBy = 'price' as any;
+        filterRequest.order = 'DESC' as any;
+        break;
+      case 'popularityDesc':
+        filterRequest.sortBy = 'popularity' as any;
+        filterRequest.order = 'DESC' as any;
+        break;
+      case 'popularityAsc':
+        filterRequest.sortBy = 'popularity' as any;
+        filterRequest.order = 'ASC' as any;
+        break;
       default:
-        return sorted;
+        // Default case - no sorting parameters (backend will use createdAt DESC)
+        break;
     }
-  }, [filteredProducts, sortBy]);
+
+    return filterRequest;
+  }, [selectedHairType, selectedConcern, selectedBrand, sortBy]);
+
+  // Use the products hook with dynamic filters
+  const { products, loading, error, filterOptions, updateFilters } = useProducts();
+
+  // Update filters whenever they change
+  useEffect(() => {
+    updateFilters(filters);
+  }, [filters, updateFilters]);
 
   return {
-    filteredProducts,
-    sortedProducts,
+    products,
+    loading,
+    error,
+    filterOptions,
 
     selectedHairType,
     selectedConcern,

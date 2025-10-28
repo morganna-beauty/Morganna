@@ -2,6 +2,16 @@ import { IsOptional, IsEnum, IsString } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { HairType, Concern } from '../enums/product.enums';
 
+export enum SortBy {
+  PRICE = 'price',
+  POPULARITY = 'popularity',
+}
+
+export enum Order {
+  ASC = 'ASC',
+  DESC = 'DESC',
+}
+
 export class FilterProductsDto {
   @ApiPropertyOptional({
     description: 'Filter by hair type',
@@ -36,4 +46,22 @@ export class FilterProductsDto {
   @IsOptional()
   @IsString()
   search?: string;
+
+  @ApiPropertyOptional({
+    description: 'Sort products by field',
+    enum: SortBy,
+    example: SortBy.PRICE,
+  })
+  @IsOptional()
+  @IsEnum(SortBy)
+  sortBy?: SortBy;
+
+  @ApiPropertyOptional({
+    description: 'Sort order (ascending or descending)',
+    enum: Order,
+    example: Order.ASC,
+  })
+  @IsOptional()
+  @IsEnum(Order)
+  order?: Order;
 }

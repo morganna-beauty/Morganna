@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { FilterProductsDto } from './dto/filter-products.dto';
+import { FilterProductsDto, SortBy } from './dto/filter-products.dto';
 
 @Injectable()
 export class ProductsService {
@@ -47,7 +47,22 @@ export class ProductsService {
       );
     }
 
-    return await queryBuilder.orderBy('product.createdAt', 'DESC').getMany();
+    if (filterDto?.sortBy && filterDto?.order) {
+      switch (filterDto.sortBy) {
+        case SortBy.PRICE:
+          queryBuilder.orderBy('product.price', filterDto.order);
+          break;
+        case SortBy.POPULARITY:
+          queryBuilder.orderBy('product.stock', filterDto.order);
+          break;
+        default:
+          queryBuilder.orderBy('product.createdAt', 'DESC');
+      }
+    } else {
+      queryBuilder.orderBy('product.createdAt', 'DESC');
+    }
+
+    return await queryBuilder.getMany();
   }
 
   async findOne(id: number): Promise<Product> {

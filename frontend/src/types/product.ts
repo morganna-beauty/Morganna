@@ -12,6 +12,16 @@ export enum Concern {
   VOLUMEN = 'volumen',
 }
 
+export enum SortBy {
+  PRICE = 'price',
+  POPULARITY = 'popularity',
+}
+
+export enum Order {
+  ASC = 'ASC',
+  DESC = 'DESC',
+}
+
 export interface Product {
   id: number;
   title: string;
@@ -44,6 +54,8 @@ export interface FilterProductsRequest {
   concern?: Concern;
   brand?: string;
   search?: string;
+  sortBy?: SortBy;
+  order?: Order;
 }
 
 export interface FilterOptions {

@@ -1,9 +1,9 @@
-import { useMemo, useCallback } from "react";
-import { Product } from "@/types";
-import ProductCard from "./ProductCard";
-import FilterIcon from "@/Icons/FilterIcon";
-import SortIcon from "@/Icons/SortIcon";
-import { useI18n } from "@/hooks";
+import { useMemo, useCallback } from 'react';
+import { Product } from '@/types';
+import ProductCard from './ProductCard';
+import FilterIcon from '@/Icons/FilterIcon';
+import SortIcon from '@/Icons/SortIcon';
+import { useI18n } from '@/hooks';
 
 interface ProductGridProps {
   products: Product[];
@@ -30,7 +30,7 @@ const ProductGrid = ({
   );
 
   const handleFocusSort = useCallback(() => {
-    const select = document.getElementById("sortSelect");
+    const select = document.getElementById('sortSelect');
 
     if (select) select.focus();
   }, []);
@@ -41,7 +41,7 @@ const ProductGrid = ({
         products.map((product) => <ProductCard key={product.id} product={product} />)
       ) : (
         <div className="w-full text-center py-12">
-          <p className="font-roboto text-lg text-gray-500">{t("filters.notFound")}</p>
+          <p className="font-roboto text-lg text-gray-500">{t('filters.notFound')}</p>
         </div>
       ),
     [products, t]
@@ -52,7 +52,7 @@ const ProductGrid = ({
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0 w-full">
         <div className="flex flex-row justify-between items-center w-full sm:w-auto">
           <h2 className="font-roboto font-medium text-2xl sm:text-[28px] lg:text-[32px] leading-8 sm:leading-9 lg:leading-10 text-black">
-            {t("filters.title")}
+            {t('filters.title')}
           </h2>
 
           <div className="flex sm:hidden flex-row items-center gap-3">
@@ -82,7 +82,7 @@ const ProductGrid = ({
           </button>
 
           <span className="font-roboto font-medium text-xs sm:text-sm leading-5 tracking-[0.1px] text-[#808080] whitespace-nowrap flex items-center gap-2">
-            {t("filters.orderBy")}
+            {t('filters.orderBy')}
           </span>
 
           <select
@@ -91,13 +91,15 @@ const ProductGrid = ({
             onChange={handleSortChange}
             className="flex-1 sm:flex-none px-3 py-2 sm:py-3 w-full sm:w-[204px] h-10 sm:h-12 border border-[#757575] rounded-full font-roboto font-medium text-xs sm:text-sm leading-5 tracking-[0.1px] text-black cursor-pointer bg-white"
           >
-            <option value="default">Recomendados</option>
+            <option value="default">Más Recientes</option>
 
             <option value="priceLowToHigh">Precio: Bajo a Alto</option>
 
             <option value="priceHighToLow">Precio: Alto a Bajo</option>
 
-            <option value="popularity">Popularidad</option>
+            <option value="popularityDesc">Más Popular</option>
+
+            <option value="popularityAsc">Menos Popular</option>
           </select>
         </div>
       </div>
