@@ -41,7 +41,6 @@ export function useProducts() {
       try {
         const newProduct = await productsApi.createProduct(newProductData);
 
-        // Invalidate all product queries to refetch with current filters
         queryClient.invalidateQueries({ queryKey: PRODUCTS_QUERY_KEY });
 
         return newProduct;
@@ -83,32 +82,41 @@ export function useProducts() {
     [queryClient]
   );
 
+  const refetch = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: PRODUCTS_QUERY_KEY });
+  }, [queryClient]);
+
+  const memoizedFilterOptions = useMemo(
+    () => filterOptions || { hairTypes: [], concerns: [], brands: [] },
+    [filterOptions]
+  );
+
   return useMemo(
     () => ({
       products,
       loading: isLoading,
       error,
       filters,
-      filterOptions: filterOptions || { hairTypes: [], concerns: [], brands: [] },
+      filterOptions: memoizedFilterOptions,
       updateFilters,
       clearFilters,
       createProduct,
       updateProduct,
       deleteProduct,
-      refetch: () => queryClient.invalidateQueries({ queryKey: PRODUCTS_QUERY_KEY }),
+      refetch,
     }),
     [
       products,
       isLoading,
       error,
       filters,
-      filterOptions,
+      memoizedFilterOptions,
       updateFilters,
       clearFilters,
       createProduct,
       updateProduct,
       deleteProduct,
-      queryClient,
+      refetch,
     ]
   );
 }

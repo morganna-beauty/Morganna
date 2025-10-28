@@ -1,11 +1,12 @@
 import { Product } from '@/types';
 import Image from 'next/image';
+import { memo, useMemo } from 'react';
 
 interface ProductCardProps {
   product: Product;
 }
 
-const ProductCard = ({ product }: ProductCardProps) => {
+const ProductCard = memo(({ product }: ProductCardProps) => {
   return (
     <div className="flex flex-col justify-between items-start w-full max-w-[300px] h-[420px] rounded-2xl overflow-hidden mx-auto sm:mx-0">
       <div className="w-full h-[300px] bg-[#F2F2F2] rounded-2xl overflow-hidden flex justify-center items-center">
@@ -18,9 +19,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
             className="w-full h-full object-cover object-center"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">
-          
-          </div>
+          <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm"></div>
         )}
       </div>
 
@@ -37,6 +36,8 @@ const ProductCard = ({ product }: ProductCardProps) => {
       </div>
     </div>
   );
-};
+});
+
+ProductCard.displayName = 'ProductCard';
 
 export default ProductCard;

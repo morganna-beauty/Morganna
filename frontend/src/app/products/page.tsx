@@ -12,7 +12,7 @@ const products = productsData as Product[];
 
 function ProductsPage() {
   const {
-    sortedProducts,
+    products,
     selectedHairType,
     selectedConcern,
     selectedBrand,
@@ -21,7 +21,7 @@ function ProductsPage() {
     setSelectedConcern,
     setSelectedBrand,
     setSortBy,
-  } = useFilteredProducts(products);
+  } = useFilteredProducts();
 
   const [showFilters, setShowFilters] = useState(false);
 
@@ -47,7 +47,7 @@ function ProductsPage() {
       </div>
 
       <ProductGrid
-        products={sortedProducts}
+        products={products}
         sortBy={sortBy}
         onSortChange={setSortBy}
         showFilters={showFilters}
