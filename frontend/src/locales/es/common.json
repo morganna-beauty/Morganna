@@ -20,5 +20,7 @@
   "saving": "Guardando...",
   "confirmDelete": "¿Estás seguro de que quieres eliminar este producto?",
   "errorLoading": "Error al cargar productos",
-  "retry": "Reintentar"
+  "retry": "Reintentar",
+  "errorCreating": "Error al crear elemento",
+  "filters": "Filtros"
 }

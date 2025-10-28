@@ -20,5 +20,7 @@
   "saving": "Saving...",
   "confirmDelete": "Are you sure you want to delete this item?",
   "errorLoading": "Error loading data",
-  "retry": "Retry"
+  "retry": "Retry",
+  "errorCreating": "Error creating item",
+  "filters": "Filters"
 }

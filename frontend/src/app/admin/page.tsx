@@ -10,6 +10,7 @@ import { HiPlus } from 'react-icons/hi';
 
 export default function AdminPage() {
   const { t } = useI18n();
+
   const {
     products,
     loading,
@@ -21,6 +22,7 @@ export default function AdminPage() {
     updateProduct,
     deleteProduct,
   } = useProducts();
+
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [formError, setFormError] = useState<string | null>(null);

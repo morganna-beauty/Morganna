@@ -1,5 +1,6 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import { HairType, Concern, FilterProductsRequest } from '@/types/product';
+import { useI18n } from '@/hooks/useI18n';
 
 interface ProductFiltersProps {
   filters: FilterProductsRequest;
@@ -14,6 +15,7 @@ interface ProductFiltersProps {
 
 export const ProductFilters: React.FC<ProductFiltersProps> = memo(
   ({ filters, onFiltersChange, filterOptions, className = '' }) => {
+    const { t } = useI18n();
     const handleFilterChange = useCallback(
       (key: keyof FilterProductsRequest, value: string) => {
         onFiltersChange({
@@ -36,16 +38,15 @@ export const ProductFilters: React.FC<ProductFiltersProps> = memo(
     return (
       <div className={`bg-white p-4 rounded-lg shadow-sm border ${className}`}>
         <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-end">
-          {/* Search */}
           <div className="w-full lg:flex-1">
             <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-1">
-              Buscar productos
+              {t('filters.search')}
             </label>
 
             <input
               id="search"
               type="text"
-              placeholder="Buscar por nombre o descripción..."
+              placeholder={t('filters.searchPlaceholder')}
               value={filters.search || ''}
               onChange={(e) => handleFilterChange('search', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-transparent"
@@ -54,7 +55,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = memo(
 
           <div className="w-full lg:w-48">
             <label htmlFor="hairType" className="block text-sm font-medium text-gray-700 mb-1">
-              Tipo de cabello
+              {t('product.hairType')}
             </label>
 
             <select
@@ -63,7 +64,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = memo(
               onChange={(e) => handleFilterChange('hairType', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-transparent"
             >
-              <option value="">Todos los tipos</option>
+              <option value="">{t('filters.allTypes')}</option>
 
               {Object.values(HairType).map((type) => (
                 <option key={type} value={type}>
@@ -75,7 +76,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = memo(
 
           <div className="w-full lg:w-48">
             <label htmlFor="concern" className="block text-sm font-medium text-gray-700 mb-1">
-              Preocupación
+              {t('product.concern')}
             </label>
 
             <select
@@ -84,26 +85,19 @@ export const ProductFilters: React.FC<ProductFiltersProps> = memo(
               onChange={(e) => handleFilterChange('concern', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-transparent"
             >
-              <option value="">Todas las preocupaciones</option>
+              <option value="">{t('filters.allConcerns')}</option>
 
               {Object.values(Concern).map((concern) => (
                 <option key={concern} value={concern}>
-                  {concern === Concern.CABELLO_SECO && 'Cabello Seco'}
-
-                  {concern === Concern.DANO_REPARACION && 'Daño y Reparación'}
-
-                  {concern === Concern.CONTROL_FRIZ && 'Control de Friz'}
-
-                  {concern === Concern.VOLUMEN && 'Volumen'}
+                  {t(`filters.${concern}`)}
                 </option>
               ))}
             </select>
           </div>
 
-          {/* Brand Filter */}
           <div className="w-full lg:w-48">
             <label htmlFor="brand" className="block text-sm font-medium text-gray-700 mb-1">
-              Marca
+              {t('product.brand')}
             </label>
 
             <select
@@ -112,7 +106,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = memo(
               onChange={(e) => handleFilterChange('brand', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-transparent"
             >
-              <option value="">Todas las marcas</option>
+              <option value="">{t('filters.allBrands')}</option>
 
               {filterOptions.brands.map((brand) => (
                 <option key={brand} value={brand}>
@@ -127,7 +121,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = memo(
               onClick={clearFilters}
               className="whitespace-nowrap px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-colors"
             >
-              Limpiar filtros
+              {t('filters.clearFilters')}
             </button>
           )}
         </div>
@@ -135,29 +129,32 @@ export const ProductFilters: React.FC<ProductFiltersProps> = memo(
         {hasActiveFilters && (
           <div className="mt-4 pt-4 border-t border-gray-200">
             <div className="flex flex-wrap gap-2">
-              <span className="text-sm font-medium text-gray-700">Filtros activos:</span>
+              <span className="text-sm font-medium text-gray-700">
+                {t('filters.activeFilters')}
+              </span>
 
               {filters.search && (
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                  Búsqueda: "{filters.search}"
+                  {t('filters.searchLabel')} &quot;{filters.search}&quot;
                 </span>
               )}
 
               {filters.hairType && (
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                  Tipo: {filters.hairType.charAt(0).toUpperCase() + filters.hairType.slice(1)} X
+                  {t('filters.typeLabel')}{' '}
+                  {filters.hairType.charAt(0).toUpperCase() + filters.hairType.slice(1)}
                 </span>
               )}
 
               {filters.concern && (
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                  Preocupación: {filters.concern}
+                  {t('filters.concernLabel')} {filters.concern}
                 </span>
               )}
 
               {filters.brand && (
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-pink-100 text-pink-800">
-                  Marca: {filters.brand}
+                  {t('filters.brandLabel')} {filters.brand}
                 </span>
               )}
             </div>

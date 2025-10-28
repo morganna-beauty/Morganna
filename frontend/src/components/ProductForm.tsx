@@ -12,12 +12,20 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
     title: product?.title || '',
     description: product?.description || '',
     price: product?.price || 0,
-    stock: product?.stock ?? 0,
+    stock: product?.stock,
     imageSrc: product?.imageSrc,
     hairType: product?.hairType,
     concern: product?.concern,
     brand: product?.brand || '',
   });
+
+  // Estado separado para los inputs numéricos como strings
+  const [priceInput, setPriceInput] = useState<string>(
+    product?.price ? product.price.toString() : ''
+  );
+  const [stockInput, setStockInput] = useState<string>(
+    product?.stock ? product.stock.toString() : ''
+  );
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -28,18 +36,22 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
       newErrors.name = t('product.nameRequired');
     }
 
-    if (formData.price <= 0) {
+    const priceValue = Number(priceInput);
+
+    if (priceInput === '' || isNaN(priceValue) || priceValue <= 0) {
       newErrors.price = t('product.priceRequired');
     }
 
-    if (formData.stock !== undefined && formData.stock < 0) {
+    const stockValue = Number(stockInput);
+
+    if (stockInput !== '' && (isNaN(stockValue) || stockValue < 0)) {
       newErrors.stock = t('product.stockNegative');
     }
 
     setErrors(newErrors);
 
     return Object.keys(newErrors).length === 0;
-  }, [formData.title, formData.price, formData.stock, t]);
+  }, [formData.title, priceInput, stockInput, t]);
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -51,24 +63,45 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
 
       setLoading(true);
       try {
-        await onSubmit(formData);
+        // Preparar los datos finales con valores numéricos correctos
+        const finalFormData = {
+          ...formData,
+          price: Number(priceInput) || 0,
+          stock: stockInput === '' ? undefined : Number(stockInput),
+        };
+
+        await onSubmit(finalFormData);
       } catch (error) {
         console.error('Error submitting form:', error);
       } finally {
         setLoading(false);
       }
     },
-    [validateForm, onSubmit, formData]
+    [validateForm, onSubmit, formData, priceInput, stockInput]
   );
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
       const { name, value } = e.target;
 
-      setFormData((prev) => ({
-        ...prev,
-        [name]: name === 'price' || name === 'stock' ? Number(value) : value,
-      }));
+      if (name === 'price') {
+        setPriceInput(value);
+        setFormData((prev) => ({
+          ...prev,
+          price: value === '' ? 0 : Number(value) || 0,
+        }));
+      } else if (name === 'stock') {
+        setStockInput(value);
+        setFormData((prev) => ({
+          ...prev,
+          stock: value === '' ? undefined : Number(value) || 0,
+        }));
+      } else {
+        setFormData((prev) => ({
+          ...prev,
+          [name]: value,
+        }));
+      }
 
       if (errors[name]) {
         setErrors((prev) => ({ ...prev, [name]: '' }));
@@ -137,7 +170,7 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
               type="number"
               id="price"
               name="price"
-              value={formData.price}
+              value={priceInput}
               onChange={handleChange}
               min="0"
               step="0.01"
@@ -159,7 +192,7 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
               type="number"
               id="stock"
               name="stock"
-              value={formData.stock}
+              value={stockInput}
               onChange={handleChange}
               min="0"
               className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 ${
@@ -175,7 +208,7 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
         {/* Imagen del producto */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Imagen del producto
+            {t('product.image')}
           </label>
 
           <ImageUpload
@@ -189,7 +222,7 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
             <label htmlFor="hairType" className="block text-sm font-medium text-gray-700 mb-1">
-              Tipo de cabello
+              {t('product.hairType')}
             </label>
 
             <select
@@ -199,7 +232,7 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
             >
-              <option value="">Seleccionar tipo</option>
+              <option value="">{t('product.selectType')}</option>
 
               <option value="liso">Liso</option>
 
@@ -213,7 +246,7 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
 
           <div>
             <label htmlFor="concern" className="block text-sm font-medium text-gray-700 mb-1">
-              Preocupación
+              {t('product.concern')}
             </label>
 
             <select
@@ -223,7 +256,7 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
             >
-              <option value="">Seleccionar preocupación</option>
+              <option value="">{t('product.selectConcern')}</option>
 
               <option value="cabelloSeco">Cabello Seco</option>
 
@@ -237,7 +270,7 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
 
           <div>
             <label htmlFor="brand" className="block text-sm font-medium text-gray-700 mb-1">
-              Marca
+              {t('product.brand')}
             </label>
 
             <input
@@ -247,7 +280,7 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
               value={formData.brand || ''}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-              placeholder="Nombre de la marca"
+              placeholder={t('product.brandPlaceholder')}
             />
           </div>
         </div>

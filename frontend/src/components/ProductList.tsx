@@ -69,7 +69,7 @@ export const ProductList = ({ products, onEdit, onDelete, loading }: ProductList
               </th>
 
               <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Tipo/Preocupación
+                {t('product.typeAndConcern')}
               </th>
 
               <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">

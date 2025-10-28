@@ -25,7 +25,9 @@
       { "blankLine": "always", "prev": "*", "next": "function" },
       { "blankLine": "always", "prev": "block-like", "next": "*" }
     ],
-    "react/jsx-newline": ["error", { "prevent": false }],
-    "newline-before-return": "error"
+    "react/jsx-newline": "off",
+    "newline-before-return": "error",
+    "react/jsx-wrap-multilines": "off",
+    "react/jsx-one-expression-per-line": "off"
   }
 }
