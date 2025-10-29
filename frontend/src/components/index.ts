@@ -1,27 +1,14 @@
 export { ProductForm } from './ProductForm';
-
 export { ProductList } from './ProductList';
-
 export { I18nProvider } from './I18nProvider';
-
 export { LanguageSwitcher } from './LanguageSwitcher';
-
 export { Footer } from './Footer';
-
 export { Navbar } from './Navbar';
-
 export { HeroSection } from './HeroSection';
-
 export { DiagnosisSection } from './DiagnosisSection';
-
 export { BestSellersSection } from './BestSellersSection';
-
 export { Tooltip } from './Tooltip';
-
 export { StepHeader } from './StepHeader';
-
 export { OptionSelector } from './OptionSelector';
-
 export { RecommendationBox } from './RecommendationBox';
-
 export { NavigationButtons } from './NavigationButtons';
