@@ -8,7 +8,7 @@ interface ProductCardProps {
 
 const ProductCard = memo(({ product }: ProductCardProps) => {
   return (
-    <div className="flex flex-col justify-between items-start w-full max-w-[300px] h-[420px] rounded-2xl overflow-hidden mx-auto sm:mx-0">
+    <div className="flex flex-col items-start w-full max-w-[300px] h-[420px] rounded-2xl overflow-hidden mx-auto sm:mx-0">
       <div className="w-full h-[300px] bg-[#F2F2F2] rounded-2xl overflow-hidden flex justify-center items-center">
         {product.imageSrc ? (
           <Image
@@ -23,7 +23,7 @@ const ProductCard = memo(({ product }: ProductCardProps) => {
         )}
       </div>
 
-      <div className="flex flex-col justify-start items-start gap-2 p-3 w-full">
+      <div className="flex flex-col gap-2 p-3 w-full">
         <h3 className="font-roboto font-medium text-lg sm:text-xl text-black w-full line-clamp-2">
           {product.title}
         </h3>

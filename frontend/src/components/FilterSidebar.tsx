@@ -44,7 +44,7 @@ const FilterSidebar = memo(
 
     const brandOptions = useMemo(
       () => [
-        { id: 'marcaA', label: 'filters.marcaA' },
+        { id: 'Hija', label: 'filters.marcaA' },
         { id: 'marcaB', label: 'filters.marcaB' },
       ],
       []

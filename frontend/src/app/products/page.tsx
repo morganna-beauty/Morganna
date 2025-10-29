@@ -1,4 +1,6 @@
-import { useState, useMemo, useCallback } from 'react';
+'use client';
+
+import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useI18n } from '@/hooks/useI18n';
 import FilterSidebar from '@/components/FilterSidebar';

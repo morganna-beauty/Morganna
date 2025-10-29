@@ -2,16 +2,14 @@
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useI18n } from '@/hooks/useI18n';
-import { Product } from '@/types';
 import BestSellersCard from './BestSellersCard';
+import { useProducts } from '@/hooks';
 
-interface Props {
-  products: Product[];
-}
-
-export const BestSellersSection = ({ products }: Props) => {
+export const BestSellersSection = () => {
   const { t } = useI18n();
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const { products } = useProducts();
 
   const updateIndex = useCallback(() => {
     setCurrentIndex((prevIndex) => {

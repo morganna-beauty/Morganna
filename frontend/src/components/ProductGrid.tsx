@@ -17,7 +17,6 @@ const ProductGrid = ({
   products = [],
   sortBy,
   onSortChange,
-  showFilters,
   onToggleFilters,
 }: ProductGridProps) => {
   const { t } = useI18n();
@@ -104,7 +103,7 @@ const ProductGrid = ({
         </div>
       </div>
 
-      <div className="flex flex-col sm:flex-row sm:flex-wrap items-center sm:items-start justify-center sm:justify-start content-start gap-6 w-full">
+      <div className="flex flex-col  sm:flex-row sm:flex-wrap items-center sm:items-start justify-center sm:justify-start content-start gap-6 w-full">
         {productList}
       </div>
     </div>
