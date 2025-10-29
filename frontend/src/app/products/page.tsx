@@ -1,16 +1,12 @@
-'use client';
-
 import { useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import productsData from '@/data/products.json';
-import { Product } from '@/types';
+import { useI18n } from '@/hooks/useI18n';
 import FilterSidebar from '@/components/FilterSidebar';
 import ProductGrid from '@/components/ProductGrid';
 import { useFilteredProducts } from '@/hooks/useFilteredProducts';
 
-const products = productsData as Product[];
-
 function ProductsPage() {
+  const { t } = useI18n();
   const {
     products,
     selectedHairType,
@@ -35,8 +31,6 @@ function ProductsPage() {
 
   return (
     <section className="relative flex flex-col lg:flex-row justify-start lg:justify-between items-start px-4 sm:px-6 lg:px-[60px] pt-8 md:pt-12 lg:pt-[60px] pb-8 md:pb-12 lg:pb-[60px] gap-6 md:gap-8 w-full min-h-screen max-w-[1440px] mx-auto">
-      {' '}
-
       <div className="hidden lg:block">
         <FilterSidebar
           selectedHairType={selectedHairType}
@@ -55,7 +49,7 @@ function ProductsPage() {
         showFilters={showFilters}
         onToggleFilters={handleToggleFilters}
       />
-      
+
       <AnimatePresence>
         {showFilters && (
           <>
@@ -75,13 +69,13 @@ function ProductsPage() {
               transition={{ type: 'spring', stiffness: 200, damping: 24 }}
             >
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-medium text-black">Filtros</h2>
+                <h2 className="text-2xl font-medium text-black">{t('common.filters')}</h2>
 
                 <button
                   onClick={handleCloseFilters}
                   className="text-sm text-gray-500 hover:text-black transition"
                 >
-                  Cerrar ✕
+                  {t('filters.closeFilters')}
                 </button>
               </div>
 

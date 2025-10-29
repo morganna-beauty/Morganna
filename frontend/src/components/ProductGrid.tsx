@@ -76,7 +76,7 @@ const ProductGrid = ({
           <button
             onClick={onToggleFilters}
             className="lg:hidden p-2 rounded-full hover:bg-gray-100 active:scale-95 transition"
-            title="Mostrar filtros"
+            title={t('filters.showFilters')}
           >
             <FilterIcon className="w-5 h-5 text-[#808080]" />
           </button>
@@ -91,15 +91,15 @@ const ProductGrid = ({
             onChange={handleSortChange}
             className="flex-1 sm:flex-none px-3 py-2 sm:py-3 w-full sm:w-[204px] h-10 sm:h-12 border border-[#757575] rounded-full font-roboto font-medium text-xs sm:text-sm leading-5 tracking-[0.1px] text-black cursor-pointer bg-white"
           >
-            <option value="default">Más Recientes</option>
+            <option value="default">{t('filters.recentFirst')}</option>
 
-            <option value="priceLowToHigh">Precio: Bajo a Alto</option>
+            <option value="priceLowToHigh">{t('filters.priceLowHigh')}</option>
 
-            <option value="priceHighToLow">Precio: Alto a Bajo</option>
+            <option value="priceHighToLow">{t('filters.priceHighLow')}</option>
 
-            <option value="popularityDesc">Más Popular</option>
+            <option value="popularityDesc">{t('filters.mostPopular')}</option>
 
-            <option value="popularityAsc">Menos Popular</option>
+            <option value="popularityAsc">{t('filters.lessPopular')}</option>
           </select>
         </div>
       </div>

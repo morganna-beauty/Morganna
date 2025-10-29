@@ -1,10 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe, Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { join } from 'path';
+import * as express from 'express';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const logger = new Logger('Bootstrap');
 
   app.enableCors({
@@ -23,11 +26,21 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
 
+  // Configurar servicio de archivos estáticos
+  const uploadsPath = join(process.cwd(), 'public', 'uploads');
+
+  logger.log(`📁 Configurando archivos estáticos desde: ${uploadsPath}`);
+  logger.log(`📁 CWD actual: ${process.cwd()}`);
+
+  // Usar middleware personalizado para archivos estáticos
+  app.use('/uploads', express.static(uploadsPath));
+
   const config = new DocumentBuilder()
     .setTitle('Morganna API')
     .setDescription('API documentation for Morganna project')
     .setVersion('1.0')
     .addTag('products', 'Product management')
+    .addTag('uploads', 'File upload management')
     .addTag('health', 'Health check endpoints')
     .build();
 

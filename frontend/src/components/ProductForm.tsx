@@ -3,8 +3,8 @@
 import { useState, useCallback } from 'react';
 import { CreateProductRequest } from '@/types';
 import { useI18n } from '@/hooks/useI18n';
+import { ImageUpload } from './ImageUpload';
 import ProductFormProps from '@/interface/ProductForm';
-
 
 export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: ProductFormProps) => {
   const { t } = useI18n();
@@ -12,8 +12,19 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
     title: product?.title || '',
     description: product?.description || '',
     price: product?.price || 0,
-    stock: product?.stock ?? 0,
+    stock: product?.stock,
+    imageSrc: product?.imageSrc,
+    hairType: product?.hairType,
+    concern: product?.concern,
+    brand: product?.brand || '',
   });
+
+  const [priceInput, setPriceInput] = useState<string>(
+    product?.price ? product.price.toString() : ''
+  );
+  const [stockInput, setStockInput] = useState<string>(
+    product?.stock ? product.stock.toString() : ''
+  );
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -24,18 +35,22 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
       newErrors.name = t('product.nameRequired');
     }
 
-    if (formData.price <= 0) {
+    const priceValue = Number(priceInput);
+
+    if (priceInput === '' || isNaN(priceValue) || priceValue <= 0) {
       newErrors.price = t('product.priceRequired');
     }
 
-    if (formData.stock !== undefined && formData.stock < 0) {
+    const stockValue = Number(stockInput);
+
+    if (stockInput !== '' && (isNaN(stockValue) || stockValue < 0)) {
       newErrors.stock = t('product.stockNegative');
     }
 
     setErrors(newErrors);
 
     return Object.keys(newErrors).length === 0;
-  }, [formData.title, formData.price, formData.stock, t]);
+  }, [formData.title, priceInput, stockInput, t]);
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -47,24 +62,45 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
 
       setLoading(true);
       try {
-        await onSubmit(formData);
+        // Preparar los datos finales con valores numéricos correctos
+        const finalFormData = {
+          ...formData,
+          price: Number(priceInput) || 0,
+          stock: stockInput === '' ? undefined : Number(stockInput),
+        };
+
+        await onSubmit(finalFormData);
       } catch (error) {
         console.error('Error submitting form:', error);
       } finally {
         setLoading(false);
       }
     },
-    [validateForm, onSubmit, formData]
+    [validateForm, onSubmit, formData, priceInput, stockInput]
   );
 
   const handleChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
       const { name, value } = e.target;
 
-      setFormData((prev) => ({
-        ...prev,
-        [name]: name === 'price' || name === 'stock' ? Number(value) : value,
-      }));
+      if (name === 'price') {
+        setPriceInput(value);
+        setFormData((prev) => ({
+          ...prev,
+          price: value === '' ? 0 : Number(value) || 0,
+        }));
+      } else if (name === 'stock') {
+        setStockInput(value);
+        setFormData((prev) => ({
+          ...prev,
+          stock: value === '' ? undefined : Number(value) || 0,
+        }));
+      } else {
+        setFormData((prev) => ({
+          ...prev,
+          [name]: value,
+        }));
+      }
 
       if (errors[name]) {
         setErrors((prev) => ({ ...prev, [name]: '' }));
@@ -72,6 +108,13 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
     },
     [errors]
   );
+
+  const handleImageSelect = useCallback((imageUrl: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      imageSrc: imageUrl,
+    }));
+  }, []);
 
   return (
     <div className="bg-white shadow-sm rounded-lg p-6">
@@ -87,8 +130,8 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
 
           <input
             type="text"
-            id="name"
-            name="name"
+            id="title"
+            name="title"
             value={formData.title}
             onChange={handleChange}
             className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 ${
@@ -126,7 +169,7 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
               type="number"
               id="price"
               name="price"
-              value={formData.price}
+              value={priceInput}
               onChange={handleChange}
               min="0"
               step="0.01"
@@ -148,7 +191,7 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
               type="number"
               id="stock"
               name="stock"
-              value={formData.stock}
+              value={stockInput}
               onChange={handleChange}
               min="0"
               className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 ${
@@ -158,6 +201,86 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
             />
 
             {errors.stock && <p className="mt-1 text-sm text-red-600">{errors.stock}</p>}
+          </div>
+        </div>
+
+        {/* Imagen del producto */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            {t('product.image')}
+          </label>
+
+          <ImageUpload
+            onImageSelect={handleImageSelect}
+            currentImage={formData.imageSrc}
+            className="w-full"
+          />
+        </div>
+
+        {/* Campos adicionales */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div>
+            <label htmlFor="hairType" className="block text-sm font-medium text-gray-700 mb-1">
+              {t('product.hairType')}
+            </label>
+
+            <select
+              id="hairType"
+              name="hairType"
+              value={formData.hairType || ''}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+            >
+              <option value="">{t('product.selectType')}</option>
+
+              <option value="liso">Liso</option>
+
+              <option value="ondulado">Ondulado</option>
+
+              <option value="rizado">Rizado</option>
+
+              <option value="afro">Afro</option>
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="concern" className="block text-sm font-medium text-gray-700 mb-1">
+              {t('product.concern')}
+            </label>
+
+            <select
+              id="concern"
+              name="concern"
+              value={formData.concern || ''}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+            >
+              <option value="">{t('product.selectConcern')}</option>
+
+              <option value="cabelloSeco">Cabello Seco</option>
+
+              <option value="danoReparacion">Daño y Reparación</option>
+
+              <option value="controlFriz">Control de Friz</option>
+
+              <option value="volumen">Volumen</option>
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="brand" className="block text-sm font-medium text-gray-700 mb-1">
+              {t('product.brand')}
+            </label>
+
+            <input
+              type="text"
+              id="brand"
+              name="brand"
+              value={formData.brand || ''}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+              placeholder={t('product.brandPlaceholder')}
+            />
           </div>
         </div>
 

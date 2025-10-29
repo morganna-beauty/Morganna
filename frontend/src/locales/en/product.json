@@ -20,5 +20,13 @@
   "update": "Update Product",
   "edit": "Edit Product",
   "manageInventory": "Manage your product inventory",
-  "scrollHint": "Scroll horizontally to see more columns"
+  "scrollHint": "Scroll horizontally to see more columns",
+  "image": "Product Image",
+  "hairType": "Hair Type",
+  "concern": "Concern",
+  "brand": "Brand",
+  "selectType": "Select type",
+  "selectConcern": "Select concern",
+  "brandPlaceholder": "Brand name",
+  "typeAndConcern": "Type/Concern"
 }

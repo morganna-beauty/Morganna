@@ -4,7 +4,15 @@ import path from 'path';
 
 export type SupportedLocale = 'en' | 'es';
 
-export type SupportedNamespace = 'common' | 'product' | 'navbar';
+export type SupportedNamespace =
+  | 'common'
+  | 'product'
+  | 'navbar'
+  | 'hero'
+  | 'bestsellers'
+  | 'routine'
+  | 'footer'
+  | 'filters';
 
 export type TranslationValue = string | { [key: string]: TranslationValue };
 
