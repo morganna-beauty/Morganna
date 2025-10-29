@@ -11,6 +11,8 @@ import enBestSellers from '../locales/en/bestsellers.json';
 import enRoutine from '../locales/en/routine.json';
 import enFooter from '../locales/en/footer.json';
 import enFilter from '../locales/en/filters.json';
+import enDiagnostic from '../locales/en/diagnostic.json';
+import enRecommendations from '../locales/en/recommendations.json';
 import esCommon from '../locales/es/common.json';
 import esProduct from '../locales/es/product.json';
 import esNavbar from '../locales/es/navbar.json';
@@ -19,6 +21,8 @@ import esBestSellers from '../locales/es/bestsellers.json';
 import esRoutine from '../locales/es/routine.json';
 import esFooter from '../locales/es/footer.json';
 import esFilters from '../locales/es/filters.json';
+import esDiagnostic from '../locales/es/diagnostic.json';
+import esRecommendations from '../locales/es/recommendations.json';
 
 type TranslationValue = string | { [key: string]: TranslationValue };
 
@@ -41,7 +45,9 @@ const TRANSLATIONS: TranslationsType = {
     bestsellers: enBestSellers,
     routine: enRoutine,
     footer: enFooter,
-    filters: enFilter
+    filters: enFilter,
+    diagnostic: enDiagnostic,
+    recommendations: enRecommendations,
   },
   es: {
     common: esCommon,
@@ -51,7 +57,9 @@ const TRANSLATIONS: TranslationsType = {
     bestsellers: esBestSellers,
     routine: esRoutine,
     footer: esFooter,
-    filters: esFilters
+    filters: esFilters,
+    diagnostic: esDiagnostic,
+    recommendations: esRecommendations,
   },
 };
 
@@ -130,7 +138,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const handleSetLanguage = useCallback((lang: string) => {
     if (!TRANSLATIONS[lang]) {
       console.warn(`Language "${lang}" not supported`);
-      
+
       return;
     }
 
