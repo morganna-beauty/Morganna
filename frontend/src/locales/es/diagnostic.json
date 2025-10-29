@@ -1,0 +1,40 @@
+{
+  "conditions": {
+    "brittle_hair": "Cabello quebradizo",
+    "split_ends": "Puntas abiertas",
+    "fall_breakage": "Caída y rotura",
+    "only_fall": "Solo caída",
+    "dry_dull": "Seco y opaco"
+  },
+  "causes": {
+    "chemical": "Proceso químico",
+    "stress": "Estrés",
+    "hormonal": "Cambio hormonal",
+    "thermal": "Daño térmico"
+  },
+  "processes": {
+    "dye": "Tinte",
+    "straightening": "Alisado",
+    "bleaching": "Decoloración",
+    "multiple": "Varias de las anteriores"
+  },
+  "steps": {
+    "1": "¿Qué le pasa a tu cabello?",
+    "2": "¿Cuál consideras que es la causa?",
+    "2_5": "¿Qué tipo de proceso químico realizaste?",
+    "3": "Tu recomendación personalizada",
+    "progress": "Paso {{step}} de 3",
+    "progress_process": "Paso 2 (Proceso químico) de 3",
+    "result": "Resultado"
+  },
+  "buttons": {
+    "back": "Atrás",
+    "next": "Siguiente",
+    "see_more": "Ver más",
+    "see_less": "Ver menos",
+    "restart": "Volver al Diagnóstico"
+  },
+  "recommendations": {
+    "not_found": "No se encontró una recomendación."
+  }
+}

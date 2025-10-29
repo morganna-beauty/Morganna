@@ -19,7 +19,6 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
     brand: product?.brand || '',
   });
 
-  // Estado separado para los inputs numéricos como strings
   const [priceInput, setPriceInput] = useState<string>(
     product?.price ? product.price.toString() : ''
   );

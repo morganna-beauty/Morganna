@@ -1,0 +1,40 @@
+{
+  "conditions": {
+    "brittle_hair": "Brittle hair",
+    "split_ends": "Split ends",
+    "fall_breakage": "Hair fall and breakage",
+    "only_fall": "Only hair fall",
+    "dry_dull": "Dry and dull"
+  },
+  "causes": {
+    "chemical": "Chemical process",
+    "stress": "Stress",
+    "hormonal": "Hormonal change",
+    "thermal": "Thermal damage"
+  },
+  "processes": {
+    "dye": "Hair dye",
+    "straightening": "Hair straightening",
+    "bleaching": "Bleaching",
+    "multiple": "Several of the above"
+  },
+  "steps": {
+    "1": "What’s happening to your hair?",
+    "2": "What do you think is the cause?",
+    "2_5": "What type of chemical process did you do?",
+    "3": "Your personalized recommendation",
+    "progress": "Step {{step}} of 3",
+    "progress_process": "Step 2 (Chemical process) of 3",
+    "result": "Result"
+  },
+  "buttons": {
+    "back": "Back",
+    "next": "Next",
+    "see_more": "See more",
+    "see_less": "See less",
+    "restart": "Restart Diagnosis"
+  },
+  "recommendations": {
+    "not_found": "Recommendation not found."
+  }
+}
