@@ -5,7 +5,11 @@ import {
   UpdateProductRequest,
   FilterProductsRequest,
   FilterOptions,
-} from '@/types/product';
+  User,
+  CreateUserRequest,
+  UpdateUserRequest,
+} from '@/types';
+import { LoginRequest, AuthResponse } from '@/contexts';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 
@@ -16,6 +20,36 @@ const api = axios.create({
   },
 });
 
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('morganna_token');
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401 && typeof window !== 'undefined') {
+      localStorage.removeItem('morganna_token');
+      localStorage.removeItem('morganna_auth');
+
+      if (!window.location.pathname.includes('/admin')) {
+        window.location.href = '/admin';
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
 export const productsApi = {
   getProducts: async (filters?: FilterProductsRequest): Promise<Product[]> => {
     const params = new URLSearchParams();
@@ -56,6 +90,55 @@ export const productsApi = {
     const response = await api.get<FilterOptions>('/products/filters/options');
 
     return response.data;
+  },
+};
+
+export const usersApi = {
+  getUsers: async (): Promise<User[]> => {
+    const response = await api.get<User[]>('/users');
+
+    return response.data;
+  },
+
+  getUser: async (id: number): Promise<User> => {
+    const response = await api.get<User>(`/users/${id}`);
+
+    return response.data;
+  },
+
+  createUser: async (user: CreateUserRequest): Promise<User> => {
+    const response = await api.post<User>('/users', user);
+
+    return response.data;
+  },
+
+  updateUser: async (id: number, user: UpdateUserRequest): Promise<User> => {
+    const response = await api.patch<User>(`/users/${id}`, user);
+
+    return response.data;
+  },
+
+  deleteUser: async (id: number): Promise<void> => {
+    await api.delete(`/users/${id}`);
+  },
+};
+
+export const authApi = {
+  login: async (loginData: LoginRequest): Promise<AuthResponse> => {
+    const response = await api.post<AuthResponse>('/auth/login', loginData);
+
+    return response.data;
+  },
+
+  getProfile: async (): Promise<AuthResponse['user']> => {
+    const response = await api.get<AuthResponse['user']>('/auth/me');
+
+    return response.data;
+  },
+
+  logout: async (): Promise<void> => {
+    localStorage.removeItem('morganna_token');
+    localStorage.removeItem('morganna_auth');
   },
 };
 

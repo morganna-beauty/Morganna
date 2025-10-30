@@ -1,5 +1,6 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { Product } from '../modules/products/entities/product.entity';
+import { User } from '../modules/users/entities/user.entity';
 
 export const databaseConfig = (): TypeOrmModuleOptions => ({
   type: 'postgres',
@@ -8,7 +9,7 @@ export const databaseConfig = (): TypeOrmModuleOptions => ({
   username: process.env.DATABASE_USER || 'postgres',
   password: process.env.DATABASE_PASSWORD || 'postgres',
   database: process.env.DATABASE_NAME || 'morganna_db',
-  entities: [Product],
+  entities: [Product, User],
   synchronize: true,
   logging: process.env.NODE_ENV === 'development',
 });

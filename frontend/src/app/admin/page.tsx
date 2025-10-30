@@ -3,7 +3,7 @@
 import { useState, useCallback, useMemo } from 'react';
 import { useProducts } from '@/hooks';
 import { Product, CreateProductRequest } from '@/types';
-import { ProductForm, ProductList, Tooltip } from '@/components';
+import { ProductForm, ProductList, Tooltip, ProtectedRoute } from '@/components';
 import { ProductFilters } from '@/components/ProductFilters';
 import { useI18n } from '@/hooks/useI18n';
 import { HiPlus } from 'react-icons/hi';
@@ -105,7 +105,7 @@ export default function AdminPage() {
   if (error) return errorComponent;
 
   return (
-    <>
+    <ProtectedRoute>
       <div className="flex items-center justify-between mt-6 mb-4 px-[60px]">
         <div>
           <h2 className="text-2xl font-bold">{t('product.inventory')}</h2>
@@ -157,6 +157,6 @@ export default function AdminPage() {
           loading={loading}
         />
       </div>
-    </>
+    </ProtectedRoute>
   );
 }

@@ -1,5 +1,8 @@
+'use client';
+
 import { useCallback, useMemo, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useProtectedActions } from './useProtectedActions';
 import { productsApi } from '@/lib';
 import {
   Product,
@@ -12,6 +15,7 @@ import { PRODUCTS_QUERY_KEY } from '@/lib/constants/queryKeys';
 
 export function useProducts() {
   const queryClient = useQueryClient();
+  const { withAdminAuth } = useProtectedActions();
   const [filters, setFilters] = useState<FilterProductsRequest>({});
 
   const {
@@ -37,49 +41,46 @@ export function useProducts() {
   }, []);
 
   const createProduct = useCallback(
-    async (newProductData: CreateProductRequest) => {
-      try {
+    (newProductData: CreateProductRequest) => {
+      const protectedAction = withAdminAuth(async () => {
         const newProduct = await productsApi.createProduct(newProductData);
 
         queryClient.invalidateQueries({ queryKey: PRODUCTS_QUERY_KEY });
 
         return newProduct;
-      } catch (err) {
-        console.error('Error creating product:', err);
-        throw err;
-      }
+      });
+
+      return protectedAction();
     },
-    [queryClient]
+    [queryClient, withAdminAuth]
   );
 
   const updateProduct = useCallback(
-    async (productId: number, updatedProductData: UpdateProductRequest) => {
-      try {
+    (productId: number, updatedProductData: UpdateProductRequest) => {
+      const protectedAction = withAdminAuth(async () => {
         const updatedProduct = await productsApi.updateProduct(productId, updatedProductData);
 
         queryClient.invalidateQueries({ queryKey: PRODUCTS_QUERY_KEY });
 
         return updatedProduct;
-      } catch (err) {
-        console.error('Error updating product:', err);
-        throw err;
-      }
+      });
+
+      return protectedAction();
     },
-    [queryClient]
+    [queryClient, withAdminAuth]
   );
 
   const deleteProduct = useCallback(
-    async (productId: number) => {
-      try {
+    (productId: number) => {
+      const protectedAction = withAdminAuth(async () => {
         await productsApi.deleteProduct(productId);
 
         queryClient.invalidateQueries({ queryKey: PRODUCTS_QUERY_KEY });
-      } catch (err) {
-        console.error('Error deleting product:', err);
-        throw err;
-      }
+      });
+
+      return protectedAction();
     },
-    [queryClient]
+    [queryClient, withAdminAuth]
   );
 
   const refetch = useCallback(() => {
@@ -120,3 +121,4 @@ export function useProducts() {
     ]
   );
 }
+ 

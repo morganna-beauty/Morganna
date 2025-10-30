@@ -13,6 +13,7 @@ import enFooter from '../locales/en/footer.json';
 import enFilter from '../locales/en/filters.json';
 import enDiagnostic from '../locales/en/diagnostic.json';
 import enRecommendations from '../locales/en/recommendations.json';
+import enAuth from '../locales/en/auth.json';
 import esCommon from '../locales/es/common.json';
 import esProduct from '../locales/es/product.json';
 import esNavbar from '../locales/es/navbar.json';
@@ -23,6 +24,7 @@ import esFooter from '../locales/es/footer.json';
 import esFilters from '../locales/es/filters.json';
 import esDiagnostic from '../locales/es/diagnostic.json';
 import esRecommendations from '../locales/es/recommendations.json';
+import esAuth from '../locales/es/auth.json';
 
 type TranslationValue = string | { [key: string]: TranslationValue };
 
@@ -48,6 +50,7 @@ const TRANSLATIONS: TranslationsType = {
     filters: enFilter,
     diagnostic: enDiagnostic,
     recommendations: enRecommendations,
+    auth: enAuth,
   },
   es: {
     common: esCommon,
@@ -60,6 +63,7 @@ const TRANSLATIONS: TranslationsType = {
     filters: esFilters,
     diagnostic: esDiagnostic,
     recommendations: esRecommendations,
+    auth: esAuth,
   },
 };
 

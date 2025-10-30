@@ -11,22 +11,22 @@ export const uploadImage = async (file: File): Promise<UploadResponse> => {
   formData.append('file', file);
 
   const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/uploads/image`;
+  const token = localStorage.getItem('morganna_token');
 
-  console.log('Upload URL:', apiUrl);
-  console.log('FormData file:', file);
+  const headers: HeadersInit = {};
+
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
 
   const response = await fetch(apiUrl, {
     method: 'POST',
     body: formData,
+    headers,
   });
-
-  console.log('Response status:', response.status);
-  console.log('Response headers:', Object.fromEntries(response.headers));
 
   if (!response.ok) {
     const errorText = await response.text();
-
-    console.error('Error response:', errorText);
 
     let errorData;
 
@@ -41,8 +41,6 @@ export const uploadImage = async (file: File): Promise<UploadResponse> => {
 
   const result = await response.json();
 
-  console.log('Success response:', result);
-
   return result;
 };
 
@@ -56,23 +54,22 @@ export const replaceImage = async (file: File, previousUrl?: string): Promise<Up
   }
 
   const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/uploads/image/replace`;
+  const token = localStorage.getItem('morganna_token');
 
-  console.log('Replace URL:', apiUrl);
-  console.log('FormData file:', file);
-  console.log('Previous URL:', previousUrl);
+  const headers: HeadersInit = {};
+
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
 
   const response = await fetch(apiUrl, {
     method: 'POST',
     body: formData,
+    headers,
   });
-
-  console.log('Response status:', response.status);
-  console.log('Response headers:', Object.fromEntries(response.headers));
 
   if (!response.ok) {
     const errorText = await response.text();
-
-    console.error('Error response:', errorText);
 
     let errorData;
 
@@ -86,8 +83,6 @@ export const replaceImage = async (file: File, previousUrl?: string): Promise<Up
   }
 
   const result = await response.json();
-
-  console.log('Success response:', result);
 
   return result;
 };

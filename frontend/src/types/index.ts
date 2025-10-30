@@ -1,1 +1,2 @@
-export type * from './product';
+export * from './product';
+export * from './user';

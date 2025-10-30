@@ -1,5 +1,7 @@
+'use client';
+
 import { useState, useMemo, useCallback, useEffect } from 'react';
-import { FilterProductsRequest, SortBy, Order, HairType, Concern } from '@/types';
+import { FilterProductsRequest, HairType, Concern } from '@/types';
 import { useProducts } from './useProducts';
 
 export function useFilteredProducts() {
@@ -33,35 +35,51 @@ export function useFilteredProducts() {
         filterRequest.order = 'ASC' as any;
         break;
       default:
-        // Default case - no sorting parameters (backend will use createdAt DESC)
         break;
     }
 
     return filterRequest;
   }, [selectedHairType, selectedConcern, selectedBrand, sortBy]);
 
-  // Use the products hook with dynamic filters
   const { products, loading, error, filterOptions, updateFilters } = useProducts();
 
-  // Update filters whenever they change
   useEffect(() => {
     updateFilters(filters);
   }, [filters, updateFilters]);
 
-  return {
-    products,
-    loading,
-    error,
-    filterOptions,
+  const handleSetHairType = useCallback((value: string) => setSelectedHairType(value), []);
+  const handleSetConcern = useCallback((value: string) => setSelectedConcern(value), []);
+  const handleSetBrand = useCallback((value: string) => setSelectedBrand(value), []);
+  const handleSetSortBy = useCallback((value: string) => setSortBy(value), []);
 
-    selectedHairType,
-    selectedConcern,
-    selectedBrand,
-    sortBy,
-
-    setSelectedHairType,
-    setSelectedConcern,
-    setSelectedBrand,
-    setSortBy,
-  };
+  return useMemo(
+    () => ({
+      products,
+      loading,
+      error,
+      filterOptions,
+      selectedHairType,
+      selectedConcern,
+      selectedBrand,
+      sortBy,
+      setSelectedHairType: handleSetHairType,
+      setSelectedConcern: handleSetConcern,
+      setSelectedBrand: handleSetBrand,
+      setSortBy: handleSetSortBy,
+    }),
+    [
+      products,
+      loading,
+      error,
+      filterOptions,
+      selectedHairType,
+      selectedConcern,
+      selectedBrand,
+      sortBy,
+      handleSetHairType,
+      handleSetConcern,
+      handleSetBrand,
+      handleSetSortBy,
+    ]
+  );
 }

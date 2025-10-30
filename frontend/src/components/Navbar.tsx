@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useI18n } from '@/hooks/useI18n';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { UserMenu } from './UserMenu';
 import logo from '../../public/logo.svg';
 import { Roboto } from 'next/font/google';
 import { IoSearchSharp } from 'react-icons/io5';
@@ -107,13 +108,7 @@ export const Navbar = () => {
                 <MdOutlineShoppingBag size={24} />
               </button>
 
-              <button
-                type="button"
-                className="flex items-center justify-center w-12 h-12 rounded-full hover:bg-gray-100 transition-colors"
-                aria-label="User account"
-              >
-                <FaRegUser size={24} />
-              </button>
+              <UserMenu />
 
               <div className="hidden lg:block">
                 <LanguageSwitcher />
@@ -178,14 +173,9 @@ export const Navbar = () => {
 
           <div className="px-6 py-6 border-t border-gray-200 bg-gray-50">
             <div className="flex items-center justify-between">
-              <button
-                type="button"
-                className="flex items-center justify-center w-12 h-12 rounded-full hover:bg-gray-200 transition-colors"
-                aria-label="User account"
-                onClick={closeMobileMenu}
-              >
-                <FaRegUser size={24} />
-              </button>
+              <div onClick={closeMobileMenu}>
+                <UserMenu />
+              </div>
 
               <LanguageSwitcher />
             </div>
