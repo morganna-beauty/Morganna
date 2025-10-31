@@ -1,267 +1,294 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import {
-  FirebaseService,
-  QueryOptions,
-} from '../../common/firebase/firebase.service';
+import { Injectable } from '@nestjs/common';
 import { Product } from './entities/product.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { FilterProductsDto, SortBy } from './dto/filter-products.dto';
 import { FirestoreProduct } from './interfaces/firestore-product.interface';
+import { BaseFirestoreService } from '../../common/firebase/base-firestore.service';
+import { FirebaseService } from '../../common/firebase/firebase.service';
+import { FirebaseStorageService } from '../../common/firebase/firebase-storage.service';
+import {
+  TransformUtils,
+  ValidationUtils,
+} from '../../common/utils/validation.utils';
 
 @Injectable()
-export class ProductsFirestoreService {
-  private readonly collectionName = 'products';
+export class ProductsFirestoreService extends BaseFirestoreService<
+  Product,
+  FirestoreProduct,
+  CreateProductDto,
+  UpdateProductDto
+> {
+  protected readonly collectionName = 'products';
 
-  constructor(private readonly firebaseService: FirebaseService) {}
+  protected readonly searchFields = {
+    text: ['title', 'description', 'brand'],
+  };
 
-  async create(createProductDto: CreateProductDto): Promise<Product> {
-    const firestoreProduct: Omit<FirestoreProduct, 'id'> = {
-      title: createProductDto.title,
-      description: createProductDto.description,
-      price: createProductDto.price,
-      stock: createProductDto.stock || 0,
-      imageSrc: createProductDto.imageSrc,
-      hairType: createProductDto.hairType,
-      concern: createProductDto.concern,
-      brand: createProductDto.brand,
-    };
-
-    const createdProduct = await this.firebaseService.create<FirestoreProduct>(
-      this.collectionName,
-      firestoreProduct,
-    );
-
-    return this.mapFirestoreProductToEntity(createdProduct);
+  constructor(
+    firebaseService: FirebaseService,
+    private readonly storageService: FirebaseStorageService,
+  ) {
+    super(firebaseService);
   }
 
-  async findAll(filterDto?: FilterProductsDto): Promise<Product[]> {
+  protected mapCreateDtoToFirestore(
+    createDto: CreateProductDto,
+  ): Omit<FirestoreProduct, 'id'> {
+    const firestoreData: any = {
+      title: createDto.title,
+      description: createDto.description,
+      price: createDto.price,
+      stock: createDto.stock || 0,
+      hairType: createDto.hairType,
+      concern: createDto.concern,
+      brand: createDto.brand,
+    };
+
+    // Solo agregar imageSrc si no es null o undefined
+    if (createDto.imageSrc !== null && createDto.imageSrc !== undefined) {
+      firestoreData.imageSrc = createDto.imageSrc;
+    }
+
+    return firestoreData as Omit<FirestoreProduct, 'id'>;
+  }
+
+  private async validateImageUrl(imageUrl: string): Promise<boolean> {
+    if (!imageUrl || !ValidationUtils.isValidString(imageUrl)) {
+      return false;
+    }
+
+    try {
+      if (
+        imageUrl.includes('firebasestorage.googleapis.com') ||
+        imageUrl.includes('storage.googleapis.com')
+      ) {
+        const fileName = this.storageService.getFileNameFromStorage(imageUrl);
+
+        if (fileName) {
+          await this.storageService.getFileUrl(fileName);
+
+          return true;
+        }
+      }
+
+      const urlPattern = /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)(\?.*)?$/i;
+
+      return urlPattern.test(imageUrl);
+    } catch (error) {
+      this.logger.warn(
+        `Image validation failed for URL: ${imageUrl}`,
+        error.message,
+      );
+
+      return false;
+    }
+  }
+
+  async create(createDto: CreateProductDto): Promise<Product> {
+    try {
+      return await super.create(createDto);
+    } catch (error) {
+      this.logger.warn(
+        'Failed to create product with image, attempting without image:',
+        error.message,
+      );
+
+      if (createDto.imageSrc) {
+        const productWithoutImage = { ...createDto, imageSrc: null };
+
+        this.logger.log(
+          `Creating product "${createDto.title}" without image due to storage error`,
+        );
+
+        try {
+          return await super.create(productWithoutImage);
+        } catch (secondError) {
+          this.logger.error(
+            'Failed to create product even without image:',
+            secondError,
+          );
+          throw secondError;
+        }
+      }
+
+      throw error;
+    }
+  }
+
+  async update(id: string, updateDto: UpdateProductDto): Promise<Product> {
+    try {
+      return await super.update(id, updateDto);
+    } catch (error) {
+      this.logger.warn(
+        'Failed to update product with image, attempting without image change:',
+        error.message,
+      );
+
+      if (updateDto.imageSrc !== undefined) {
+        const updateWithoutImage = { ...updateDto };
+
+        delete updateWithoutImage.imageSrc;
+
+        this.logger.log(
+          `Updating product ${id} without image change due to storage error`,
+        );
+
+        try {
+          return await super.update(id, updateWithoutImage);
+        } catch (secondError) {
+          this.logger.error(
+            'Failed to update product even without image change:',
+            secondError,
+          );
+          throw secondError;
+        }
+      }
+
+      throw error;
+    }
+  }
+
+  protected mapUpdateDtoToFirestore(
+    updateDto: UpdateProductDto,
+  ): Partial<FirestoreProduct> {
+    return TransformUtils.removeUndefined({
+      title: updateDto.title,
+      description: updateDto.description,
+      price: updateDto.price,
+      stock: updateDto.stock,
+      imageSrc: updateDto.imageSrc,
+      hairType: updateDto.hairType,
+      concern: updateDto.concern,
+      brand: updateDto.brand,
+    });
+  }
+
+  protected mapFirestoreToEntity(document: FirestoreProduct): Product {
+    const product = new Product();
+
+    product.id = TransformUtils.safeParseInt(document.id);
+    product.title = document.title;
+    product.description = document.description || null;
+    product.price = document.price;
+    product.stock = document.stock;
+    product.imageSrc = document.imageSrc || null;
+    product.hairType = document.hairType || null;
+    product.concern = document.concern || null;
+    product.brand = document.brand || null;
+    product.createdAt = this.convertFirestoreTimestamp(document.createdAt);
+    product.updatedAt = this.convertFirestoreTimestamp(document.updatedAt);
+
+    return product;
+  }
+
+  protected getEntityName(): string {
+    return 'Product';
+  }
+
+  async findAllProducts(filterDto?: FilterProductsDto): Promise<Product[]> {
     try {
       if (
         !filterDto ||
         (!filterDto.hairType && !filterDto.concern && !filterDto.brand)
       ) {
-        const queryOptions: QueryOptions = {
-          orderBy: [
-            {
-              field: 'createdAt',
-              direction: 'desc',
-            },
-          ],
+        const baseFilterOptions = {
+          search: filterDto?.search,
+          sortBy: this.mapSortBy(filterDto?.sortBy),
+          order: filterDto?.order?.toLowerCase() as 'asc' | 'desc',
         };
 
-        let firestoreProducts =
-          await this.firebaseService.getCollection<FirestoreProduct>(
-            this.collectionName,
-            queryOptions,
-          );
-
-        if (filterDto?.search) {
-          const searchTerm = filterDto.search.toLowerCase();
-
-          firestoreProducts = firestoreProducts.filter(
-            (product) =>
-              product.title?.toLowerCase().includes(searchTerm) ||
-              product.description?.toLowerCase().includes(searchTerm),
-          );
-        }
-
-        if (filterDto?.sortBy && filterDto?.order) {
-          firestoreProducts.sort((a, b) => {
-            let aValue, bValue;
-
-            switch (filterDto.sortBy) {
-              case SortBy.PRICE:
-                aValue = a.price || 0;
-                bValue = b.price || 0;
-                break;
-              case SortBy.POPULARITY:
-                aValue = a.stock || 0;
-                bValue = b.stock || 0;
-                break;
-              default:
-                return 0;
-            }
-
-            if (filterDto.order?.toLowerCase() === 'asc') {
-              return aValue - bValue;
-            } else {
-              return bValue - aValue;
-            }
-          });
-        }
-
-        return firestoreProducts.map((product) =>
-          this.mapFirestoreProductToEntity(product),
-        );
+        return await super.findAll(baseFilterOptions);
       }
 
-      const allProducts =
-        await this.firebaseService.getCollection<FirestoreProduct>(
-          this.collectionName,
-        );
-
-      let filteredProducts = allProducts;
-
-      if (filterDto.hairType) {
-        filteredProducts = filteredProducts.filter(
-          (product) => product.hairType === filterDto.hairType,
-        );
-      }
-
-      if (filterDto.concern) {
-        filteredProducts = filteredProducts.filter(
-          (product) => product.concern === filterDto.concern,
-        );
-      }
-
-      if (filterDto.brand) {
-        filteredProducts = filteredProducts.filter(
-          (product) => product.brand === filterDto.brand,
-        );
-      }
-
-      if (filterDto.search) {
-        const searchTerm = filterDto.search.toLowerCase();
-
-        filteredProducts = filteredProducts.filter(
-          (product) =>
-            product.title?.toLowerCase().includes(searchTerm) ||
-            product.description?.toLowerCase().includes(searchTerm),
-        );
-      }
-
-      if (filterDto?.sortBy && filterDto?.order) {
-        filteredProducts.sort((a, b) => {
-          let aValue, bValue;
-
-          switch (filterDto.sortBy) {
-            case SortBy.PRICE:
-              aValue = a.price || 0;
-              bValue = b.price || 0;
-              break;
-            case SortBy.POPULARITY:
-              aValue = a.stock || 0;
-              bValue = b.stock || 0;
-              break;
-            default:
-              return 0;
-          }
-
-          if (filterDto.order?.toLowerCase() === 'asc') {
-            return aValue - bValue;
-          } else {
-            return bValue - aValue;
-          }
-        });
-      } else {
-        filteredProducts.sort((a, b) => {
-          const aDate = a.createdAt instanceof Date ? a.createdAt.getTime() : 0;
-          const bDate = b.createdAt instanceof Date ? b.createdAt.getTime() : 0;
-
-          return bDate - aDate;
-        });
-      }
-
-      return filteredProducts.map((product) =>
-        this.mapFirestoreProductToEntity(product),
-      );
+      return await this.findAllWithFilters(filterDto);
     } catch (error) {
-      const allProducts =
-        await this.firebaseService.getCollection<FirestoreProduct>(
-          this.collectionName,
-        );
-
-      return allProducts.map((product) =>
-        this.mapFirestoreProductToEntity(product),
+      this.logger.error(
+        'Error in findAll, falling back to basic query:',
+        error,
       );
+
+      return await super.findAll();
     }
   }
 
-  async findOne(id: string): Promise<Product> {
-    const firestoreProduct =
-      await this.firebaseService.getDocument<FirestoreProduct>(
+  private async findAllWithFilters(
+    filterDto: FilterProductsDto,
+  ): Promise<Product[]> {
+    const allProducts =
+      await this.firebaseService.getCollection<FirestoreProduct>(
         this.collectionName,
-        id,
       );
 
-    if (!firestoreProduct) {
-      throw new NotFoundException(`Product with ID ${id} not found`);
+    let filteredProducts = allProducts;
+
+    if (filterDto.hairType) {
+      filteredProducts = filteredProducts.filter(
+        (product) => product.hairType === filterDto.hairType,
+      );
     }
 
-    return this.mapFirestoreProductToEntity(firestoreProduct);
+    if (filterDto.concern) {
+      filteredProducts = filteredProducts.filter(
+        (product) => product.concern === filterDto.concern,
+      );
+    }
+
+    if (filterDto.brand) {
+      filteredProducts = filteredProducts.filter(
+        (product) => product.brand === filterDto.brand,
+      );
+    }
+
+    if (filterDto.search) {
+      filteredProducts = this.applySearchFilter(
+        filteredProducts,
+        filterDto.search,
+      );
+    }
+
+    // Apply sorting using base implementation
+    if (filterDto?.sortBy && filterDto?.order) {
+      filteredProducts = this.applySorting(
+        filteredProducts,
+        this.mapSortBy(filterDto.sortBy),
+        filterDto.order?.toLowerCase() as 'asc' | 'desc',
+      );
+    } else {
+      filteredProducts = this.applySorting(
+        filteredProducts,
+        'createdAt',
+        'desc',
+      );
+    }
+
+    return filteredProducts.map((product) =>
+      this.mapFirestoreToEntity(product),
+    );
   }
 
-  async update(
-    id: string,
-    updateProductDto: UpdateProductDto,
-  ): Promise<Product> {
-    const existingProduct =
-      await this.firebaseService.getDocument<FirestoreProduct>(
-        this.collectionName,
-        id,
-      );
-
-    if (!existingProduct) {
-      throw new NotFoundException(`Product with ID ${id} not found`);
+  protected getSortValue(document: FirestoreProduct, sortBy: string): any {
+    switch (sortBy) {
+      case 'price':
+        return document.price || 0;
+      case 'stock':
+        return document.stock || 0;
+      case 'createdAt':
+        return this.convertFirestoreTimestamp(document.createdAt).getTime();
+      default:
+        return 0;
     }
-
-    const updateData: Partial<FirestoreProduct> = {};
-
-    if (updateProductDto.title !== undefined) {
-      updateData.title = updateProductDto.title;
-    }
-
-    if (updateProductDto.description !== undefined) {
-      updateData.description = updateProductDto.description;
-    }
-
-    if (updateProductDto.price !== undefined) {
-      updateData.price = updateProductDto.price;
-    }
-
-    if (updateProductDto.stock !== undefined) {
-      updateData.stock = updateProductDto.stock;
-    }
-
-    if (updateProductDto.imageSrc !== undefined) {
-      updateData.imageSrc = updateProductDto.imageSrc;
-    }
-
-    if (updateProductDto.hairType !== undefined) {
-      updateData.hairType = updateProductDto.hairType;
-    }
-
-    if (updateProductDto.concern !== undefined) {
-      updateData.concern = updateProductDto.concern;
-    }
-
-    if (updateProductDto.brand !== undefined) {
-      updateData.brand = updateProductDto.brand;
-    }
-
-    const updatedProduct =
-      await this.firebaseService.updateDocument<FirestoreProduct>(
-        this.collectionName,
-        id,
-        updateData,
-      );
-
-    return this.mapFirestoreProductToEntity(updatedProduct);
   }
 
-  async remove(id: string): Promise<void> {
-    const existingProduct =
-      await this.firebaseService.getDocument<FirestoreProduct>(
-        this.collectionName,
-        id,
-      );
-
-    if (!existingProduct) {
-      throw new NotFoundException(`Product with ID ${id} not found`);
+  private mapSortBy(sortBy?: SortBy): string {
+    switch (sortBy) {
+      case SortBy.PRICE:
+        return 'price';
+      case SortBy.POPULARITY:
+        return 'stock';
+      default:
+        return 'createdAt';
     }
-
-    await this.firebaseService.deleteDocument(this.collectionName, id);
   }
 
   async getFilterOptions(): Promise<{
@@ -274,72 +301,24 @@ export class ProductsFirestoreService {
         this.collectionName,
       );
 
-    const hairTypes = new Set<string>();
-    const concerns = new Set<string>();
-    const brands = new Set<string>();
+    const extractUniqueValues = (field: keyof FirestoreProduct): string[] => {
+      const values = new Set<string>();
 
-    allProducts.forEach((product) => {
-      if (product.hairType) {
-        hairTypes.add(product.hairType);
-      }
+      allProducts.forEach((product) => {
+        const value = product[field];
 
-      if (product.concern) {
-        concerns.add(product.concern);
-      }
+        if (value && typeof value === 'string') {
+          values.add(value);
+        }
+      });
 
-      if (product.brand) {
-        brands.add(product.brand);
-      }
-    });
+      return Array.from(values).sort();
+    };
 
     return {
-      hairTypes: Array.from(hairTypes).filter(Boolean),
-      concerns: Array.from(concerns).filter(Boolean),
-      brands: Array.from(brands).filter(Boolean),
+      hairTypes: extractUniqueValues('hairType'),
+      concerns: extractUniqueValues('concern'),
+      brands: extractUniqueValues('brand'),
     };
-  }
-
-  private mapFirestoreProductToEntity(
-    firestoreProduct: FirestoreProduct,
-  ): Product {
-    const product = new Product();
-
-    product.id = parseInt(firestoreProduct.id || '0', 10);
-    product.title = firestoreProduct.title;
-    product.description = firestoreProduct.description || null;
-    product.price = firestoreProduct.price;
-    product.stock = firestoreProduct.stock;
-    product.imageSrc = firestoreProduct.imageSrc || null;
-    product.hairType = firestoreProduct.hairType || null;
-    product.concern = firestoreProduct.concern || null;
-    product.brand = firestoreProduct.brand || null;
-
-    if (firestoreProduct.createdAt) {
-      product.createdAt = this.convertFirestoreTimestamp(
-        firestoreProduct.createdAt,
-      );
-    }
-
-    if (firestoreProduct.updatedAt) {
-      product.updatedAt = this.convertFirestoreTimestamp(
-        firestoreProduct.updatedAt,
-      );
-    }
-
-    return product;
-  }
-
-  private convertFirestoreTimestamp(
-    timestamp: FirebaseFirestore.Timestamp | Date,
-  ): Date {
-    if (timestamp instanceof Date) {
-      return timestamp;
-    }
-
-    if (timestamp && typeof timestamp === 'object' && 'toDate' in timestamp) {
-      return (timestamp as any).toDate();
-    }
-
-    return new Date();
   }
 }

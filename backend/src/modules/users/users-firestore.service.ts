@@ -1,180 +1,103 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { FirebaseService } from '../../common/firebase/firebase.service';
+import { Injectable } from '@nestjs/common';
 import { User, UserRole } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FirestoreUser } from './interfaces/firestore-user.interface';
+import { BaseFirestoreService } from '../../common/firebase/base-firestore.service';
+import { FirebaseService } from '../../common/firebase/firebase.service';
+import { TransformUtils } from '../../common/utils/validation.utils';
 
 @Injectable()
-export class UsersFirestoreService {
-  private readonly collectionName = 'users';
+export class UsersFirestoreService extends BaseFirestoreService<
+  User,
+  FirestoreUser,
+  CreateUserDto,
+  UpdateUserDto
+> {
+  protected readonly collectionName = 'users';
 
-  constructor(private readonly firebaseService: FirebaseService) {}
+  protected readonly searchFields = {
+    text: ['username', 'email'],
+  };
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    const firestoreUser: Omit<FirestoreUser, 'id'> = {
-      username: createUserDto.username,
-      email: createUserDto.email,
-      password: createUserDto.password,
-      role: createUserDto.role || UserRole.USER,
-      isActive: createUserDto.isActive !== false,
+  constructor(firebaseService: FirebaseService) {
+    super(firebaseService);
+  }
+
+  protected mapCreateDtoToFirestore(
+    createDto: CreateUserDto,
+  ): Omit<FirestoreUser, 'id'> {
+    return {
+      username: createDto.username,
+      email: createDto.email,
+      password: createDto.password,
+      role: createDto.role || UserRole.USER,
+      isActive: createDto.isActive !== false,
     };
-
-    const createdUser = await this.firebaseService.create<FirestoreUser>(
-      this.collectionName,
-      firestoreUser,
-    );
-
-    return this.mapFirestoreUserToEntity(createdUser);
   }
 
-  async findAll(): Promise<User[]> {
-    const firestoreUsers =
-      await this.firebaseService.getCollection<FirestoreUser>(
-        this.collectionName,
-      );
-
-    return firestoreUsers.map((user) =>
-      this.mapFirestoreUserToEntity(user, true),
-    );
+  protected mapUpdateDtoToFirestore(
+    updateDto: UpdateUserDto,
+  ): Partial<FirestoreUser> {
+    return TransformUtils.removeUndefined({
+      username: updateDto.username,
+      email: updateDto.email,
+      password: updateDto.password,
+      role: updateDto.role,
+      isActive: updateDto.isActive,
+    });
   }
 
-  async findOne(id: string): Promise<User> {
-    const firestoreUser = await this.firebaseService.getDocument<FirestoreUser>(
-      this.collectionName,
-      id,
-    );
-
-    if (!firestoreUser) {
-      throw new NotFoundException(`User with ID ${id} not found`);
-    }
-
-    return this.mapFirestoreUserToEntity(firestoreUser, true);
-  }
-
-  async findByUsername(username: string): Promise<User | null> {
-    const firestoreUser =
-      await this.firebaseService.findOneByField<FirestoreUser>(
-        this.collectionName,
-        'username',
-        username,
-      );
-
-    if (!firestoreUser) {
-      return null;
-    }
-
-    return this.mapFirestoreUserToEntity(firestoreUser);
-  }
-
-  async findByEmail(email: string): Promise<User | null> {
-    const firestoreUser =
-      await this.firebaseService.findOneByField<FirestoreUser>(
-        this.collectionName,
-        'email',
-        email,
-      );
-
-    if (!firestoreUser) {
-      return null;
-    }
-
-    return this.mapFirestoreUserToEntity(firestoreUser);
-  }
-
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
-    const existingUser = await this.firebaseService.getDocument<FirestoreUser>(
-      this.collectionName,
-      id,
-    );
-
-    if (!existingUser) {
-      throw new NotFoundException(`User with ID ${id} not found`);
-    }
-
-    const updateData: Partial<FirestoreUser> = {};
-
-    if (updateUserDto.username !== undefined) {
-      updateData.username = updateUserDto.username;
-    }
-
-    if (updateUserDto.email !== undefined) {
-      updateData.email = updateUserDto.email;
-    }
-
-    if (updateUserDto.password !== undefined) {
-      updateData.password = updateUserDto.password;
-    }
-
-    if (updateUserDto.role !== undefined) {
-      updateData.role = updateUserDto.role;
-    }
-
-    if (updateUserDto.isActive !== undefined) {
-      updateData.isActive = updateUserDto.isActive;
-    }
-
-    const updatedUser =
-      await this.firebaseService.updateDocument<FirestoreUser>(
-        this.collectionName,
-        id,
-        updateData,
-      );
-
-    return this.mapFirestoreUserToEntity(updatedUser, true);
-  }
-
-  async remove(id: string): Promise<void> {
-    const existingUser = await this.firebaseService.getDocument<FirestoreUser>(
-      this.collectionName,
-      id,
-    );
-
-    if (!existingUser) {
-      throw new NotFoundException(`User with ID ${id} not found`);
-    }
-
-    await this.firebaseService.deleteDocument(this.collectionName, id);
-  }
-
-  private mapFirestoreUserToEntity(
-    firestoreUser: FirestoreUser,
+  protected mapFirestoreToEntity(
+    document: FirestoreUser,
     excludePassword = false,
   ): User {
     const user = new User();
 
-    user.id = parseInt(firestoreUser.id || '0', 10);
-    user.username = firestoreUser.username;
-    user.email = firestoreUser.email;
-    user.role = firestoreUser.role as UserRole;
-    user.isActive = firestoreUser.isActive;
+    user.id = TransformUtils.safeParseInt(document.id);
+    user.username = document.username;
+    user.email = document.email;
+    user.role = document.role as UserRole;
+    user.isActive = document.isActive;
 
     if (!excludePassword) {
-      user.password = firestoreUser.password;
+      user.password = document.password;
     }
 
-    if (firestoreUser.createdAt) {
-      user.createdAt = this.convertFirestoreTimestamp(firestoreUser.createdAt);
-    }
-
-    if (firestoreUser.updatedAt) {
-      user.updatedAt = this.convertFirestoreTimestamp(firestoreUser.updatedAt);
-    }
+    user.createdAt = this.convertFirestoreTimestamp(document.createdAt);
+    user.updatedAt = this.convertFirestoreTimestamp(document.updatedAt);
 
     return user;
   }
 
-  private convertFirestoreTimestamp(
-    timestamp: FirebaseFirestore.Timestamp | Date,
-  ): Date {
-    if (timestamp instanceof Date) {
-      return timestamp;
-    }
+  protected getEntityName(): string {
+    return 'User';
+  }
 
-    if (timestamp && typeof timestamp === 'object' && 'toDate' in timestamp) {
-      return (timestamp as any).toDate();
-    }
+  async findAll(): Promise<User[]> {
+    const documents = await this.firebaseService.getCollection<FirestoreUser>(
+      this.collectionName,
+    );
 
-    return new Date();
+    return documents.map((document) =>
+      this.mapFirestoreToEntity(document, true),
+    );
+  }
+
+  async findByUsername(username: string): Promise<User | null> {
+    return await this.findOneByField('username', username);
+  }
+
+  async findByEmail(email: string): Promise<User | null> {
+    return await this.findOneByField('email', email);
+  }
+
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+    const updatedUser = await super.update(id, updateUserDto);
+
+    // Remove password from response for security
+    delete updatedUser.password;
+
+    return updatedUser;
   }
 }

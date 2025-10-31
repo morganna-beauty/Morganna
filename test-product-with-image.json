@@ -1,0 +1,10 @@
+{
+  "title": "Test Product Con Imagen Problema",
+  "description": "Testing fallback when image fails",
+  "price": 30000,
+  "stock": 5,
+  "imageSrc": "https://firebasestorage.googleapis.com/v0/b/nonexistent-bucket/o/test.jpg",
+  "hairType": "ondulado",
+  "concern": "danoReparacion",
+  "brand": "TestBrand"
+}

@@ -7,6 +7,7 @@ import {
   StorageFolders,
   FIREBASE_STORAGE_CONSTANTS,
 } from '../types/firebase-storage.types';
+import { ValidationUtils } from '../utils/validation.utils';
 
 @Injectable()
 export class FirebaseStorageService {
@@ -28,8 +29,24 @@ export class FirebaseStorageService {
     file: MulterFile,
     folder: string = StorageFolders.UPLOADS,
   ): Promise<UploadResult> {
+    // Validate input
+    if (!file || !file.buffer || file.buffer.length === 0) {
+      throw new Error('Invalid file: File is empty or corrupted');
+    }
+
+    if (!ValidationUtils.isValidString(file.originalname)) {
+      throw new Error('Invalid file: File must have a valid name');
+    }
+
+    if (file.size > FIREBASE_STORAGE_CONSTANTS.MAX_FILE_SIZE_MB * 1024 * 1024) {
+      throw new Error(
+        `File too large: Maximum size is ${FIREBASE_STORAGE_CONSTANTS.MAX_FILE_SIZE_MB}MB`,
+      );
+    }
+
     try {
-      const fileName = `${folder}/${uuidv4()}-${file.originalname}`;
+      const sanitizedFolder = ValidationUtils.sanitizeString(folder);
+      const fileName = `${sanitizedFolder}/${uuidv4()}-${file.originalname}`;
 
       const fileUpload = this.bucket.file(fileName);
 
@@ -140,6 +157,10 @@ export class FirebaseStorageService {
   }
 
   extractFileNameFromUrl(url: string): string | null {
+    if (!url || !ValidationUtils.isValidString(url)) {
+      return null;
+    }
+
     try {
       const match = url.match(/\/([^\/]+)$/);
 
@@ -152,6 +173,10 @@ export class FirebaseStorageService {
   }
 
   getFileNameFromStorage(url: string): string | null {
+    if (!url || !ValidationUtils.isValidString(url)) {
+      return null;
+    }
+
     try {
       const baseUrl = `https://storage.googleapis.com/${this.bucketName}/`;
 

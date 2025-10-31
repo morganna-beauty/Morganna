@@ -1,0 +1,9 @@
+{
+  "title": "Test Product Sin Imagen",
+  "description": "Testing product creation without image",
+  "price": 25000,
+  "stock": 10,
+  "hairType": "liso",
+  "concern": "cabelloSeco",
+  "brand": "TestBrand"
+}

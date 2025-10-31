@@ -49,6 +49,21 @@ export class ProductsFirestoreController {
     return this.productsService.create(createProductDto);
   }
 
+  @Post('test-create')
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({
+    summary: 'Test product creation with error handling (Public - for testing)',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Product created successfully (with or without image)',
+  })
+  @ApiResponse({ status: 400, description: 'Bad request' })
+  @ApiBody({ type: CreateProductDto })
+  testCreate(@Body() createProductDto: CreateProductDto) {
+    return this.productsService.create(createProductDto);
+  }
+
   @Get()
   @ApiOperation({
     summary: 'Get all products with optional filters and sorting (Public)',
@@ -82,7 +97,7 @@ export class ProductsFirestoreController {
     description: 'List of products retrieved successfully',
   })
   findAll(@Query() filterDto: FilterProductsDto) {
-    return this.productsService.findAll(filterDto);
+    return this.productsService.findAllProducts(filterDto);
   }
 
   @Get('filters/options')
