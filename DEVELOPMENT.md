@@ -1,11 +1,11 @@
 # Morganna Local Development Setup
 
-This guide shows how to run the database in Docker while developing the frontend and backend locally for the best development experience.
+This guide shows how to develop the Morganna application locally using Firebase as the backend database.
 
 ## Prerequisites
 
 - Node.js 18+ 
-- Docker Desktop (for database only)
+- Firebase project with Firestore and Storage enabled
 - Git
 
 ## Quick Start
@@ -17,13 +17,19 @@ cd morganna
 npm run install:all
 ```
 
-2. **Start development environment:**
+2. **Configure Firebase:**
+   - Copy `backend/.env.example` to `backend/.env`
+   - Fill in your Firebase configuration:
+     - `FIREBASE_PROJECT_ID`
+     - `FIREBASE_CLIENT_EMAIL` 
+     - `FIREBASE_PRIVATE_KEY`
+
+3. **Start development environment:**
 ```bash
 npm run dev:local
 ```
 
 This will:
-- Start PostgreSQL database in Docker
 - Start NestJS backend with hot reload 
 - Start Next.js frontend with hot reload
 
@@ -31,18 +37,13 @@ This will:
 
 If you prefer to start services individually:
 
-### 1. Start Database
-```bash
-npm run db:start
-```
-
-### 2. Start Backend (new terminal)
+### 1. Start Backend
 ```bash
 cd backend
 npm run start:dev
 ```
 
-### 3. Start Frontend (new terminal)
+### 2. Start Frontend (new terminal)
 ```bash
 cd frontend
 npm run dev
@@ -50,17 +51,15 @@ npm run dev
 
 ## Environment Variables
 
-The project automatically uses these configurations for local development:
-
-**Backend (.env.local):**
+**Backend (.env):**
 ```env
 NODE_ENV=development
-DATABASE_HOST=localhost
-DATABASE_PORT=5432
-DATABASE_USER=postgres
-DATABASE_PASSWORD=postgres
-DATABASE_NAME=morganna_db
 PORT=3001
+FRONTEND_URL=http://localhost:3000
+BASE_URL=http://localhost:3001
+FIREBASE_PROJECT_ID=your_firebase_project_id
+FIREBASE_CLIENT_EMAIL=your_firebase_client_email
+FIREBASE_PRIVATE_KEY=your_firebase_private_key
 ```
 
 **Frontend (.env.local):**
@@ -71,18 +70,16 @@ NEXT_PUBLIC_API_URL=http://localhost:3001/api
 ## Development Benefits
 
 ✅ **Hot Reload** - Changes are reflected instantly
-✅ **Fast Builds** - No Docker rebuild needed
+✅ **Fast Builds** - No Docker needed
 ✅ **Better Debugging** - Direct access to logs and debugging tools
 ✅ **IDE Integration** - Full IntelliSense and error highlighting
+✅ **Cloud Database** - Firebase Firestore provides real-time updates
 
 ## Available Scripts
 
 | Command | Description |
 |---------|-------------|
 | `npm run dev:local` | Start all services locally |
-| `npm run db:start` | Start database only |
-| `npm run db:stop` | Stop database |
-| `npm run db:reset` | Reset database |
 | `npm run backend:dev` | Start backend with hot reload |
 | `npm run frontend:dev` | Start frontend with hot reload |
 
@@ -90,24 +87,20 @@ NEXT_PUBLIC_API_URL=http://localhost:3001/api
 
 - **Frontend:** http://localhost:3000
 - **Backend API:** http://localhost:3001/api
-- **Database:** postgresql://postgres:postgres@localhost:5432/morganna_db
+- **API Documentation:** http://localhost:3001/api-docs
 
 ## Troubleshooting
 
 **Port conflicts:**
 ```bash
 # Kill processes on ports
-npx kill-port 3000 3001 5432
+npx kill-port 3000 3001
 ```
 
-**Database connection issues:**
-```bash
-# Check if database container is running
-docker ps | grep morganna-postgres-local
-
-# View database logs
-docker logs morganna-postgres-local
-```
+**Firebase connection issues:**
+- Check that Firebase project ID is correct
+- Verify that Firestore and Storage are enabled in Firebase Console
+- Ensure Firebase credentials are properly formatted in .env
 
 **Dependencies issues:**
 ```bash

@@ -9,13 +9,22 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiConsumes, ApiBody, ApiResponse } from '@nestjs/swagger';
-import { LocalUploadService } from '../services/local-upload.service';
-import { UploadResult } from '../interfaces/upload.interface';
+import { FirebaseStorageService } from '../firebase/firebase-storage.service';
+import { FileValidationService } from '../services/file-validation.service';
+import {
+  MulterFile,
+  UploadResult,
+  StorageFolders,
+} from '../types/firebase-storage.types';
+import { ReplaceImageBody } from '../types/firebase-storage.types';
 
 @ApiTags('uploads')
 @Controller('uploads')
 export class UploadController {
-  constructor(private readonly uploadService: LocalUploadService) {}
+  constructor(
+    private readonly firebaseStorageService: FirebaseStorageService,
+    private readonly fileValidationService: FileValidationService,
+  ) {}
 
   @Post('image')
   @ApiConsumes('multipart/form-data')
@@ -52,14 +61,23 @@ export class UploadController {
     description: 'Invalid file or file type',
   })
   @UseInterceptors(FileInterceptor('file'))
-  async uploadImage(@UploadedFile() file: any): Promise<UploadResult> {
-    if (!file) {
-      throw new BadRequestException('No file provided');
+  async uploadImage(@UploadedFile() file: MulterFile): Promise<UploadResult> {
+    const validation = this.fileValidationService.validateFile(file);
+
+    if (!validation.isValid) {
+      const errorMessages = validation.errors
+        .map((err) => err.message)
+        .join(', ');
+
+      throw new BadRequestException(errorMessages);
     }
 
     try {
-      return await this.uploadService.uploadImage(file);
-    } catch (error) {
+      return await this.firebaseStorageService.uploadFile(
+        file,
+        StorageFolders.IMAGES,
+      );
+    } catch (error: any) {
       throw new BadRequestException(error.message);
     }
   }
@@ -104,26 +122,34 @@ export class UploadController {
   })
   @UseInterceptors(FileInterceptor('file'))
   async replaceImage(
-    @UploadedFile() file: any,
-    @Body() body: { previousUrl?: string },
+    @UploadedFile() file: MulterFile,
+    @Body() body: ReplaceImageBody,
   ): Promise<UploadResult> {
-    if (!file) {
-      throw new BadRequestException('No file provided');
+    const validation = this.fileValidationService.validateFile(file);
+
+    if (!validation.isValid) {
+      const errorMessages = validation.errors
+        .map((err) => err.message)
+        .join(', ');
+
+      throw new BadRequestException(errorMessages);
     }
 
     try {
       if (body.previousUrl) {
-        const previousFilename = this.uploadService.extractFilenameFromUrl(
-          body.previousUrl,
-        );
+        const previousFilename =
+          this.firebaseStorageService.getFileNameFromStorage(body.previousUrl);
 
         if (previousFilename) {
-          await this.uploadService.deleteImage(previousFilename);
+          await this.firebaseStorageService.deleteFile(previousFilename);
         }
       }
 
-      return await this.uploadService.uploadImage(file);
-    } catch (error) {
+      return await this.firebaseStorageService.uploadFile(
+        file,
+        StorageFolders.IMAGES,
+      );
+    } catch (error: any) {
       throw new BadRequestException(error.message);
     }
   }

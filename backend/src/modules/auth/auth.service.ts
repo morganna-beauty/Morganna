@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
+import { UsersFirestoreService } from '../users/users-firestore.service';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/login.dto';
 import { AuthResponseDto } from './dto/auth-response.dto';
@@ -10,7 +10,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UsersService,
+    private usersService: UsersFirestoreService,
     private jwtService: JwtService,
   ) {}
 

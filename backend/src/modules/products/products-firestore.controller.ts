@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  ParseIntPipe,
   HttpStatus,
   HttpCode,
   Query,
@@ -21,7 +20,7 @@ import {
   ApiQuery,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import { ProductsService } from './products.service';
+import { ProductsFirestoreService } from './products-firestore.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { FilterProductsDto } from './dto/filter-products.dto';
@@ -31,16 +30,16 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRole } from '../users/entities/user.entity';
 
 @ApiTags('products')
-@ApiBearerAuth()
 @Controller('products')
-export class ProductsController {
-  constructor(private readonly productsService: ProductsService) {}
+export class ProductsFirestoreController {
+  constructor(private readonly productsService: ProductsFirestoreService) {}
 
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
+  @ApiBearerAuth('bearer')
   @HttpCode(HttpStatus.CREATED)
-  @ApiOperation({ summary: 'Create a new product' })
+  @ApiOperation({ summary: 'Create a new product (Admin only)' })
   @ApiResponse({ status: 201, description: 'Product created successfully' })
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
@@ -52,7 +51,7 @@ export class ProductsController {
 
   @Get()
   @ApiOperation({
-    summary: 'Get all products with optional filters and sorting',
+    summary: 'Get all products with optional filters and sorting (Public)',
   })
   @ApiQuery({
     name: 'hairType',
@@ -86,48 +85,8 @@ export class ProductsController {
     return this.productsService.findAll(filterDto);
   }
 
-  @Get(':id')
-  @ApiOperation({ summary: 'Get a product by ID' })
-  @ApiParam({ name: 'id', description: 'Product ID', type: 'number' })
-  @ApiResponse({ status: 200, description: 'Product retrieved successfully' })
-  @ApiResponse({ status: 404, description: 'Product not found' })
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.productsService.findOne(id);
-  }
-
-  @Patch(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
-  @ApiOperation({ summary: 'Update a product' })
-  @ApiParam({ name: 'id', description: 'Product ID', type: 'number' })
-  @ApiBody({ type: UpdateProductDto })
-  @ApiResponse({ status: 200, description: 'Product updated successfully' })
-  @ApiResponse({ status: 404, description: 'Product not found' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiResponse({ status: 403, description: 'Forbidden - Admin role required' })
-  update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateProductDto: UpdateProductDto,
-  ) {
-    return this.productsService.update(id, updateProductDto);
-  }
-
-  @Delete(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: 'Delete a product' })
-  @ApiParam({ name: 'id', description: 'Product ID', type: 'number' })
-  @ApiResponse({ status: 204, description: 'Product deleted successfully' })
-  @ApiResponse({ status: 404, description: 'Product not found' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiResponse({ status: 403, description: 'Forbidden - Admin role required' })
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.productsService.remove(id);
-  }
-
   @Get('filters/options')
-  @ApiOperation({ summary: 'Get available filter options' })
+  @ApiOperation({ summary: 'Get available filter options (Public)' })
   @ApiResponse({
     status: 200,
     description: 'Filter options retrieved successfully',
@@ -142,5 +101,44 @@ export class ProductsController {
   })
   getFilterOptions() {
     return this.productsService.getFilterOptions();
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get a product by ID (Public)' })
+  @ApiParam({ name: 'id', description: 'Product ID', type: 'string' })
+  @ApiResponse({ status: 200, description: 'Product retrieved successfully' })
+  @ApiResponse({ status: 404, description: 'Product not found' })
+  findOne(@Param('id') id: string) {
+    return this.productsService.findOne(id);
+  }
+
+  @Patch(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @ApiBearerAuth('bearer')
+  @ApiOperation({ summary: 'Update a product (Admin only)' })
+  @ApiParam({ name: 'id', description: 'Product ID', type: 'string' })
+  @ApiBody({ type: UpdateProductDto })
+  @ApiResponse({ status: 200, description: 'Product updated successfully' })
+  @ApiResponse({ status: 404, description: 'Product not found' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden - Admin role required' })
+  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
+    return this.productsService.update(id, updateProductDto);
+  }
+
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @ApiBearerAuth('bearer')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Delete a product (Admin only)' })
+  @ApiParam({ name: 'id', description: 'Product ID', type: 'string' })
+  @ApiResponse({ status: 204, description: 'Product deleted successfully' })
+  @ApiResponse({ status: 404, description: 'Product not found' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden - Admin role required' })
+  remove(@Param('id') id: string) {
+    return this.productsService.remove(id);
   }
 }

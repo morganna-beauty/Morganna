@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   UseGuards,
-  ParseIntPipe,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -19,7 +18,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRole } from './entities/user.entity';
-import { UsersService } from './users.service';
+import { UsersFirestoreService } from './users-firestore.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
@@ -27,9 +26,9 @@ import * as bcrypt from 'bcrypt';
 @ApiTags('users')
 @Controller('users')
 @UseGuards(JwtAuthGuard, RolesGuard)
-@ApiBearerAuth()
-export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+@ApiBearerAuth('bearer')
+export class UsersFirestoreController {
+  constructor(private readonly usersService: UsersFirestoreService) {}
 
   @Post()
   @Roles(UserRole.ADMIN)
@@ -67,7 +66,7 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'User found' })
   @ApiResponse({ status: 404, description: 'User not found' })
   @ApiResponse({ status: 403, description: 'Forbidden - Admin role required' })
-  findOne(@Param('id', ParseIntPipe) id: number) {
+  findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
   }
 
@@ -77,10 +76,7 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'User updated successfully' })
   @ApiResponse({ status: 404, description: 'User not found' })
   @ApiResponse({ status: 403, description: 'Forbidden - Admin role required' })
-  async update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateUserDto: UpdateUserDto,
-  ) {
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     // Hash password if it's being updated
     if (updateUserDto.password) {
       updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
@@ -100,7 +96,7 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'User deleted successfully' })
   @ApiResponse({ status: 404, description: 'User not found' })
   @ApiResponse({ status: 403, description: 'Forbidden - Admin role required' })
-  remove(@Param('id', ParseIntPipe) id: number) {
+  remove(@Param('id') id: string) {
     return this.usersService.remove(id);
   }
 }

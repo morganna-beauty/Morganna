@@ -1,13 +1,12 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ProductsService } from './products.service';
-import { ProductsController } from './products.controller';
-import { Product } from './entities/product.entity';
+import { FirebaseModule } from '../../common/firebase/firebase.module';
+import { ProductsFirestoreService } from './products-firestore.service';
+import { ProductsFirestoreController } from './products-firestore.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Product])],
-  controllers: [ProductsController],
-  providers: [ProductsService],
-  exports: [ProductsService],
+  imports: [FirebaseModule],
+  controllers: [ProductsFirestoreController],
+  providers: [ProductsFirestoreService],
+  exports: [ProductsFirestoreService],
 })
 export class ProductsModule {}

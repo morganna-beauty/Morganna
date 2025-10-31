@@ -2,8 +2,6 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe, Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { join } from 'path';
-import * as express from 'express';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -26,27 +24,35 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
 
-  // Configurar servicio de archivos estáticos
-  const uploadsPath = join(process.cwd(), 'public', 'uploads');
-
-  logger.log(`📁 Configurando archivos estáticos desde: ${uploadsPath}`);
-  logger.log(`📁 CWD actual: ${process.cwd()}`);
-
-  // Usar middleware personalizado para archivos estáticos
-  app.use('/uploads', express.static(uploadsPath));
-
   const config = new DocumentBuilder()
     .setTitle('Morganna API')
     .setDescription('API documentation for Morganna project')
     .setVersion('1.0')
+    .addTag('auth', 'Authentication endpoints')
+    .addTag('users', 'User management')
     .addTag('products', 'Product management')
     .addTag('uploads', 'File upload management')
     .addTag('health', 'Health check endpoints')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'Authorization',
+        description: 'Enter JWT token',
+        in: 'header',
+      },
+      'bearer',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
 
-  SwaggerModule.setup('api-docs', app, document);
+  SwaggerModule.setup('api-docs', app, document, {
+    swaggerOptions: {
+      persistAuthorization: true,
+    },
+  });
 
   const port = process.env.PORT || 3001;
 
