@@ -1,2 +1,1 @@
-// Entities barrel file
-export { Product } from './product.entity';
+export * from './product.entity';

@@ -32,12 +32,25 @@
       { "blankLine": "any", "prev": "directive", "next": "directive" },
       { "blankLine": "always", "prev": "import", "next": "*" },
       { "blankLine": "any", "prev": "import", "next": "import" },
-      { "blankLine": "always", "prev": "*", "next": "export" },
+      { "blankLine": "any", "prev": "export", "next": "export" },
       { "blankLine": "always", "prev": "*", "next": "class" },
       { "blankLine": "always", "prev": "*", "next": "function" },
       { "blankLine": "always", "prev": "block-like", "next": "*" }
     ],
     "lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": false }],
     "newline-before-return": "error"
-  }
+  },
+  "overrides": [
+    {
+      "files": ["**/index.ts"],
+      "rules": {
+        "padding-line-between-statements": [
+          "error",
+          { "blankLine": "any", "prev": "*", "next": "export" },
+          { "blankLine": "any", "prev": "export", "next": "export" }
+        ],
+        "newline-before-return": "off"
+      }
+    }
+  ]
 }

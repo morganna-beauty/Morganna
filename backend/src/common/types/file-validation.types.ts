@@ -1,6 +1,5 @@
 import { AllowedImageMimeTypes, MulterFile } from './firebase-storage.types';
 
-// Tipos para validación de archivos
 export interface FileValidator {
   validateFile(file: MulterFile): FileValidationResult;
   validateMimeType(mimeType: string): boolean;
@@ -39,7 +38,6 @@ export enum ValidationWarningCode {
   UNCOMMON_FORMAT = 'UNCOMMON_FORMAT',
 }
 
-// Tipos para configuración de validación
 export interface ValidationConfig {
   maxSizeBytes: number;
   minSizeBytes: number;
@@ -48,7 +46,6 @@ export interface ValidationConfig {
   allowEmptyFiles: boolean;
 }
 
-// Tipos para metadatos de archivo
 export interface FileMetadata {
   originalName: string;
   size: number;
@@ -65,7 +62,6 @@ export interface ImageDimensions {
   aspectRatio: number;
 }
 
-// Tipos para respuesta de API detallada
 export interface DetailedUploadResult {
   success: boolean;
   file?: {
@@ -84,7 +80,6 @@ export interface DetailedUploadResult {
   };
 }
 
-// Tipos para batch operations
 export interface BatchUploadRequest {
   files: MulterFile[];
   folder: string;
@@ -109,7 +104,6 @@ export interface BatchUploadResult {
   };
 }
 
-// Tipos para utilidades de archivo
 export interface FileUtils {
   extractExtension(fileName: string): string;
   generateFileName(originalName: string, folder: string): string;
@@ -118,7 +112,6 @@ export interface FileUtils {
   getImageDimensions(buffer: Buffer): Promise<ImageDimensions>;
 }
 
-// Constantes de validación tipadas
 export const FILE_VALIDATION_CONSTANTS = {
   MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB
   MIN_FILE_SIZE: 1024, // 1KB
