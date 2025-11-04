@@ -5,17 +5,28 @@ import { FilterProductsRequest, HairType, Concern } from '@/types';
 import { useProducts } from './useProducts';
 
 export function useFilteredProducts() {
-  const [selectedHairType, setSelectedHairType] = useState('');
-  const [selectedConcern, setSelectedConcern] = useState('');
-  const [selectedBrand, setSelectedBrand] = useState('');
+  const [selectedHairType, setSelectedHairType] = useState<string[]>([]);
+  const [selectedConcern, setSelectedConcern] = useState<string[]>([]);
+  const [selectedBrand, setSelectedBrand] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState('default');
 
   const filters = useMemo(() => {
     const filterRequest: FilterProductsRequest = {};
 
-    if (selectedHairType) filterRequest.hairType = selectedHairType as HairType;
-    if (selectedConcern) filterRequest.concern = selectedConcern as Concern;
-    if (selectedBrand) filterRequest.brand = selectedBrand;
+    // If multiple hair types selected, use first one (backend supports single value)
+    if (selectedHairType.length > 0) {
+      filterRequest.hairType = selectedHairType[0] as HairType;
+    }
+
+    // Concerns support arrays in backend
+    if (selectedConcern.length > 0) {
+      filterRequest.concern = selectedConcern as Concern[];
+    }
+
+    // If multiple brands selected, use first one (backend supports single value)
+    if (selectedBrand.length > 0) {
+      filterRequest.brand = selectedBrand[0];
+    }
 
     switch (sortBy) {
       case 'priceLowToHigh':
@@ -47,10 +58,16 @@ export function useFilteredProducts() {
     updateFilters(filters);
   }, [filters, updateFilters]);
 
-  const handleSetHairType = useCallback((value: string) => setSelectedHairType(value), []);
-  const handleSetConcern = useCallback((value: string) => setSelectedConcern(value), []);
-  const handleSetBrand = useCallback((value: string) => setSelectedBrand(value), []);
+  const handleSetHairType = useCallback((values: string[]) => setSelectedHairType(values), []);
+  const handleSetConcern = useCallback((values: string[]) => setSelectedConcern(values), []);
+  const handleSetBrand = useCallback((values: string[]) => setSelectedBrand(values), []);
   const handleSetSortBy = useCallback((value: string) => setSortBy(value), []);
+
+  const clearFilters = useCallback(() => {
+    setSelectedHairType([]);
+    setSelectedConcern([]);
+    setSelectedBrand([]);
+  }, []);
 
   return useMemo(
     () => ({
@@ -66,6 +83,7 @@ export function useFilteredProducts() {
       setSelectedConcern: handleSetConcern,
       setSelectedBrand: handleSetBrand,
       setSortBy: handleSetSortBy,
+      clearFilters,
     }),
     [
       products,
@@ -80,6 +98,7 @@ export function useFilteredProducts() {
       handleSetConcern,
       handleSetBrand,
       handleSetSortBy,
+      clearFilters,
     ]
   );
 }

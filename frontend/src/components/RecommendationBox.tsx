@@ -8,7 +8,6 @@ interface RecommendationBoxProps {
   onRestart: () => void
 }
 
-
 export const RecommendationBox: React.FC<RecommendationBoxProps> = ({
   text,
   showFullText,
@@ -18,10 +17,12 @@ export const RecommendationBox: React.FC<RecommendationBoxProps> = ({
   const { t } = useI18n()
 
   return (
-    <motion.div className="bg-white rounded-2xl shadow-md p-6 max-w-2xl text-center border border-gray-200 flex flex-col items-center">
-      <motion.p className="text-gray-700 text-base leading-relaxed mb-6 whitespace-pre-line">
-        {text || t('diagnostic.recommendations.not_found')}
-      </motion.p>
+    <motion.div className="bg-white rounded-2xl shadow-md p-6 w-full max-w-2xl text-center border border-gray-200 flex flex-col items-center">
+      <div className="w-full max-h-96 overflow-y-auto mb-6 px-2">
+        <motion.p className="text-gray-700 text-base leading-relaxed whitespace-pre-line">
+          {text || t('diagnostic.recommendations.not_found')}
+        </motion.p>
+      </div>
 
       <button
         onClick={onToggleFullText}

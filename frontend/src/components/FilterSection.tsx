@@ -10,19 +10,29 @@ interface FilterSectionProps {
   title: string;
   name: string;
   options: FilterOption[];
-  selectedValue: string;
-  onChange: (value: string) => void;
+  selectedValues: string[];
+  onChange: (values: string[]) => void;
+  multiple?: boolean;
 }
 
 const FilterSection = memo(
-  ({ title, name, options, selectedValue, onChange }: FilterSectionProps) => {
+  ({ title, name, options, selectedValues, onChange, multiple = true }: FilterSectionProps) => {
     const { t } = useI18n();
 
     const handleChange = useCallback(
-      (e: React.ChangeEvent<HTMLInputElement>) => {
-        onChange(e.target.value);
+      (optionId: string) => {
+        if (multiple) {
+          // Selección múltiple: toggle
+          const newValues = selectedValues.includes(optionId)
+            ? selectedValues.filter((id) => id !== optionId)
+            : [...selectedValues, optionId];
+          onChange(newValues);
+        } else {
+          // Selección única: reemplazar
+          onChange([optionId]);
+        }
       },
-      [onChange]
+      [selectedValues, onChange, multiple]
     );
 
     const optionList = useMemo(
@@ -30,13 +40,17 @@ const FilterSection = memo(
         options.map((option) => (
           <li key={option.id} className="flex flex-row items-center p-0 gap-2 min-h-[24px] w-full">
             <input
-              type="radio"
+              type={multiple ? 'checkbox' : 'radio'}
               name={name}
               id={option.id}
               value={option.id}
-              checked={selectedValue === option.id}
-              onChange={handleChange}
-              className="w-5 h-5 md:w-6 md:h-6 cursor-pointer flex-shrink-0"
+              checked={selectedValues.includes(option.id)}
+              onChange={() => handleChange(option.id)}
+              className="w-5 h-5 md:w-6 md:h-6 cursor-pointer flex-shrink-0 rounded-full border-2 appearance-none transition-all duration-200 focus:ring-2 focus:ring-[#215E6B] focus:ring-offset-1"
+              style={{
+                borderColor: selectedValues.includes(option.id) ? '#215E6B' : '#CAC4D0',
+                backgroundColor: selectedValues.includes(option.id) ? '#215E6B' : 'transparent',
+              }}
             />
 
             <label
@@ -47,7 +61,7 @@ const FilterSection = memo(
             </label>
           </li>
         )),
-      [options, selectedValue, handleChange, t, name]
+      [options, selectedValues, handleChange, t, name]
     );
 
     return (

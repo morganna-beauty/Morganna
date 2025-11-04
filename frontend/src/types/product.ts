@@ -32,7 +32,7 @@ export interface Product {
   updatedAt: string;
   imageSrc?: string;
   hairType?: HairType;
-  concern?: Concern;
+  concern?: Concern[];
   brand?: string;
   benefits?: string[];
   ingredients?: string[];
@@ -45,7 +45,7 @@ export interface CreateProductRequest {
   stock?: number;
   imageSrc?: string;
   hairType?: HairType;
-  concern?: Concern;
+  concern?: Concern[];
   brand?: string;
   benefits?: string[];
   ingredients?: string[];
@@ -55,7 +55,7 @@ export interface UpdateProductRequest extends Partial<CreateProductRequest> {}
 
 export interface FilterProductsRequest {
   hairType?: HairType;
-  concern?: Concern;
+  concern?: Concern[];
   brand?: string;
   search?: string;
   sortBy?: SortBy;

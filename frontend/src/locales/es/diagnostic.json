@@ -34,7 +34,34 @@
     "see_less": "Ver menos",
     "restart": "Volver al Diagnóstico"
   },
+  "recommendedProducts": "Productos Recomendados",
+  "result": "Resultados de tu diagnóstico capilar",
+  "details": "Basado en tus respuestas, hemos identificado las siguientes necesidades para tu cabello:",
+  "personalAdviceTitle": "¿Necesitas asesoramiento personalizado?",
+  "personalAdviceDetail": "Contacta directamente para una consulta y resolver todas tus dudas",
   "recommendations": {
     "not_found": "No se encontró una recomendación."
+  },
+  "recommendationHeader": {
+    "hydration": {
+      "title": "Hidratación profunda",
+      "detail": "Cabello seco y opaco: recomendamos líneas hidratantes y pre-shampoo."
+    },
+    "repair": {
+      "title": "Reparación y fuerza",
+      "detail": "Daño y rotura: busca productos con proteínas y reparación intensiva."
+    },
+    "frizz": {
+      "title": "Control del frizz",
+      "detail": "Controla el encrespamiento con activos suavizantes y protección térmica."
+    },
+    "volume": {
+      "title": "Más volumen",
+      "detail": "Aporta cuerpo y volumen sin apelmazar."
+    },
+    "generic": {
+      "title": "Tu recomendación personalizada",
+      "detail": "Basado en tus respuestas, seleccionamos productos para tus necesidades."
+    }
   }
 }

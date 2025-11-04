@@ -17,3 +17,7 @@ function Star({ className }: { className?: string }) {
 }
 
 export default Star
+
+
+
+

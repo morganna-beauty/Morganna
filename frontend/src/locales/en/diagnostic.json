@@ -34,7 +34,34 @@
     "see_less": "See less",
     "restart": "Restart Diagnosis"
   },
+  "recommendedProducts": "Recommended Products",
+  "details": "Based on your answers, we have identified the following needs for your hair:",
+  "result": "Results of your hair diagnosis",
+  "personalAdviceTitle": "Do you need personalized advice?",
+  "personalAdviceDetail": "Contact us directly for a consultation and to resolve all your doubts.",
   "recommendations": {
     "not_found": "Recommendation not found."
+  },
+  "recommendationHeader": {
+    "hydration": {
+      "title": "Deep hydration",
+      "detail": "Dry and dull hair: we recommend hydrating lines and pre-shampoo."
+    },
+    "repair": {
+      "title": "Repair and strength",
+      "detail": "Damage and breakage: look for proteins and intensive repair."
+    },
+    "frizz": {
+      "title": "Frizz control",
+      "detail": "Tame frizz with smoothing actives and heat protection."
+    },
+    "volume": {
+      "title": "More volume",
+      "detail": "Add body and volume without weighing hair down."
+    },
+    "generic": {
+      "title": "Your personalized recommendation",
+      "detail": "Based on your answers, we selected products for your needs."
+    }
   }
 }

@@ -55,9 +55,20 @@ export const productsApi = {
     const params = new URLSearchParams();
 
     if (filters?.hairType) params.append('hairType', filters.hairType);
-    if (filters?.concern) params.append('concern', filters.concern);
+    
+    // Handle concerns as array (backend expects 'concerns' as array)
+    if (filters?.concern && Array.isArray(filters.concern)) {
+      filters.concern.forEach((concern) => {
+        params.append('concerns', concern);
+      });
+    } else if (filters?.concern) {
+      params.append('concerns', filters.concern as string);
+    }
+    
     if (filters?.brand) params.append('brand', filters.brand);
     if (filters?.search) params.append('search', filters.search);
+    if (filters?.sortBy) params.append('sortBy', filters.sortBy);
+    if (filters?.order) params.append('order', filters.order);
 
     const response = await api.get<Product[]>(`/products?${params.toString()}`);
 
