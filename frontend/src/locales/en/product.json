@@ -28,5 +28,11 @@
   "selectType": "Select type",
   "selectConcern": "Select concern",
   "brandPlaceholder": "Brand name",
-  "typeAndConcern": "Type/Concern"
+  "typeAndConcern": "Type/Concern",
+  "benefits": "Product Benefits",
+  "ingredients": "Product Ingredients",
+  "benefitsPlaceholder": "Enter each benefit on a new line\nExample:\nMoisturizes hair\nReduces frizz\nStrengthens hair fibers",
+  "ingredientsPlaceholder": "Enter each ingredient on a new line\nExample:\nArgan Oil\nHydrolyzed Keratin\nAloe Vera Extract",
+  "benefitsHint": "Enter each benefit on a new line",
+  "ingredientsHint": "Enter each ingredient on a new line"
 }

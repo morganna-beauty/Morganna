@@ -1,4 +1,3 @@
-// CSS Module declarations
 declare module '*.css' {
   const content: Record<string, string>;
   export default content;
@@ -29,13 +28,11 @@ declare module '*.module.sass' {
   export default classes;
 }
 
-// Global CSS imports (like in layout.tsx)
 declare module '*/globals.css' {
   const content: any;
   export default content;
 }
 
-// Image and other asset declarations
 declare module '*.png' {
   const content: string;
   export default content;

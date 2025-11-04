@@ -206,7 +206,7 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
           </div>
         </div>
 
-        {/* Imagen del producto */}
+
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             {t('product.image')}
@@ -289,7 +289,7 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
         {/* Benefits Section */}
         <div>
           <label htmlFor="benefits" className="block text-sm font-medium text-gray-700 mb-1">
-            Beneficios del Producto
+            {t('product.benefits')}
           </label>
           <textarea
             id="benefits"
@@ -302,17 +302,17 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
             }}
             rows={4}
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-            placeholder="Ingresa cada beneficio en una línea nueva&#10;Ejemplo:&#10;Hidrata el cabello&#10;Reduce el frizz&#10;Fortalece las fibras capilares"
+            placeholder={t('product.benefitsPlaceholder')}
           />
           <p className="mt-1 text-sm text-gray-500">
-            Ingresa cada beneficio en una línea nueva
+            {t('product.benefitsHint')}
           </p>
         </div>
 
         {/* Ingredients Section */}
         <div>
           <label htmlFor="ingredients" className="block text-sm font-medium text-gray-700 mb-1">
-            Ingredientes del Producto
+            {t('product.ingredients')}
           </label>
           <textarea
             id="ingredients"
@@ -325,10 +325,10 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
             }}
             rows={4}
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-            placeholder="Ingresa cada ingrediente en una línea nueva&#10;Ejemplo:&#10;Aceite de Argán&#10;Keratina hidrolizada&#10;Extracto de aloe vera"
+            placeholder={t('product.ingredientsPlaceholder')}
           />
           <p className="mt-1 text-sm text-gray-500">
-            Ingresa cada ingrediente en una línea nueva
+            {t('product.ingredientsHint')}
           </p>
         </div>
 
