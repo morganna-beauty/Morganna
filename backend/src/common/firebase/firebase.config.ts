@@ -17,6 +17,7 @@ export class FirebaseConfig {
         'FIREBASE_CLIENT_EMAIL',
       );
       const privateKey = this.configService.get<string>('FIREBASE_PRIVATE_KEY');
+      const storageBucket = this.configService.get<string>('FIREBASE_STORAGE_BUCKET');
 
       if (!projectId || !clientEmail || !privateKey) {
         throw new Error(
@@ -27,6 +28,9 @@ export class FirebaseConfig {
       // Replace escaped newlines with actual newlines
       const formattedPrivateKey = privateKey.replace(/\\n/g, '\n');
 
+      // Use custom storage bucket if provided, otherwise default to project bucket
+      const bucketName = storageBucket || `${projectId}.appspot.com`;
+
       this.app = admin.initializeApp({
         credential: admin.credential.cert({
           projectId,
@@ -34,6 +38,7 @@ export class FirebaseConfig {
           privateKey: formattedPrivateKey,
         }),
         projectId,
+        storageBucket: bucketName,
       });
     } else {
       this.app = admin.app();

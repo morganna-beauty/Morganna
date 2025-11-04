@@ -28,8 +28,9 @@ export class StorageDiagnosticsController {
   })
   async getDiagnostics() {
     try {
-      const projectId = this.firebaseConfig.getApp().options.projectId;
-      const bucketName = `${projectId}.appspot.com`;
+      const app = this.firebaseConfig.getApp();
+      const projectId = app.options.projectId;
+      const bucketName = app.options.storageBucket || `${projectId}.appspot.com`;
 
       const storage = this.firebaseConfig.getStorage();
       const bucket = storage.bucket(bucketName);

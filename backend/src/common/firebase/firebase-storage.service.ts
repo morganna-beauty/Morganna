@@ -19,10 +19,14 @@ export class FirebaseStorageService {
 
   constructor(private firebaseConfig: FirebaseConfig) {
     const storage = firebaseConfig.getStorage();
-    const projectId = firebaseConfig.getApp().options.projectId;
-
-    this.bucketName = `${projectId}.appspot.com`;
+    const app = firebaseConfig.getApp();
+    const projectId = app.options.projectId;
+    
+    // Use storage bucket from app config if available, otherwise fallback to default format
+    this.bucketName = app.options.storageBucket || `${projectId}.appspot.com`;
     this.bucket = storage.bucket(this.bucketName);
+    
+    this.logger.log(`🔥 Firebase Storage initialized with bucket: ${this.bucketName}`);
   }
 
   async uploadFile(
