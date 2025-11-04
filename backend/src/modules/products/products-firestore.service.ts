@@ -190,7 +190,7 @@ export class ProductsFirestoreService extends BaseFirestoreService<
     try {
       if (
         !filterDto ||
-        (!filterDto.hairType && !filterDto.concern && !filterDto.brand)
+        (!filterDto.hairType && (!filterDto.concerns || filterDto.concerns.length === 0) && !filterDto.brand)
       ) {
         const baseFilterOptions = {
           search: filterDto?.search,
@@ -228,9 +228,9 @@ export class ProductsFirestoreService extends BaseFirestoreService<
       );
     }
 
-    if (filterDto.concern) {
+    if (filterDto.concerns && filterDto.concerns.length > 0) {
       filteredProducts = filteredProducts.filter(
-        (product) => product.concern === filterDto.concern,
+        (product) => product.concern && filterDto.concerns.includes(product.concern),
       );
     }
 
