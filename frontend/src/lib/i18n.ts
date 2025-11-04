@@ -12,7 +12,9 @@ export type SupportedNamespace =
   | 'bestsellers'
   | 'routine'
   | 'footer'
-  | 'filters';
+  | 'filters'
+  | 'cart'
+  | 'upload';
 
 export type TranslationValue = string | { [key: string]: TranslationValue };
 

@@ -1,16 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Product } from './entities/product.entity';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
-import { FilterProductsDto, SortBy } from './dto/filter-products.dto';
-import { FirestoreProduct } from './interfaces/firestore-product.interface';
-import { BaseFirestoreService } from '../../common/firebase/base-firestore.service';
-import { FirebaseService } from '../../common/firebase/firebase.service';
-import { FirebaseStorageService } from '../../common/firebase/firebase-storage.service';
-import {
-  TransformUtils,
-  ValidationUtils,
-} from '../../common/utils/validation.utils';
+import { CreateProductDto, UpdateProductDto, FilterProductsDto, SortBy } from './dto';
+import { FirestoreProduct } from './interfaces';
+import { FirebaseStorageService, FirebaseService, BaseFirestoreService, ValidationUtils, TransformUtils } from '@/common';
 
 @Injectable()
 export class ProductsFirestoreService extends BaseFirestoreService<
@@ -47,7 +39,6 @@ export class ProductsFirestoreService extends BaseFirestoreService<
       ingredients: createDto.ingredients || [],
     };
 
-    // Solo agregar imageSrc si no es null o undefined
     if (createDto.imageSrc !== null && createDto.imageSrc !== undefined) {
       firestoreData.imageSrc = createDto.imageSrc;
     }
@@ -325,5 +316,35 @@ export class ProductsFirestoreService extends BaseFirestoreService<
       concerns: extractUniqueValues('concern'),
       brands: extractUniqueValues('brand'),
     };
+  }
+
+  /**
+   * Find multiple products by array of IDs
+   * Used by cart service to get complete product data
+   */
+  async findMultipleByIds(productIds: string[]): Promise<Product[]> {
+    if (!productIds || productIds.length === 0) {
+      return [];
+    }
+
+    try {
+      const products = await Promise.all(
+        productIds.map(async (id) => {
+          try {
+            return await this.findOne(id);
+          } catch (error) {
+            console.warn(`Product with id ${id} not found:`, error);
+
+            return null;
+          }
+        }),
+      );
+
+      return products.filter((product): product is Product => product !== null);
+    } catch (error) {
+      console.error('Error fetching multiple products:', error);
+
+      return [];
+    }
   }
 }

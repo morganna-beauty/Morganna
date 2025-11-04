@@ -1,0 +1,10 @@
+{
+  "invalidType": "Invalid file type. Only JPEG, PNG and WebP are allowed.",
+  "fileTooLarge": "File is too large. Maximum 5MB.",
+  "uploadError": "Error uploading image",
+  "uploading": "Uploading...",
+  "changeImage": "Change image",
+  "selectImage": "Select image",
+  "supportedFormats": "Supported formats: JPEG, PNG, WebP. Maximum size: 5MB.",
+  "preview": "Preview"
+}

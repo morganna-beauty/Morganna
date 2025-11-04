@@ -28,12 +28,17 @@
   "selectType": "Seleccionar tipo",
   "selectConcern": "Seleccionar preocupación",
   "brandPlaceholder": "Nombre de la marca",
-  "typeAndConcern": "Tipo/Preocupación"
-  ,
+  "typeAndConcern": "Tipo/Preocupación",
   "benefitsTitle": "Beneficios",
   "keyIngredients": "Ingredientes clave",
   "ingredientCardDescription": "Ingrediente natural que beneficia tu cabello.",
   "addToBag": "Añadir a la bolsa",
   "buyOnWhatsApp": "Comprar por WhatsApp",
-  "whatsappPrefix": "Hola, quiero comprar el producto:"
+  "whatsappPrefix": "Hola, quiero comprar el producto:",
+  "benefits": "Beneficios del Producto",
+  "ingredients": "Ingredientes del Producto",
+  "benefitsPlaceholder": "Ingresa cada beneficio en una línea nueva\nEjemplo:\nHidrata el cabello\nReduce el frizz\nFortalece las fibras capilares",
+  "ingredientsPlaceholder": "Ingresa cada ingrediente en una línea nueva\nEjemplo:\nAceite de Argán\nKeratina hidrolizada\nExtracto de aloe vera",
+  "benefitsHint": "Ingresa cada beneficio en una línea nueva",
+  "ingredientsHint": "Ingresa cada ingrediente en una línea nueva"
 }

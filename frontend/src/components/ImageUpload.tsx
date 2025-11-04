@@ -1,5 +1,6 @@
 import React, { useCallback, useState, useRef } from 'react';
 import { uploadImage, replaceImage } from '@/lib/api/upload.api';
+import { useI18n } from '@/hooks/useI18n';
 
 interface ImageUploadProps {
   onImageSelect: (imageUrl: string) => void;
@@ -12,6 +13,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
   currentImage,
   className = '',
 }) => {
+  const { t } = useI18n();
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -25,7 +27,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
       const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
       if (!allowedTypes.includes(file.type)) {
-        setUploadError('Tipo de archivo no válido. Solo se permiten JPEG, PNG y WebP.');
+        setUploadError(t('upload.invalidType'));
 
         return;
       }
@@ -33,7 +35,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
       const maxSize = 5 * 1024 * 1024;
 
       if (file.size > maxSize) {
-        setUploadError('El archivo es demasiado grande. Máximo 5MB.');
+        setUploadError(t('upload.fileTooLarge'));
 
         return;
       }
@@ -60,7 +62,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
         onImageSelect(response.url);
       } catch (error) {
         console.error('Error en carga de imagen:', error);
-        setUploadError(error instanceof Error ? error.message : 'Error al subir imagen');
+        setUploadError(error instanceof Error ? error.message : t('upload.uploadError'));
       } finally {
         setIsUploading(false);
         if (fileInputRef.current) {
@@ -68,7 +70,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
         }
       }
     },
-    [onImageSelect, currentImage]
+    [onImageSelect, currentImage, t]
   );
 
   const handleButtonClick = useCallback(() => {
@@ -80,7 +82,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
       <div className="flex items-center gap-4">
         {currentImage && (
           <div className="w-20 h-20 rounded-lg overflow-hidden border">
-            <img src={currentImage} alt="Preview" className="w-full h-full object-cover" />
+            <img src={currentImage} alt={t('upload.preview')} className="w-full h-full object-cover" />
           </div>
         )}
 
@@ -90,7 +92,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
           disabled={isUploading}
           className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:ring-2 focus:ring-pink-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isUploading ? 'Subiendo...' : currentImage ? 'Cambiar imagen' : 'Seleccionar imagen'}
+          {isUploading ? t('upload.uploading') : currentImage ? t('upload.changeImage') : t('upload.selectImage')}
         </button>
       </div>
 
@@ -105,7 +107,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
       {uploadError && <p className="text-sm text-red-600">{uploadError}</p>}
 
       <p className="text-xs text-gray-500">
-        Formatos soportados: JPEG, PNG, WebP. Tamaño máximo: 5MB.
+        {t('upload.supportedFormats')}
       </p>
     </div>
   );

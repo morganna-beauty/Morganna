@@ -5,6 +5,7 @@ import { CommonModule } from './common/common.module';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { SeedModule } from './modules/seed/seed.module';
+import { CartModule } from './modules/cart/cart.module';
 import { HealthController } from './health.controller';
 
 @Module({
@@ -18,6 +19,7 @@ import { HealthController } from './health.controller';
     UsersModule,
     AuthModule,
     SeedModule,
+    CartModule,
   ],
   controllers: [HealthController],
 })

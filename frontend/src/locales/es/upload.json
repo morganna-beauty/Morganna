@@ -1,0 +1,10 @@
+{
+  "invalidType": "Tipo de archivo no válido. Solo se permiten JPEG, PNG y WebP.",
+  "fileTooLarge": "El archivo es demasiado grande. Máximo 5MB.",
+  "uploadError": "Error al subir imagen",
+  "uploading": "Subiendo...",
+  "changeImage": "Cambiar imagen",
+  "selectImage": "Seleccionar imagen",
+  "supportedFormats": "Formatos soportados: JPEG, PNG, WebP. Tamaño máximo: 5MB.",
+  "preview": "Vista previa"
+}

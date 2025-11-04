@@ -5,3 +5,5 @@ export * from './useAuth';
 export * from './useProtectedActions';
 export * from './useFilteredProducts';
 export * from './useResponsive';
+export * from './useGuestId';
+export * from './useCart';
