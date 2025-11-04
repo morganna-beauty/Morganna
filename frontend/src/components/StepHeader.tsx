@@ -5,7 +5,6 @@ interface StepHeaderProps {
   selectedCause: string | null
 }
 
-
 export const StepHeader: React.FC<StepHeaderProps> = ({ step }) => {
   const { t } = useI18n()
 
@@ -23,7 +22,7 @@ export const StepHeader: React.FC<StepHeaderProps> = ({ step }) => {
       : t('diagnostic.steps.result')
 
   return (
-    <div className="flex flex-col justify-center items-center gap-2 w-full max-w-3xl">
+    <div className="flex flex-col justify-center items-center gap-2 w-full max-w-xl">
       <h2 className="text-sm md:text-lg lg:text-2xl font-semibold text-center text-black">
         {progressText}
       </h2>

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { Navbar, I18nProvider, AuthProvider } from '@/components';
+import { Navbar, I18nProvider, AuthProvider, Footer } from '@/components';
 import './globals.css';
 import { QueryProvider } from './providers/QueryProvider';
 
@@ -21,6 +21,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Navbar />
 
               <main>{children}</main>
+
+              <Footer />
             </AuthProvider>
           </I18nProvider>
         </QueryProvider>
