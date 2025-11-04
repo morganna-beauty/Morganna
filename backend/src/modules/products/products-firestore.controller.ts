@@ -74,9 +74,11 @@ export class ProductsFirestoreController {
     enum: ['liso', 'ondulado', 'rizado', 'afro'],
   })
   @ApiQuery({
-    name: 'concern',
+    name: 'concerns',
     required: false,
+    isArray: true,
     enum: ['cabelloSeco', 'danoReparacion', 'controlFriz', 'volumen'],
+    description: 'Filter by multiple hair concerns (comma-separated or array)',
   })
   @ApiQuery({ name: 'brand', required: false, type: String })
   @ApiQuery({ name: 'search', required: false, type: String })

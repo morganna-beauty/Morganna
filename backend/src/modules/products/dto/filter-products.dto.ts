@@ -1,5 +1,6 @@
-import { IsOptional, IsEnum, IsString } from 'class-validator';
+import { IsOptional, IsEnum, IsString, IsArray } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import { HairType, Concern } from '../enums/product.enums';
 
 export enum SortBy {
@@ -23,13 +24,22 @@ export class FilterProductsDto {
   hairType?: HairType;
 
   @ApiPropertyOptional({
-    description: 'Filter by hair concern',
+    description: 'Filter by hair concerns (multiple values allowed)',
     enum: Concern,
-    example: Concern.CABELLO_SECO,
+    isArray: true,
+    example: [Concern.CABELLO_SECO, Concern.DANO_REPARACION],
   })
   @IsOptional()
-  @IsEnum(Concern)
-  concern?: Concern;
+  @IsArray()
+  @IsEnum(Concern, { each: true })
+  @Transform(({ value }) => {
+    if (typeof value === 'string') {
+      return value.split(',').map(v => v.trim());
+    }
+    
+    return Array.isArray(value) ? value : [value];
+  })
+  concerns?: Concern[];
 
   @ApiPropertyOptional({
     description: 'Filter by brand name',
