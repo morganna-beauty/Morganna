@@ -3,7 +3,7 @@ import { Product } from "@/types";
 interface ProductListProps {
   products: Product[];
   onEdit?: (product: Product) => void;
-  onDelete?: (id: number) => void;
+  onDelete?: (id: string) => void;
   loading?: boolean;
 }
 

@@ -1,0 +1,24 @@
+{
+  "title": "Shampoo Nutritivo con Argán",
+  "description": "Shampoo hidratante enriquecido con aceite de argán orgánico, ideal para cabello seco y dañado",
+  "price": 35.99,
+  "stock": 25,
+  "hairType": "rizado",
+  "concern": "cabelloSeco",
+  "brand": "Morganna Beauty",
+  "benefits": [
+    "Hidrata profundamente el cabello",
+    "Reduce el frizz y la sequedad",
+    "Fortalece las fibras capilares",
+    "Aporta brillo natural",
+    "Protege del daño ambiental"
+  ],
+  "ingredients": [
+    "Aceite de Argán orgánico",
+    "Keratina hidrolizada",
+    "Extracto de aloe vera",
+    "Proteínas de trigo",
+    "Vitamina E",
+    "Pantenol (Pro-vitamina B5)"
+  ]
+}

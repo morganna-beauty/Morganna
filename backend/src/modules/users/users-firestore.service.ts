@@ -54,7 +54,7 @@ export class UsersFirestoreService extends BaseFirestoreService<
   ): User {
     const user = new User();
 
-    user.id = TransformUtils.safeParseInt(document.id);
+    user.id = document.id;
     user.username = document.username;
     user.email = document.email;
     user.role = document.role as UserRole;

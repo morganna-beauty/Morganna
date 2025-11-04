@@ -61,7 +61,7 @@ export default function AdminPage() {
   );
 
   const handleDeleteProduct = useCallback(
-    async (id: number) => {
+    async (id: string) => {
       if (window.confirm(t('common.confirmDelete'))) {
         try {
           await deleteProduct(id);

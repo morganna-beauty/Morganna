@@ -17,6 +17,8 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
     hairType: product?.hairType,
     concern: product?.concern,
     brand: product?.brand || '',
+    benefits: product?.benefits || [],
+    ingredients: product?.ingredients || [],
   });
 
   const [priceInput, setPriceInput] = useState<string>(
@@ -282,6 +284,52 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
               placeholder={t('product.brandPlaceholder')}
             />
           </div>
+        </div>
+
+        {/* Benefits Section */}
+        <div>
+          <label htmlFor="benefits" className="block text-sm font-medium text-gray-700 mb-1">
+            Beneficios del Producto
+          </label>
+          <textarea
+            id="benefits"
+            name="benefits"
+            value={(formData.benefits || []).join('\n')}
+            onChange={(e) => {
+              const benefits = e.target.value.split('\n').filter(benefit => benefit.trim() !== '');
+
+              setFormData(prev => ({ ...prev, benefits }));
+            }}
+            rows={4}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+            placeholder="Ingresa cada beneficio en una línea nueva&#10;Ejemplo:&#10;Hidrata el cabello&#10;Reduce el frizz&#10;Fortalece las fibras capilares"
+          />
+          <p className="mt-1 text-sm text-gray-500">
+            Ingresa cada beneficio en una línea nueva
+          </p>
+        </div>
+
+        {/* Ingredients Section */}
+        <div>
+          <label htmlFor="ingredients" className="block text-sm font-medium text-gray-700 mb-1">
+            Ingredientes del Producto
+          </label>
+          <textarea
+            id="ingredients"
+            name="ingredients"
+            value={(formData.ingredients || []).join('\n')}
+            onChange={(e) => {
+              const ingredients = e.target.value.split('\n').filter(ingredient => ingredient.trim() !== '');
+
+              setFormData(prev => ({ ...prev, ingredients }));
+            }}
+            rows={4}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+            placeholder="Ingresa cada ingrediente en una línea nueva&#10;Ejemplo:&#10;Aceite de Argán&#10;Keratina hidrolizada&#10;Extracto de aloe vera"
+          />
+          <p className="mt-1 text-sm text-gray-500">
+            Ingresa cada ingrediente en una línea nueva
+          </p>
         </div>
 
         <div className="flex justify-end space-x-4 pt-6">
