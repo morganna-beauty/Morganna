@@ -29,4 +29,11 @@
   "selectConcern": "Select concern",
   "brandPlaceholder": "Brand name",
   "typeAndConcern": "Type/Concern"
+  ,
+  "benefitsTitle": "Benefits",
+  "keyIngredients": "Key Ingredients",
+  "ingredientCardDescription": "Natural ingredient that benefits your hair.",
+  "addToBag": "Add to bag",
+  "buyOnWhatsApp": "Buy on WhatsApp",
+  "whatsappPrefix": "Hello, I want to buy the product:"
 }

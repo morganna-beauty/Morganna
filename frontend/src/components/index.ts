@@ -22,3 +22,7 @@ export * from './BestSellersCard';
 export * from './FilterSidebar';
 export * from './FilterSection';
 export * from './ProductFilters';
+export * from './ProductView/ProductBenefits'
+export * from './ProductView/ProductImage'
+export * from './ProductView/ProductIngredients'
+export * from './ProductView/ProductButtons'

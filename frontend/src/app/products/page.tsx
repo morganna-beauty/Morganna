@@ -19,6 +19,7 @@ function ProductsPage() {
     setSelectedConcern,
     setSelectedBrand,
     setSortBy,
+    clearFilters,
   } = useFilteredProducts();
 
   const [showFilters, setShowFilters] = useState(false);
@@ -41,6 +42,7 @@ function ProductsPage() {
           onHairTypeChange={setSelectedHairType}
           onConcernChange={setSelectedConcern}
           onBrandChange={setSelectedBrand}
+          onClearFilters={clearFilters}
         />
       </div>
 
@@ -88,6 +90,7 @@ function ProductsPage() {
                 onHairTypeChange={setSelectedHairType}
                 onConcernChange={setSelectedConcern}
                 onBrandChange={setSelectedBrand}
+                onClearFilters={clearFilters}
               />
             </motion.aside>
           </>

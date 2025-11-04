@@ -1,6 +1,9 @@
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { Concern } from '@/types';
+import { mapDiagnosticToConcerns } from '@/data/diagnostic-mapping';
 import { motion, AnimatePresence } from 'framer-motion';
 import { StepHeader, OptionSelector, RecommendationBox, NavigationButtons } from '@/components';
 import { useI18n } from '@/hooks';
@@ -13,9 +16,10 @@ interface jsonGenericType {
 }
 
 export default function DiagnosticPage() {
+  const router = useRouter();
   const [step, setStep] = useState(1);
-  const [selectedCondition, setSelectedCondition] = useState<HairConditionKey | null>(null);
-  const [selectedCause, setSelectedCause] = useState<HairCauseKey | null>(null);
+  const [selectedConditions, setSelectedConditions] = useState<HairConditionKey[]>([]);
+  const [selectedCauses, setSelectedCauses] = useState<HairCauseKey[]>([]);
   const [selectedProcess, setSelectedProcess] = useState<HairProcessKey | null>(null);
   const [showFullText, setShowFullText] = useState(false);
 
@@ -52,37 +56,57 @@ export default function DiagnosticPage() {
     [t]
   );
 
+  const mapToConcerns = useCallback((): Concern[] => {
+    return mapDiagnosticToConcerns({ conditions: selectedConditions, causes: selectedCauses, process: selectedProcess }).concerns;
+  }, [selectedConditions, selectedCauses, selectedProcess]);
+
   const handleNext = useCallback(() => {
     setStep((prev) => {
-      if (prev === 1 && selectedCondition) return 2;
-      if (prev === 2 && selectedCause) return selectedCause === 'chemical' ? 2.5 : 3;
+      if (prev === 1 && selectedConditions.length > 0) return 2;
+      if (prev === 2 && selectedCauses.length > 0) {
+        // Si hay alguna causa química, mostrar paso de proceso
+        return selectedCauses.includes('chemical') ? 2.5 : 3;
+      }
       if (prev === 2.5 && selectedProcess) return 3;
 
       return prev;
     });
-  }, [selectedCondition, selectedCause, selectedProcess]);
+  }, [selectedConditions, selectedCauses, selectedProcess]);
+
+  useEffect(() => {
+    if (step === 3) {
+      const concerns = mapToConcerns();
+
+      if (concerns.length) {
+        const query = concerns.map((c) => `concerns=${encodeURIComponent(c)}`).join('&');
+
+        router.push(`/products/recommendations?${query}`);
+      }
+    }
+  }, [step, mapToConcerns, router]);
 
   const handleBack = useCallback(() => {
     setStep((prev) => {
       if (prev === 2) return 1;
       if (prev === 2.5) return 2;
-      if (prev === 3 && selectedCause === 'chemical') return 2.5;
+      if (prev === 3 && selectedCauses.includes('chemical')) return 2.5;
 
       return 2;
     });
-  }, [selectedCause]);
+  }, [selectedCauses]);
 
   const handleRestart = useCallback(() => {
     setStep(1);
-    setSelectedCondition(null);
-    setSelectedCause(null);
+    setSelectedConditions([]);
+    setSelectedCauses([]);
     setSelectedProcess(null);
     setShowFullText(false);
   }, []);
 
   const recommendation = useMemo(() => {
-    const key =
-      selectedCause === 'chemical' && selectedProcess ? selectedProcess : selectedCause || '';
+    // Si hay causa química y proceso, usar el proceso
+    const hasChemical = selectedCauses.includes('chemical');
+    const key = hasChemical && selectedProcess ? selectedProcess : selectedCauses[0] || '';
 
     if (!key) return t('diagnostic.recommendations.not_found');
 
@@ -90,7 +114,7 @@ export default function DiagnosticPage() {
     const translated = t(fullKey);
 
     return translated === fullKey ? t('diagnostic.recommendations.not_found') : translated;
-  }, [selectedCause, selectedProcess, showFullText, t]);
+  }, [selectedCauses, selectedProcess, showFullText, t]);
 
   const fadeMotion = {
     initial: { opacity: 0, y: 10 },
@@ -101,19 +125,28 @@ export default function DiagnosticPage() {
 
   return (
     <div className="flex flex-col justify-center items-center px-5 py-8 gap-6 h-[calc(100vh-100px)] bg-gray-50 overflow-hidden">
-      <StepHeader step={step} selectedCause={selectedCause} />
+      <StepHeader step={step} selectedCause={selectedCauses.includes('chemical') ? 'chemical' : null} />
 
       <AnimatePresence mode="wait">
         {step === 1 && (
           <motion.div key="step1" {...fadeMotion}>
             <OptionSelector
               options={conditions.map((c) => c.label)}
-              selectedOption={conditions.find((c) => c.key === selectedCondition)?.label || null}
+              selectedOptions={conditions
+                .filter((c) => selectedConditions.includes(c.key))
+                .map((c) => c.label)}
               onSelect={(label) => {
                 const found = conditions.find((c) => c.label === label);
-
-                setSelectedCondition(found?.key as HairConditionKey);
+                if (found) {
+                  setSelectedConditions((prev) => {
+                    const key = found.key as HairConditionKey;
+                    return prev.includes(key)
+                      ? prev.filter((k) => k !== key)
+                      : [...prev, key];
+                  });
+                }
               }}
+              multiple={true}
             />
           </motion.div>
         )}
@@ -122,12 +155,21 @@ export default function DiagnosticPage() {
           <motion.div key="step2" {...fadeMotion}>
             <OptionSelector
               options={causes.map((c) => c.label)}
-              selectedOption={causes.find((c) => c.key === selectedCause)?.label || null}
+              selectedOptions={causes
+                .filter((c) => selectedCauses.includes(c.key))
+                .map((c) => c.label)}
               onSelect={(label) => {
                 const found = causes.find((c) => c.label === label);
-
-                setSelectedCause(found?.key as HairCauseKey);
+                if (found) {
+                  setSelectedCauses((prev) => {
+                    const key = found.key as HairCauseKey;
+                    return prev.includes(key)
+                      ? prev.filter((k) => k !== key)
+                      : [...prev, key];
+                  });
+                }
               }}
+              multiple={true}
             />
           </motion.div>
         )}

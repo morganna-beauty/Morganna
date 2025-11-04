@@ -22,5 +22,7 @@
   "errorLoading": "Error al cargar productos",
   "retry": "Reintentar",
   "errorCreating": "Error al crear elemento",
-  "filters": "Filtros"
+  "filters": "Filtros",
+  "noProducts": "Producto no Encontrado"
+
 }

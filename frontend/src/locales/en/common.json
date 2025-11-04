@@ -22,5 +22,6 @@
   "errorLoading": "Error loading data",
   "retry": "Retry",
   "errorCreating": "Error creating item",
-  "filters": "Filters"
+  "filters": "Filters",
+  "noProducts": "Producto no Encontrado"
 }

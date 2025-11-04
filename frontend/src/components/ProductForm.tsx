@@ -1,13 +1,14 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { CreateProductRequest } from '@/types';
+import { CreateProductRequest, Concern } from '@/types';
 import { useI18n } from '@/hooks/useI18n';
 import { ImageUpload } from './ImageUpload';
 import ProductFormProps from '@/interface/ProductForm';
 
 export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: ProductFormProps) => {
   const { t } = useI18n();
+  const [concernsOpen, setConcernsOpen] = useState(false);
   const [formData, setFormData] = useState<CreateProductRequest>({
     title: product?.title || '',
     description: product?.description || '',
@@ -15,7 +16,7 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
     stock: product?.stock,
     imageSrc: product?.imageSrc,
     hairType: product?.hairType,
-    concern: product?.concern,
+    concern: Array.isArray(product?.concern) ? product?.concern : (product?.concern ? [product.concern] : []),
     brand: product?.brand || '',
     benefits: product?.benefits || [],
     ingredients: product?.ingredients || [],
@@ -250,24 +251,53 @@ export const ProductForm = ({ product, onSubmit, onCancel, isEdit = false }: Pro
               {t('product.concern')}
             </label>
 
-            <select
-              id="concern"
-              name="concern"
-              value={formData.concern || ''}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-            >
-              <option value="">{t('product.selectConcern')}</option>
+            <div className="relative">
+              <button
+                type="button"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-left focus:outline-none focus:ring-2 focus:ring-primary-500"
+                onClick={() => setConcernsOpen(prev => !prev)}
+              >
+                {(formData.concern || []).length ? (formData.concern || []).join(', ') : t('product.selectConcern')}
+              </button>
 
-              <option value="cabelloSeco">Cabello Seco</option>
+              {concernsOpen && (
+                <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-56 overflow-auto">
+                  {([
+                    { value: Concern.CABELLO_SECO, label: 'Cabello Seco' },
+                    { value: Concern.DANO_REPARACION, label: 'Daño y Reparación' },
+                    { value: Concern.CONTROL_FRIZ, label: 'Control de Friz' },
+                    { value: Concern.VOLUMEN, label: 'Volumen' },
+                  ] as { value: Concern; label: string }[]).map(({ value, label }) => {
+                    const checked = (formData.concern || []).includes(value);
 
-              <option value="danoReparacion">Daño y Reparación</option>
+                    return (
+                      <label key={value} className="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-gray-50">
+                        <input
+                          type="checkbox"
+                          className="h-4 w-4"
+                          checked={checked}
+                          onChange={(e) => {
+                            setFormData(prev => ({
+                              ...prev,
+                              concern: e.target.checked
+                                ? ([...(prev.concern || []), value])
+                                : ((prev.concern || []).filter(c => c !== value)),
+                            }));
+                          }}
+                        />
+                        <span className="text-sm text-gray-700">{label}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
 
-              <option value="controlFriz">Control de Friz</option>
-
-              <option value="volumen">Volumen</option>
-            </select>
+            <p className="mt-1 text-sm text-gray-500">
+              Puedes seleccionar múltiples opciones
+            </p>
           </div>
+
 
           <div>
             <label htmlFor="brand" className="block text-sm font-medium text-gray-700 mb-1">
