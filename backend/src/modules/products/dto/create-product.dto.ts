@@ -5,6 +5,7 @@ import {
   IsNotEmpty,
   Min,
   IsEnum,
+  IsArray,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
@@ -84,4 +85,40 @@ export class CreateProductDto {
   @IsOptional()
   @IsString()
   brand?: string;
+
+  @ApiPropertyOptional({
+    description: 'Product benefits list',
+    example: ['Hidrata el cabello', 'Reduce el frizz', 'Fortalece las fibras capilares'],
+    isArray: true,
+    type: [String],
+  })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  @Transform(({ value }) => {
+    if (typeof value === 'string') {
+      return value.split(',').map(v => v.trim()).filter(v => v);
+    }
+
+    return Array.isArray(value) ? value : [];
+  })
+  benefits?: string[];
+
+  @ApiPropertyOptional({
+    description: 'Product ingredients list',
+    example: ['Aceite de Argán', 'Keratina hidrolizada', 'Extracto de aloe vera'],
+    isArray: true,
+    type: [String],
+  })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  @Transform(({ value }) => {
+    if (typeof value === 'string') {
+      return value.split(',').map(v => v.trim()).filter(v => v);
+    }
+
+    return Array.isArray(value) ? value : [];
+  })
+  ingredients?: string[];
 }

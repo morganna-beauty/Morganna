@@ -3,9 +3,9 @@ import { ApiProperty } from '@nestjs/swagger';
 export class UserInfoDto {
   @ApiProperty({
     description: 'User ID',
-    example: 1,
+    example: 'abc123def456',
   })
-  id: number;
+  id: string;
 
   @ApiProperty({
     description: 'Username',

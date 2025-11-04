@@ -1,7 +1,7 @@
 import { HairType, Concern } from '../enums/product.enums';
 
 export class Product {
-  id: number;
+  id: string;
 
   title: string;
 
@@ -22,4 +22,8 @@ export class Product {
   concern: Concern;
 
   brand: string;
+
+  benefits: string[];
+
+  ingredients: string[];
 }

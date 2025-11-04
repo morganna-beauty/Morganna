@@ -64,7 +64,7 @@ export const productsApi = {
     return response.data;
   },
 
-  getProduct: async (id: number): Promise<Product> => {
+  getProduct: async (id: string): Promise<Product> => {
     const response = await api.get<Product>(`/products/${id}`);
 
     return response.data;
@@ -76,13 +76,13 @@ export const productsApi = {
     return response.data;
   },
 
-  updateProduct: async (id: number, product: UpdateProductRequest): Promise<Product> => {
+  updateProduct: async (id: string, product: UpdateProductRequest): Promise<Product> => {
     const response = await api.patch<Product>(`/products/${id}`, product);
 
     return response.data;
   },
 
-  deleteProduct: async (id: number): Promise<void> => {
+  deleteProduct: async (id: string): Promise<void> => {
     await api.delete(`/products/${id}`);
   },
 
@@ -100,7 +100,7 @@ export const usersApi = {
     return response.data;
   },
 
-  getUser: async (id: number): Promise<User> => {
+  getUser: async (id: string): Promise<User> => {
     const response = await api.get<User>(`/users/${id}`);
 
     return response.data;
@@ -112,13 +112,13 @@ export const usersApi = {
     return response.data;
   },
 
-  updateUser: async (id: number, user: UpdateUserRequest): Promise<User> => {
+  updateUser: async (id: string, user: UpdateUserRequest): Promise<User> => {
     const response = await api.patch<User>(`/users/${id}`, user);
 
     return response.data;
   },
 
-  deleteUser: async (id: number): Promise<void> => {
+  deleteUser: async (id: string): Promise<void> => {
     await api.delete(`/users/${id}`);
   },
 };

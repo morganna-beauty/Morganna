@@ -43,6 +43,8 @@ export class ProductsFirestoreService extends BaseFirestoreService<
       hairType: createDto.hairType,
       concern: createDto.concern,
       brand: createDto.brand,
+      benefits: createDto.benefits || [],
+      ingredients: createDto.ingredients || [],
     };
 
     // Solo agregar imageSrc si no es null o undefined
@@ -161,13 +163,15 @@ export class ProductsFirestoreService extends BaseFirestoreService<
       hairType: updateDto.hairType,
       concern: updateDto.concern,
       brand: updateDto.brand,
+      benefits: updateDto.benefits,
+      ingredients: updateDto.ingredients,
     });
   }
 
   protected mapFirestoreToEntity(document: FirestoreProduct): Product {
     const product = new Product();
 
-    product.id = TransformUtils.safeParseInt(document.id);
+    product.id = document.id
     product.title = document.title;
     product.description = document.description || null;
     product.price = document.price;
@@ -176,6 +180,8 @@ export class ProductsFirestoreService extends BaseFirestoreService<
     product.hairType = document.hairType || null;
     product.concern = document.concern || null;
     product.brand = document.brand || null;
+    product.benefits = document.benefits || [];
+    product.ingredients = document.ingredients || [];
     product.createdAt = this.convertFirestoreTimestamp(document.createdAt);
     product.updatedAt = this.convertFirestoreTimestamp(document.updatedAt);
 
@@ -247,7 +253,6 @@ export class ProductsFirestoreService extends BaseFirestoreService<
       );
     }
 
-    // Apply sorting using base implementation
     if (filterDto?.sortBy && filterDto?.order) {
       filteredProducts = this.applySorting(
         filteredProducts,

@@ -23,7 +23,7 @@ export enum Order {
 }
 
 export interface Product {
-  id: number;
+  id: string;
   title: string;
   description?: string;
   price: number;
@@ -34,6 +34,8 @@ export interface Product {
   hairType?: HairType;
   concern?: Concern;
   brand?: string;
+  benefits?: string[];
+  ingredients?: string[];
 }
 
 export interface CreateProductRequest {
@@ -45,6 +47,8 @@ export interface CreateProductRequest {
   hairType?: HairType;
   concern?: Concern;
   brand?: string;
+  benefits?: string[];
+  ingredients?: string[];
 }
 
 export interface UpdateProductRequest extends Partial<CreateProductRequest> {}

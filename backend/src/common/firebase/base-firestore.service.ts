@@ -6,7 +6,7 @@ import {
 } from './firebase.service';
 
 export interface BaseEntity {
-  id?: number;
+  id?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }

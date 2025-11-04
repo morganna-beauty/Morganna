@@ -7,7 +7,7 @@ export enum UserRole {
 
 export class User {
   @ApiProperty({ description: 'Unique identifier for the user' })
-  id: number;
+  id: string;
 
   @ApiProperty({ description: 'Unique username' })
   username: string;

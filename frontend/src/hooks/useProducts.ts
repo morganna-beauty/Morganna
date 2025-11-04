@@ -56,7 +56,7 @@ export function useProducts() {
   );
 
   const updateProduct = useCallback(
-    (productId: number, updatedProductData: UpdateProductRequest) => {
+    (productId: string, updatedProductData: UpdateProductRequest) => {
       const protectedAction = withAdminAuth(async () => {
         const updatedProduct = await productsApi.updateProduct(productId, updatedProductData);
 
@@ -71,7 +71,7 @@ export function useProducts() {
   );
 
   const deleteProduct = useCallback(
-    (productId: number) => {
+    (productId: string) => {
       const protectedAction = withAdminAuth(async () => {
         await productsApi.deleteProduct(productId);
 

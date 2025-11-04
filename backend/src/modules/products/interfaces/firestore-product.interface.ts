@@ -10,6 +10,8 @@ export interface FirestoreProduct {
   hairType?: HairType;
   concern?: Concern;
   brand?: string;
+  benefits?: string[];
+  ingredients?: string[];
   createdAt?: FirebaseFirestore.Timestamp | Date;
   updatedAt?: FirebaseFirestore.Timestamp | Date;
 }
