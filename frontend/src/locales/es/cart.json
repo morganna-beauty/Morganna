@@ -35,5 +35,6 @@
   "viewProducts": "Ver productos",
   "emptyCartDescription": "Parece que tu carrito está vacío. ¡Descubre nuestros increíbles productos!",
   "home": "Inicio",
-  "each": "c/u"
+  "each": "c/u",
+  "clearCartBeforeWhatsApp": "¿Quieres vaciar el carrito después de enviar el pedido por WhatsApp?\n\nEsto ayuda a mantener el carrito limpio para futuras compras."
 }

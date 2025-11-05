@@ -249,13 +249,38 @@ export const useCart = () => {
   }, [cart, t]);
 
   const sendToWhatsApp = useCallback((phoneNumber?: string) => {
+    if (!cart?.items || cart.items.length === 0) {
+      const message = t('cart.whatsappGreeting');
+
+      const encodedMessage = encodeURIComponent(message);
+
+      const phone = phoneNumber || process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '';
+
+      const whatsappUrl = `https://wa.me/${phone}?text=${encodedMessage}`;
+      
+      window.open(whatsappUrl, '_blank');
+      
+      return;
+    }
+
+    const clearCartConfirmation = window.confirm(
+      t('cart.clearCartBeforeWhatsApp') || 
+      '¿Quieres vaciar el carrito después de enviar el pedido por WhatsApp?\n\nEsto ayuda a mantener el carrito limpio para futuras compras.'
+    );
+
     const message = generateWhatsAppMessage();
     const encodedMessage = encodeURIComponent(message);
     const phone = phoneNumber || process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '';
     const whatsappUrl = `https://wa.me/${phone}?text=${encodedMessage}`;
     
     window.open(whatsappUrl, '_blank');
-  }, [generateWhatsAppMessage]);
+
+    if (clearCartConfirmation) {
+      setTimeout(() => {
+        clearCart();
+      }, 1000);
+    }
+  }, [generateWhatsAppMessage, t, cart, clearCart]);
 
   return useMemo(() => ({
     cart,

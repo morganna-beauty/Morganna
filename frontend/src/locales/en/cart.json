@@ -35,5 +35,6 @@
   "viewProducts": "View products",
   "emptyCartDescription": "Your cart seems to be empty. Discover our amazing products!",
   "home": "Home",
-  "each": "each"
+  "each": "each",
+  "clearCartBeforeWhatsApp": "Do you want to clear the cart after sending the order via WhatsApp?\n\nThis helps keep your cart clean for future purchases."
 }
