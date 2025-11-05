@@ -14,7 +14,7 @@ export const useProductButtons = ({
   product,
   onAddToBag,
   onBuyWhatsApp,
-  whatsappNumber = "+18299357237",
+  whatsappNumber = "18099694607",
 }: UseProductButtonsProps) => {
   const { t } = useI18n();
   const { addToCart, isInCart, getItemQuantity, isAddingToCart, sendToWhatsApp } = useCart();
@@ -44,12 +44,11 @@ export const useProductButtons = ({
       onBuyWhatsApp();
     } else if (product) {
       if (!isProductInCart) {
-        addToCart(productId, 1);
+        addToCart(productId, 1, false);
       }
 
-      setTimeout(() => {
-        sendToWhatsApp(whatsappNumber);
-      }, 500);
+      // Enviar mensaje inmediatamente con el producto, sin esperar que el carrito se actualice
+      sendToWhatsApp(whatsappNumber, product);
     }
   }, [onBuyWhatsApp, product, isProductInCart, addToCart, sendToWhatsApp, whatsappNumber, productId]);
 
