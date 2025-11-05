@@ -234,7 +234,7 @@ export const useCart = () => {
   }, [cart, t]);
 
   const sendToWhatsApp = useCallback((phoneNumber?: string) => {
-    const defaultPhone = '8297236285';
+    const defaultPhone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '8297236285';
     
     if (!cart?.items || cart.items.length === 0) {
       const message = t('cart.whatsappGreeting');
