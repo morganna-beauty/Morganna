@@ -216,7 +216,9 @@ export const useCart = () => {
     const isInCartResult = quantity > 0;
     
     return isInCartResult;
-  }, [getItemQuantity]);  const generateWhatsAppMessage = useCallback((): string => {
+  }, [getItemQuantity]);  
+  
+  const generateWhatsAppMessage = useCallback((): string => {
     if (!cart?.items || cart.items.length === 0) {
       return t('cart.whatsappGreeting');
     }
