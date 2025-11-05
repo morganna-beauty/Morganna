@@ -1,33 +1,29 @@
 'use client'
 
-
-import React, { useState, useMemo, useCallback } from "react";
+import React from "react";
 import StarBlog from "@/Icons/StartBlogIcon";
-import { useI18n } from "@/hooks/useI18n";
+import { useProductIngredients } from "@/hooks";
 
 export const ProductIngredients = ({ ingredients }: { ingredients: string[] }) => {
-  const { t } = useI18n();
-  const [isPaused, setIsPaused] = useState(false);
+  const {
+    displayIngredients,
+    togglePause,
+    animationStyle,
+    keyframesCSS,
+    shouldRender,
+    translations,
+  } = useProductIngredients({ ingredients });
 
-  const displayIngredients = useMemo(
-    () => ingredients.length > 0 ? [...ingredients, ...ingredients, ...ingredients] : [],
-    [ingredients]
-  );
-
-  const togglePause = useCallback(() => setIsPaused(prev => !prev), []);
-
-  if (!ingredients.length) return null;
+  if (!shouldRender) return null;
 
   return (
     <div className="flex flex-col items-start gap-6 w-full">
-      <h2 className="text-[22px] font-medium leading-7 text-black">{t('product.keyIngredients')}</h2>
+      <h2 className="text-[22px] font-medium leading-7 text-black">{translations.keyIngredients}</h2>
 
       <div className="w-full overflow-hidden">
         <div
           className="flex gap-6 cursor-pointer"
-          style={{
-            animation: isPaused ? 'none' : `scroll ${ingredients.length * 8}s linear infinite`,
-          }}
+          style={animationStyle}
           onClick={togglePause}
         >
           {displayIngredients.map((ingredient, i) => (
@@ -40,7 +36,7 @@ export const ProductIngredients = ({ ingredients }: { ingredients: string[] }) =
               <div className="flex flex-col items-start gap-2 w-full">
                 <h3 className="text-sm font-semibold leading-5 tracking-[0.1px] text-black">{ingredient}</h3>
                 <p className="text-sm font-medium leading-5 tracking-[0.1px] text-[#808080]">
-                  {t('product.ingredientCardDescription')}
+                  {translations.ingredientCardDescription}
                 </p>
               </div>
             </div>
@@ -48,26 +44,7 @@ export const ProductIngredients = ({ ingredients }: { ingredients: string[] }) =
         </div>
       </div>
 
-      <style jsx>{`
-        @keyframes scroll {
-          from {
-            transform: translateX(0);
-          }
-          to {
-            transform: translateX(calc(-280px * ${ingredients.length} - 24px * ${ingredients.length}));
-          }
-        }
-        @media (min-width: 640px) {
-          @keyframes scroll {
-            from {
-              transform: translateX(0);
-            }
-            to {
-              transform: translateX(calc(-320px * ${ingredients.length} - 24px * ${ingredients.length}));
-            }
-          }
-        }
-      `}</style>
+      <style jsx>{keyframesCSS}</style>
     </div>
   );
 };

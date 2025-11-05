@@ -1,41 +1,22 @@
 'use client';
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useI18n } from '@/hooks/useI18n';
 import BestSellersCard from './BestSellersCard';
-import { useProducts } from '@/hooks';
+import { useBestSellersSection } from '@/hooks';
 
 export const BestSellersSection = () => {
-  const { t } = useI18n();
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const { products } = useProducts();
-
-  const updateIndex = useCallback(() => {
-    setCurrentIndex((prevIndex) => {
-      const maxIndex = products.length - 3;
-
-      return prevIndex >= maxIndex ? 0 : prevIndex + 3;
-    });
-  }, [products.length]);
-
-  useEffect(() => {
-    if (products.length <= 3) return;
-
-    const interval = setInterval(updateIndex, 5000);
-
-    return () => clearInterval(interval);
-  }, [products.length, updateIndex]);
-
-  const visibleProducts = useMemo(
-    () => products.slice(currentIndex, currentIndex + 3),
-    [products, currentIndex]
-  );
+  const {
+    visibleProducts,
+    totalPages,
+    showPagination,
+    handlePageClick,
+    getPaginationButtonClass,
+    translations,
+  } = useBestSellersSection();
 
   return (
     <section className="flex flex-col items-center px-5 md:px-12 lg:px-16 xl:px-[60px] py-24 gap-16 w-full overflow-x-hidden">
       <h2 className="font-roboto font-medium text-[32px] leading-[40px] text-center text-black w-full max-w-[400px] md:max-w-none">
-        {t('bestsellers.bestSellingProducts')}
+        {translations.bestSellingProducts}
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 w-full mx-auto transition-all duration-500">
@@ -46,15 +27,13 @@ export const BestSellersSection = () => {
         ))}
       </div>
 
-      {products.length > 3 && (
+      {showPagination && (
         <div className="flex gap-2">
-          {Array.from({ length: Math.ceil(products.length / 3) }).map((_, index) => (
+          {Array.from({ length: totalPages }).map((_, index) => (
             <button
               key={index}
-              onClick={() => setCurrentIndex(index * 3)}
-              className={`w-2 h-2 rounded-full transition-all ${
-                currentIndex === index * 3 ? 'bg-black w-8' : 'bg-gray-300 hover:bg-gray-400'
-              }`}
+              onClick={() => handlePageClick(index)}
+              className={getPaginationButtonClass(index)}
               aria-label={`Ver grupo ${index + 1}`}
             />
           ))}
