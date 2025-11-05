@@ -1,4 +1,4 @@
-'use client'
+"use client"
 
 import React from "react";
 import StarBlog from "@/Icons/StartBlogIcon";
@@ -27,7 +27,10 @@ export const ProductIngredients = ({ ingredients }: { ingredients: string[] }) =
           onClick={togglePause}
         >
           {displayIngredients.map((ingredient, i) => (
-            <div key={i} className="flex-shrink-0 w-[280px] sm:w-[320px] flex flex-col justify-center items-start p-6 gap-3.5 bg-white border border-[#E4E4E4] rounded-lg">
+            <div
+              key={i}
+              className="flex-shrink-0 w-[280px] sm:w-[320px] flex flex-col justify-center items-start p-6 gap-3.5 bg-white border border-[#E4E4E4] rounded-lg"
+            >
               <div className="flex flex-row justify-center items-center w-12 h-12">
                 <div className="flex flex-col justify-center items-center w-10 h-10 bg-[#B6D6DD] rounded-full">
                   <StarBlog />
@@ -46,5 +49,5 @@ export const ProductIngredients = ({ ingredients }: { ingredients: string[] }) =
 
       <style jsx>{keyframesCSS}</style>
     </div>
-  );
-};
+  )
+}
