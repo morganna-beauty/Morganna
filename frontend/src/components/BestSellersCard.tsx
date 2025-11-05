@@ -1,5 +1,6 @@
 import { Product } from '@/types';
 import Image from 'next/image';
+import Link from 'next/link';
 import { memo } from 'react';
 
 interface BestSellersCardProps {
@@ -8,7 +9,10 @@ interface BestSellersCardProps {
 
 const BestSellersCard = memo(({ product }: BestSellersCardProps) => {
   return (
-    <div className="flex flex-col justify-center items-start p-0 gap-6 w-[408px] h-[695px] flex-grow">
+    <Link 
+      href={`/products/${product.id}`}
+      className="flex flex-col justify-center items-start p-0 gap-6 w-[408px] h-[695px] flex-grow cursor-pointer"
+    >
       <div className="flex flex-row items-start gap-[10px] w-[408px] h-[611px] bg-[#E8E8E8] rounded-2xl">
         {product.imageSrc && (
           <Image
@@ -32,7 +36,7 @@ const BestSellersCard = memo(({ product }: BestSellersCardProps) => {
           </p>
         )}
       </div>
-    </div>
+    </Link>
   );
 });
 
