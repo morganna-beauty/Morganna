@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { useGuestId } from './useGuestId';
 import { useI18n } from './useI18n';
 import { cartApi, type Cart, type AddToCartDto, type UpdateQuantityDto } from '../lib/api/cart';
+import { Product } from '@/types';
 
 export const useCart = () => {
   const { guestId, isLoading: isGuestIdLoading } = useGuestId();
@@ -233,9 +234,27 @@ export const useCart = () => {
     return message;
   }, [cart, t]);
 
-  const sendToWhatsApp = useCallback((phoneNumber?: string) => {
-    const defaultPhone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '8297236285';
+  const sendToWhatsApp = useCallback((phoneNumber?: string, product?: Product) => {
+    const defaultPhone = '18099694607';
     
+    // Si el carrito está vacío pero hay un producto, generar mensaje con ese producto
+    if ((!cart?.items || cart.items.length === 0) && product) {
+      let message = t('cart.whatsappPurchaseMessage') + '\n\n';
+
+      message += `1. ${product.title}\n`;
+      message += `   - ${t('cart.quantity')}: 1\n\n`;
+      message += t('cart.whatsappClosing');
+
+      const encodedMessage = encodeURIComponent(message);
+      const phone = phoneNumber || defaultPhone;
+      const whatsappUrl = `https://wa.me/${phone}?text=${encodedMessage}`;
+      
+      window.open(whatsappUrl, '_blank');
+      
+      return;
+    }
+    
+    // Si el carrito está vacío y no hay producto, usar mensaje genérico
     if (!cart?.items || cart.items.length === 0) {
       const message = t('cart.whatsappGreeting');
 

@@ -15,7 +15,7 @@ const ButtonsProductComponent = ({
   product,
   onAddToBag,
   onBuyWhatsApp,
-  whatsappNumber = "+8297236285",
+  whatsappNumber = "18099694607",
 }: ProductButtonsProps) => {
   const {
     isProductInCart,
