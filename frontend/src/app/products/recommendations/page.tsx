@@ -22,12 +22,21 @@ export default function RecommendationsPage({ searchParams = {} }: PageProps) {
     if (!concernsParam) return [] as string[];
 
     const concernsArray = Array.isArray(concernsParam) ? concernsParam : [concernsParam];
-    // Filtrar concerns únicos para evitar duplicados
 
     return Array.from(new Set(concernsArray));
   }, [concernsParam]);
 
-  // Calcular recKeys únicos para cada concern individual
+  /**
+   * Convierte cada concern de la URL a un RecommendationKey para mostrar el header correspondiente.
+   * 
+   * Ejemplo:
+   * - URL: ?concerns=danoReparacion&concerns=cabelloSeco
+   * - Concerns: ['danoReparacion', 'cabelloSeco']
+   * - RecKeys: ['repair', 'hydration'] (sin duplicados)
+   * - Headers mostrados:
+   *   1. diagnostic.recommendationHeader.repair (Reparación y fuerza)
+   *   2. diagnostic.recommendationHeader.hydration (Hidratación profunda)
+   */
   const uniqueRecKeys = useMemo(() => {
     const recKeysSet = new Set<string>();
     
@@ -83,10 +92,8 @@ export default function RecommendationsPage({ searchParams = {} }: PageProps) {
 
   return (
     <div className="max-w-[1440px] mx-auto bg-white">
-      {/* Contenedor principal */}
       <div className="flex flex-col items-center px-5 py-8 gap-8 md:px-12 md:py-12 lg:px-[60px] lg:py-[60px]">
         
-        {/* Encabezado */}
         <div className="flex flex-col justify-center items-center gap-2 w-full max-w-[400px] md:max-w-[700px] lg:max-w-[1012px]">
           <h1 className="text-[28px] leading-[36px] md:text-[30px] md:leading-[38px] lg:text-[32px] lg:leading-[40px] font-medium text-center text-black w-full">
             {t(`diagnostic.result`)}
@@ -96,7 +103,6 @@ export default function RecommendationsPage({ searchParams = {} }: PageProps) {
           </p>
         </div>
 
-        {/* Bloques de recomendación */}
         {uniqueRecKeys.length > 0 && (
           <div className="flex flex-col items-start gap-3 w-full max-w-[400px] md:max-w-[700px] lg:max-w-[1114px]">
             {uniqueRecKeys.map((recKey) => (
@@ -122,7 +128,6 @@ export default function RecommendationsPage({ searchParams = {} }: PageProps) {
           </div>
         )}
 
-        {/* Productos recomendados */}
         <div className="flex flex-col items-center gap-12 md:gap-14 lg:gap-16 w-full max-w-[400px] md:max-w-[700px] lg:max-w-[1320px]">
           <h2 className="text-[32px] font-medium leading-[40px] text-center text-black w-full">
             {t("diagnostic.recommendedProducts")}
@@ -146,7 +151,6 @@ export default function RecommendationsPage({ searchParams = {} }: PageProps) {
           </div>
         </div>
 
-        {/* CTA con fondo */}
         <div
           className="flex flex-col items-center px-5 py-24 gap-8 md:px-12 md:gap-12 lg:px-[60px] lg:gap-16 w-full max-w-[400px] md:max-w-[700px] lg:max-w-[1320px] rounded-2xl bg-cover bg-center"
           style={{
