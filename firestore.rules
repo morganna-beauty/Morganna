@@ -1,0 +1,25 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Permitir lectura y escritura de productos (público)
+    match /products/{document} {
+      allow read: if true;
+      allow write: if true; // En producción, restringir según autenticación
+    }
+    
+    // Permitir lectura y escritura de usuarios
+    match /users/{document} {
+      allow read, write: if true; // En producción, restringir según autenticación
+    }
+    
+    // Permitir lectura y escritura de items del carrito
+    match /cart_items/{document} {
+      allow read, write: if true; // En producción, restringir por guestId
+    }
+    
+    // Permitir lectura y escritura de todas las colecciones para desarrollo
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}

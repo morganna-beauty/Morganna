@@ -1,13 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useMemo, useCallback } from 'react';
+import toast from 'react-hot-toast';
 import { useGuestId } from './useGuestId';
 import { useI18n } from './useI18n';
-import { cartApi, type Cart, type AddToCartDto } from '../lib/api/cart';
-
-const notify = {
-  success: (message: string) => console.log('✅', message),
-  error: (message: string) => console.error('❌', message),
-};
+import { cartApi, type Cart, type AddToCartDto, type UpdateQuantityDto } from '../lib/api/cart';
 
 export const useCart = () => {
   const { guestId, isLoading: isGuestIdLoading } = useGuestId();
@@ -29,14 +25,48 @@ export const useCart = () => {
     gcTime: 300000,
   });
 
+  const getItemQuantity = useCallback((productId: string): number => {
+    if (!cart?.items) {
+      console.log('🛒 getItemQuantity: No cart items available');
+
+      return 0;
+    }
+
+    console.log('🛒 getItemQuantity: Looking for productId:', productId);
+    console.log('🛒 getItemQuantity: Available items:', cart.items.map(item => ({ 
+      id: item.product.id, 
+      title: item.product.title, 
+      quantity: item.quantity 
+    })));
+
+    const item = cart.items.find((item) => item.product.id === productId);
+
+    console.log('🛒 getItemQuantity: Found item:', item ? { id: item.product.id, quantity: item.quantity } : 'Not found');
+
+    return item ? item.quantity : 0;
+  }, [cart?.items]);
+
+
   const addToCartMutation = useMutation({
-    mutationFn: (item: AddToCartDto) => cartApi.addToCart(guestId, item),
-    onSuccess: () => {
+    mutationFn: (item: AddToCartDto & { showNotification?: boolean }) => {
+      const { showNotification, ...cartItem } = item;
+
+      return cartApi.addToCart(guestId, cartItem);
+    },
+    onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: cartQueryKey });
-      notify.success(t('cart.addedToCart'));
+      if (variables.showNotification !== false) {
+        toast.success(t('cart.addedToCart'), {
+          duration: 3000,
+          position: 'bottom-right',
+        });
+      }
     },
     onError: (error: Error) => {
-      notify.error(error.message || t('cart.errorAddingToCart'));
+      toast.error(error.message || t('cart.errorAddingToCart'), {
+        duration: 4000,
+        position: 'bottom-right',
+      });
     },
   });
 
@@ -44,10 +74,16 @@ export const useCart = () => {
     mutationFn: (productId: string) => cartApi.removeFromCart(guestId, productId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: cartQueryKey });
-      notify.success(t('cart.removedFromCart'));
+      toast.success(t('cart.removedFromCart'), {
+        duration: 3000,
+        position: 'bottom-right',
+      });
     },
     onError: (error: Error) => {
-      notify.error(error.message || t('cart.errorRemovingFromCart'));
+      toast.error(error.message || t('cart.errorRemovingFromCart'), {
+        duration: 4000,
+        position: 'bottom-right',
+      });
     },
   });
 
@@ -55,26 +91,80 @@ export const useCart = () => {
     mutationFn: () => cartApi.clearCart(guestId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: cartQueryKey });
-      notify.success(t('cart.cartCleared'));
+      toast.success(t('cart.cartCleared'), {
+        duration: 3000,
+        position: 'bottom-right',
+      });
     },
     onError: (error: Error) => {
-      notify.error(error.message || t('cart.errorClearingCart'));
+      toast.error(error.message || t('cart.errorClearingCart'), {
+        duration: 4000,
+        position: 'bottom-right',
+      });
     },
   });
 
-  const addToCart = useCallback((productId: string, quantity: number = 1) => {
+  const updateQuantityMutation = useMutation({
+    mutationFn: ({ productId, quantity }: { productId: string; quantity: number }) => 
+      cartApi.updateQuantity(guestId, productId, quantity),
+    onMutate: async ({ productId, quantity }) => {
+      await queryClient.cancelQueries({ queryKey: cartQueryKey });
+
+      const previousCart = queryClient.getQueryData<Cart>(cartQueryKey);
+
+      if (previousCart) {
+        const optimisticCart = {
+          ...previousCart,
+          items: previousCart.items.map(item => 
+            item.product.id === productId 
+              ? { ...item, quantity }
+              : item
+          ).filter(item => item.quantity > 0), 
+        };
+        
+        optimisticCart.totalItems = optimisticCart.items.reduce((sum, item) => sum + item.quantity, 0);
+        
+        optimisticCart.totalAmount = optimisticCart.items.reduce((sum, item) => sum + (item.priceAtTime * item.quantity), 0);
+        
+        queryClient.setQueryData(cartQueryKey, optimisticCart);
+      }
+
+      return { previousCart };
+    },
+    onError: (err, variables, context) => {
+      if (context?.previousCart) {
+        queryClient.setQueryData(cartQueryKey, context.previousCart);
+      }
+      
+      toast.error(t('cart.errorAddingToCart'), {
+        duration: 4000,
+        position: 'bottom-right',
+      });
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: cartQueryKey });
+    },
+  });
+
+  const addToCart = useCallback((productId: string, quantity: number = 1, showNotification: boolean = true) => {
     if (!guestId) {
-      notify.error(t('cart.errorGuestIdNotAvailable'));
+      toast.error(t('cart.errorGuestIdNotAvailable'), {
+        duration: 4000,
+        position: 'bottom-right',
+      });
 
       return;
     }
 
-    addToCartMutation.mutate({ productId, quantity });
+    addToCartMutation.mutate({ productId, quantity, showNotification });
   }, [guestId, addToCartMutation, t]);
 
   const removeFromCart = useCallback((productId: string) => {
     if (!guestId) {
-      notify.error(t('cart.errorGuestIdNotAvailable'));
+      toast.error(t('cart.errorGuestIdNotAvailable'), {
+        duration: 4000,
+        position: 'bottom-right',
+      });
 
       return;
     }
@@ -84,7 +174,10 @@ export const useCart = () => {
 
   const clearCart = useCallback(() => {
     if (!guestId) {
-      notify.error(t('cart.errorGuestIdNotAvailable'));
+      toast.error(t('cart.errorGuestIdNotAvailable'), {
+        duration: 4000,
+        position: 'bottom-right',
+      });
 
       return;
     }
@@ -92,16 +185,49 @@ export const useCart = () => {
     clearCartMutation.mutate();
   }, [guestId, clearCartMutation, t]);
 
-  const getItemQuantity = useCallback((productId: string): number => {
-    if (!cart?.items) return 0;
+  const updateQuantity = useCallback((productId: string, quantity: number) => {
+    if (!guestId) {
+      toast.error(t('cart.errorGuestIdNotAvailable'), {
+        duration: 4000,
+        position: 'bottom-right',
+      });
 
-    const item = cart.items.find((item) => item.product.id === productId);
+      return;
+    }
 
-    return item ? item.quantity : 0;
-  }, [cart?.items]);
+    if (quantity <= 0) {
+      removeFromCart(productId);
 
+      return;
+    }
+
+    updateQuantityMutation.mutate({ productId, quantity });
+  }, [guestId, updateQuantityMutation, removeFromCart, t]);
+
+  const incrementQuantity = useCallback((productId: string) => {
+    const currentQuantity = getItemQuantity(productId);
+
+    updateQuantity(productId, currentQuantity + 1);
+  }, [getItemQuantity, updateQuantity]);
+
+  const decrementQuantity = useCallback((productId: string) => {
+    const currentQuantity = getItemQuantity(productId);
+
+    if (currentQuantity > 1) {
+      updateQuantity(productId, currentQuantity - 1);
+    } else {
+      removeFromCart(productId);
+    }
+  }, [getItemQuantity, updateQuantity, removeFromCart]);
+
+  
   const isInCart = useCallback((productId: string): boolean => {
-    return getItemQuantity(productId) > 0;
+    const quantity = getItemQuantity(productId);
+    const isInCartResult = quantity > 0;
+    
+    console.log('🛒 isInCart: productId:', productId, 'quantity:', quantity, 'isInCart:', isInCartResult);
+    
+    return isInCartResult;
   }, [getItemQuantity]);  const generateWhatsAppMessage = useCallback((): string => {
     if (!cart?.items || cart.items.length === 0) {
       return t('cart.whatsappGreeting');
@@ -139,10 +265,14 @@ export const useCart = () => {
     addToCart,
     removeFromCart,
     clearCart,
+    updateQuantity,
+    incrementQuantity,
+    decrementQuantity,
     refetchCart,
     isAddingToCart: addToCartMutation.isPending,
     isRemovingFromCart: removeFromCartMutation.isPending,
     isClearingCart: clearCartMutation.isPending,
+    isUpdatingQuantity: updateQuantityMutation.isPending,
     getItemQuantity,
     isInCart,
     generateWhatsAppMessage,
@@ -159,10 +289,14 @@ export const useCart = () => {
     addToCart,
     removeFromCart,
     clearCart,
+    updateQuantity,
+    incrementQuantity,
+    decrementQuantity,
     refetchCart,
     addToCartMutation.isPending,
     removeFromCartMutation.isPending,
     clearCartMutation.isPending,
+    updateQuantityMutation.isPending,
     getItemQuantity,
     isInCart,
     generateWhatsAppMessage,

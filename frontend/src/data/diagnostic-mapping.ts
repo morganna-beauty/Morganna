@@ -26,25 +26,25 @@ export function mapDiagnosticToConcerns({
 }: DiagnosticInputs): DiagnosticMappingResult {
   const concerns: Concern[] = [];
 
-  // Usar arrays si están disponibles, sino usar valores únicos para compatibilidad
   const conditionsList = conditions || (condition ? [condition] : []);
+
   const causesList = causes || (cause ? [cause] : []);
 
-  // Mapear condiciones
   conditionsList.forEach((cond) => {
     if (cond === 'dry_dull') {
       concerns.push(Concern.CABELLO_SECO);
     }
+    
     if (cond === 'brittle_hair' || cond === 'split_ends' || cond === 'fall_breakage' || cond === 'only_fall') {
       concerns.push(Concern.DANO_REPARACION);
     }
   });
 
-  // Mapear causas
   causesList.forEach((c) => {
     if (c === 'thermal') {
       concerns.push(Concern.CONTROL_FRIZ);
     }
+
     if (c === 'chemical') {
       concerns.push(Concern.DANO_REPARACION);
     }
@@ -57,10 +57,12 @@ export type RecommendationKey = 'hydration' | 'repair' | 'frizz' | 'volume' | 'g
 
 export function getRecommendationKeyFromConcerns(concerns: Concern[]): RecommendationKey {
   const set = new Set(concerns);
+
   if (set.has(Concern.CABELLO_SECO)) return 'hydration';
   if (set.has(Concern.DANO_REPARACION)) return 'repair';
   if (set.has(Concern.CONTROL_FRIZ)) return 'frizz';
   if (set.has(Concern.VOLUMEN)) return 'volume';
+  
   return 'generic';
 }
 

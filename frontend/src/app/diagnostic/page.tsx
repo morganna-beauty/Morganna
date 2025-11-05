@@ -63,10 +63,11 @@ export default function DiagnosticPage() {
   const handleNext = useCallback(() => {
     setStep((prev) => {
       if (prev === 1 && selectedConditions.length > 0) return 2;
+
       if (prev === 2 && selectedCauses.length > 0) {
-        // Si hay alguna causa química, mostrar paso de proceso
         return selectedCauses.includes('chemical') ? 2.5 : 3;
       }
+
       if (prev === 2.5 && selectedProcess) return 3;
 
       return prev;
@@ -133,21 +134,24 @@ export default function DiagnosticPage() {
             <OptionSelector
               options={conditions.map((c) => c.label)}
               selectedOptions={conditions
-                .filter((c) => selectedConditions.includes(c.key))
+                .filter((c) => selectedConditions.includes(c.key as HairConditionKey))
                 .map((c) => c.label)}
               onSelect={(label) => {
                 const found = conditions.find((c) => c.label === label);
+
                 if (found) {
                   setSelectedConditions((prev) => {
                     const key = found.key as HairConditionKey;
+
                     return prev.includes(key)
                       ? prev.filter((k) => k !== key)
                       : [...prev, key];
                   });
                 }
-              }}
-              multiple={true}
-            />
+              } }
+              multiple={true} 
+              selectedOption={null}            
+              />
           </motion.div>
         )}
 
@@ -156,21 +160,24 @@ export default function DiagnosticPage() {
             <OptionSelector
               options={causes.map((c) => c.label)}
               selectedOptions={causes
-                .filter((c) => selectedCauses.includes(c.key))
+                .filter((c) => selectedCauses.includes(c.key as HairCauseKey))
                 .map((c) => c.label)}
               onSelect={(label) => {
                 const found = causes.find((c) => c.label === label);
+
                 if (found) {
                   setSelectedCauses((prev) => {
                     const key = found.key as HairCauseKey;
+
                     return prev.includes(key)
                       ? prev.filter((k) => k !== key)
                       : [...prev, key];
                   });
                 }
-              }}
-              multiple={true}
-            />
+              } }
+              multiple={true} 
+              selectedOption={null}            
+              />
           </motion.div>
         )}
 

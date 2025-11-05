@@ -23,5 +23,17 @@
   "emptyCart": "Cart is empty",
   "loading": "Loading...",
   "error": "Error",
-  "retry": "Retry"
+  "retry": "Retry",
+  "addingToCart": "Adding...",
+  "continueShopping": "Continue shopping",
+  "orderSummary": "Order summary",
+  "products": "products",
+  "shipping": "Shipping",
+  "free": "Free",
+  "secureCheckout": "100% secure checkout",
+  "dataProtection": "Your data is protected with SSL encryption",
+  "viewProducts": "View products",
+  "emptyCartDescription": "Your cart seems to be empty. Discover our amazing products!",
+  "home": "Home",
+  "each": "each"
 }

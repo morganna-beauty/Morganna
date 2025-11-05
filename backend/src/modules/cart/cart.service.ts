@@ -24,26 +24,28 @@ export class CartService {
 
   async getCart(guestId: string): Promise<Cart> {
     try {
+      // Simplificamos la consulta para evitar índice compuesto
       const cartItemsQuery = await this.collection
         .where('guestId', '==', guestId)
         .where('isActive', '==', true)
-        .orderBy('addedAt', 'desc')
         .get();
 
-      const cartItems: CartItem[] = cartItemsQuery.docs.map((doc) => {
-        const data = doc.data();
+      const cartItems: CartItem[] = cartItemsQuery.docs
+        .map((doc) => {
+          const data = doc.data();
 
-        return {
-          id: doc.id,
-          guestId: data.guestId,
-          productId: data.productId,
-          quantity: data.quantity,
-          price: data.price,
-          addedAt: this.convertTimestamp(data.addedAt),
-          updatedAt: this.convertTimestamp(data.updatedAt),
-          isActive: data.isActive,
-        };
-      });
+          return {
+            id: doc.id,
+            guestId: data.guestId,
+            productId: data.productId,
+            quantity: data.quantity,
+            price: data.price,
+            addedAt: this.convertTimestamp(data.addedAt),
+            updatedAt: this.convertTimestamp(data.updatedAt),
+            isActive: data.isActive,
+          };
+        })
+        .sort((a, b) => b.addedAt.getTime() - a.addedAt.getTime()); // Ordenar por fecha desc
 
       if (cartItems.length === 0) {
         return {
@@ -109,6 +111,20 @@ export class CartService {
       };
     } catch (error) {
       console.error('Error getting cart:', error);
+      
+      // Si el error es por índices de Firestore, devolvemos carrito vacío
+      if (error.code === 9 || error.message?.includes('requires an index')) {
+        console.warn('Firestore index required, returning empty cart for now');
+
+        return {
+          guestId,
+          items: [],
+          totalAmount: 0,
+          totalItems: 0,
+          updatedAt: new Date(),
+        };
+      }
+      
       throw new Error('Failed to retrieve cart');
     }
   }

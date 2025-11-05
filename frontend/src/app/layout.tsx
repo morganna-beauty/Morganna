@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import { Toaster } from 'react-hot-toast';
 import { Navbar, I18nProvider, AuthProvider, Footer } from '@/components';
 import './globals.css';
 import { QueryProvider } from './providers/QueryProvider';
@@ -23,6 +24,29 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <main>{children}</main>
 
               <Footer />
+
+              <Toaster
+                position="bottom-right"
+                toastOptions={{
+                  duration: 3000,
+                  style: {
+                    background: '#363636',
+                    color: '#fff',
+                  },
+                  success: {
+                    iconTheme: {
+                      primary: '#10B981',
+                      secondary: '#fff',
+                    },
+                  },
+                  error: {
+                    iconTheme: {
+                      primary: '#EF4444',
+                      secondary: '#fff',
+                    },
+                  },
+                }}
+              />
             </AuthProvider>
           </I18nProvider>
         </QueryProvider>

@@ -5,6 +5,7 @@ import { useI18n, useProducts } from '@/hooks';
 import BestSellersCard from '@/components/BestSellersCard';
 import { useMemo } from 'react';
 import Star from "@/Icons/Star";
+import { Concern } from "@/types";
 
 export default function BlogPage() {
   const { products } = useProducts();
@@ -12,8 +13,8 @@ export default function BlogPage() {
 
   const recommendedProducts = useMemo(() => {
     return products.filter(product => 
-      product.concern === 'cabelloSeco' || 
-      product.concern === 'danoReparacion'
+      product.concern && Array.isArray(product.concern) && 
+      product.concern.some(concern => concern === Concern.CABELLO_SECO || concern === Concern.DANO_REPARACION)
     ).slice(0, 3);
   }, [products]);
 
@@ -32,9 +33,7 @@ export default function BlogPage() {
           </p>
         </div>
 
-        {/* Recommendations List */}
         <div className="flex flex-col items-start gap-3 w-full max-w-[400px] md:max-w-[700px] lg:max-w-[1114px]">
-          {/* Recommendation 1 */}
           <div className="flex flex-row items-center p-2 gap-[14px] w-full bg-white border border-[#215E6B] rounded-lg">
             <div className="flex justify-center items-center w-12 h-12 flex-shrink-0">
               <div className="flex justify-center items-center w-10 h-10 bg-[#B6D6DD] rounded-full">
@@ -109,7 +108,6 @@ export default function BlogPage() {
           </div>
         </div>
 
-        {/* CTA Section with Background */}
         <div 
           className="flex flex-col items-center px-5 py-24 gap-8 md:px-12 md:gap-12 lg:px-[60px] lg:gap-16 w-full max-w-[400px] md:max-w-[700px] lg:max-w-[1320px] rounded-2xl bg-cover bg-center"
           style={{

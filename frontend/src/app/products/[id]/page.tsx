@@ -35,7 +35,7 @@ export default function ProductPage({ params }: ProductProps) {
             <h1 className="text-[32px] font-medium leading-10 text-black">{product.title}</h1>
             <ProductBenefits benefits={product.benefits} />
 
-            <ButtonsProduct productTitle={product.title}/>
+            <ButtonsProduct product={product}/>
           </div>
         </div>
 

@@ -17,6 +17,7 @@ export const OptionSelector = <T extends string>({
     if (multiple && selectedOptions) {
       return selectedOptions.includes(option);
     }
+    
     return selectedOption === option;
   };
 

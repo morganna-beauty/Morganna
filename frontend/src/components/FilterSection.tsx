@@ -26,9 +26,9 @@ const FilterSection = memo(
           const newValues = selectedValues.includes(optionId)
             ? selectedValues.filter((id) => id !== optionId)
             : [...selectedValues, optionId];
+
           onChange(newValues);
         } else {
-          // Selección única: reemplazar
           onChange([optionId]);
         }
       },
@@ -61,7 +61,7 @@ const FilterSection = memo(
             </label>
           </li>
         )),
-      [options, selectedValues, handleChange, t, name]
+      [options, multiple, name, selectedValues, t, handleChange]
     );
 
     return (

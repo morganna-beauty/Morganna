@@ -34,6 +34,11 @@ export interface AddToCartDto {
   quantity: number;
 }
 
+export interface UpdateQuantityDto {
+  productId: string;
+  quantity: number;
+}
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
 export const cartApi = {
@@ -103,5 +108,14 @@ export const cartApi = {
 
       throw new Error(error.message || 'Failed to clear cart');
     }
+  },
+
+  // For quantity updates, we'll remove the item completely and re-add with new quantity
+  updateQuantity: async (guestId: string, productId: string, newQuantity: number): Promise<CartItem> => {
+    // First remove the existing item
+    await cartApi.removeFromCart(guestId, productId);
+    
+    // Then add it back with the new quantity
+    return await cartApi.addToCart(guestId, { productId, quantity: newQuantity });
   },
 };

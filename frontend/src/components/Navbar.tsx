@@ -6,11 +6,11 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useI18n } from '@/hooks/useI18n';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { UserMenu } from './UserMenu';
+import { CartIcon, CartDrawer } from './Cart';
 import logo from '../../public/logo.svg';
 import { Roboto } from 'next/font/google';
 import { IoSearchSharp } from 'react-icons/io5';
 import { FaRegUser } from 'react-icons/fa6';
-import { MdOutlineShoppingBag } from 'react-icons/md';
 import { HiMenu, HiX } from 'react-icons/hi';
 import NAV_LINKS from '@/data/NavLinks';
 
@@ -22,6 +22,7 @@ const roboto = Roboto({
 export const Navbar = () => {
   const { t } = useI18n();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
 
   const toggleMobileMenu = useCallback(() => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -29,6 +30,14 @@ export const Navbar = () => {
 
   const closeMobileMenu = useCallback(() => {
     setIsMobileMenuOpen(false);
+  }, []);
+
+  const openCartDrawer = useCallback(() => {
+    setIsCartDrawerOpen(true);
+  }, []);
+
+  const closeCartDrawer = useCallback(() => {
+    setIsCartDrawerOpen(false);
   }, []);
 
   const handleResize = useCallback(() => {
@@ -100,13 +109,10 @@ export const Navbar = () => {
                 <IoSearchSharp size={24} />
               </button>
 
-              <button
-                type="button"
-                className="flex items-center justify-center w-12 h-12 rounded-full hover:bg-gray-100 transition-colors"
-                aria-label="Shopping cart"
-              >
-                <MdOutlineShoppingBag size={24} />
-              </button>
+              <CartIcon
+                onClick={openCartDrawer}
+                className="w-12 h-12 rounded-full hover:bg-gray-100 transition-colors"
+              />
 
               <UserMenu />
 
@@ -124,13 +130,10 @@ export const Navbar = () => {
                 <IoSearchSharp size={20} />
               </button>
 
-              <button
-                type="button"
-                className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 transition-colors"
-                aria-label="Shopping cart"
-              >
-                <MdOutlineShoppingBag size={20} />
-              </button>
+              <CartIcon
+                onClick={openCartDrawer}
+                className="w-10 h-10 rounded-full hover:bg-gray-100 transition-colors"
+              />
 
               <button
                 type="button"
@@ -182,6 +185,8 @@ export const Navbar = () => {
           </div>
         </div>
       </div>
+
+      <CartDrawer isOpen={isCartDrawerOpen} onClose={closeCartDrawer} />
     </>
   );
 };

@@ -14,6 +14,7 @@ import enFilter from '../locales/en/filters.json';
 import enDiagnostic from '../locales/en/diagnostic.json';
 import enRecommendations from '../locales/en/recommendations.json';
 import enAuth from '../locales/en/auth.json';
+import enCart from '../locales/en/cart.json';
 import esCommon from '../locales/es/common.json';
 import esProduct from '../locales/es/product.json';
 import esNavbar from '../locales/es/navbar.json';
@@ -25,6 +26,7 @@ import esFilters from '../locales/es/filters.json';
 import esDiagnostic from '../locales/es/diagnostic.json';
 import esRecommendations from '../locales/es/recommendations.json';
 import esAuth from '../locales/es/auth.json';
+import esCart from '../locales/es/cart.json';
 
 type TranslationValue = string | { [key: string]: TranslationValue };
 
@@ -51,6 +53,7 @@ const TRANSLATIONS: TranslationsType = {
     diagnostic: enDiagnostic,
     recommendations: enRecommendations,
     auth: enAuth,
+    cart: enCart,
   },
   es: {
     common: esCommon,
@@ -64,6 +67,7 @@ const TRANSLATIONS: TranslationsType = {
     diagnostic: esDiagnostic,
     recommendations: esRecommendations,
     auth: esAuth,
+    cart: esCart,
   },
 };
 

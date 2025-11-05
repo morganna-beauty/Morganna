@@ -36,7 +36,7 @@ export function useUsers() {
   );
 
   const updateUser = useCallback(
-    (userId: number, updatedUserData: UpdateUserRequest) => {
+    (userId: string, updatedUserData: UpdateUserRequest) => {
       const protectedAction = withAdminAuth(async () => {
         const updatedUser = await usersApi.updateUser(userId, updatedUserData);
 
@@ -51,7 +51,7 @@ export function useUsers() {
   );
 
   const deleteUser = useCallback(
-    (userId: number) => {
+    (userId: string) => {
       const protectedAction = withAdminAuth(async () => {
         await usersApi.deleteUser(userId);
 

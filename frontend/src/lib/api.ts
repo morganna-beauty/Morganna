@@ -57,12 +57,10 @@ export const productsApi = {
     if (filters?.hairType) params.append('hairType', filters.hairType);
     
     // Handle concerns as array (backend expects 'concerns' as array)
-    if (filters?.concern && Array.isArray(filters.concern)) {
+    if (filters?.concern && filters.concern.length > 0) {
       filters.concern.forEach((concern) => {
         params.append('concerns', concern);
       });
-    } else if (filters?.concern) {
-      params.append('concerns', filters.concern as string);
     }
     
     if (filters?.brand) params.append('brand', filters.brand);

@@ -23,5 +23,17 @@
   "emptyCart": "El carrito está vacío",
   "loading": "Cargando...",
   "error": "Error",
-  "retry": "Reintentar"
+  "retry": "Reintentar",
+  "addingToCart": "Agregando...",
+  "continueShopping": "Seguir comprando",
+  "orderSummary": "Resumen del pedido",
+  "products": "productos",
+  "shipping": "Envío",
+  "free": "Gratis",
+  "secureCheckout": "Compra 100% segura",
+  "dataProtection": "Tus datos están protegidos con encriptación SSL",
+  "viewProducts": "Ver productos",
+  "emptyCartDescription": "Parece que tu carrito está vacío. ¡Descubre nuestros increíbles productos!",
+  "home": "Inicio",
+  "each": "c/u"
 }
