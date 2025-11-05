@@ -10,7 +10,7 @@ interface BestSellersCardProps {
 
 const BestSellersCard = memo(({ product }: BestSellersCardProps) => {
   return (
-    <Link 
+    <Link  
       href={`/products/${product.id}`}
       className="flex flex-col justify-center items-start p-0 gap-6 w-[408px] h-[695px] flex-grow cursor-pointer"
     >
