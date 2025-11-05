@@ -43,25 +43,17 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
       setIsUploading(true);
       setUploadError(null);
 
-      console.log('Iniciando carga de imagen:', file.name, file.type, file.size);
-      console.log('Imagen actual:', currentImage);
-
       try {
         let response;
 
-        // Si hay una imagen actual, usar replaceImage para eliminar la anterior
         if (currentImage) {
-          console.log('Reemplazando imagen existente');
           response = await replaceImage(file, currentImage);
         } else {
-          console.log('Subiendo nueva imagen');
           response = await uploadImage(file);
         }
 
-        console.log('Respuesta de carga exitosa:', response);
         onImageSelect(response.url);
       } catch (error) {
-        console.error('Error en carga de imagen:', error);
         setUploadError(error instanceof Error ? error.message : t('upload.uploadError'));
       } finally {
         setIsUploading(false);

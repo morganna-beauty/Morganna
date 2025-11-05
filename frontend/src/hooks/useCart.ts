@@ -27,21 +27,10 @@ export const useCart = () => {
 
   const getItemQuantity = useCallback((productId: string): number => {
     if (!cart?.items) {
-      console.log('🛒 getItemQuantity: No cart items available');
-
       return 0;
     }
 
-    console.log('🛒 getItemQuantity: Looking for productId:', productId);
-    console.log('🛒 getItemQuantity: Available items:', cart.items.map(item => ({ 
-      id: item.product.id, 
-      title: item.product.title, 
-      quantity: item.quantity 
-    })));
-
     const item = cart.items.find((item) => item.product.id === productId);
-
-    console.log('🛒 getItemQuantity: Found item:', item ? { id: item.product.id, quantity: item.quantity } : 'Not found');
 
     return item ? item.quantity : 0;
   }, [cart?.items]);
@@ -223,9 +212,8 @@ export const useCart = () => {
   
   const isInCart = useCallback((productId: string): boolean => {
     const quantity = getItemQuantity(productId);
-    const isInCartResult = quantity > 0;
     
-    console.log('🛒 isInCart: productId:', productId, 'quantity:', quantity, 'isInCart:', isInCartResult);
+    const isInCartResult = quantity > 0;
     
     return isInCartResult;
   }, [getItemQuantity]);  const generateWhatsAppMessage = useCallback((): string => {

@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useAuth, useI18n } from '@/hooks';
 

@@ -124,11 +124,9 @@ function getMimeType(filename: string): AllowedMimeType {
 if (require.main === module) {
   migrateImages()
     .then(() => {
-      console.log('Migration script completed');
       process.exit(0);
     })
-    .catch((error) => {
-      console.error('Migration script failed:', error);
+    .catch(() => {
       process.exit(1);
     });
 }

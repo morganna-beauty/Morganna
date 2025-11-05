@@ -73,11 +73,11 @@ export default function DiagnosticPage() {
       return prev;
     });
   }, [selectedConditions, selectedCauses, selectedProcess]);
-
+  
   useEffect(() => {
     if (step === 3) {
       const concerns = mapToConcerns();
-
+      
       if (concerns.length) {
         const query = concerns.map((c) => `concerns=${encodeURIComponent(c)}`).join('&');
 
@@ -105,8 +105,8 @@ export default function DiagnosticPage() {
   }, []);
 
   const recommendation = useMemo(() => {
-    // Si hay causa química y proceso, usar el proceso
     const hasChemical = selectedCauses.includes('chemical');
+    
     const key = hasChemical && selectedProcess ? selectedProcess : selectedCauses[0] || '';
 
     if (!key) return t('diagnostic.recommendations.not_found');

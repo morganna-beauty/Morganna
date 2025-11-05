@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useMemo, useCallback } from 'react';
 import { useI18n } from './useI18n';
 

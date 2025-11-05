@@ -93,12 +93,6 @@ const getStoredLanguage = (): string => {
 
 const setStoredLanguage = (lang: string): void => {
   if (typeof window === 'undefined') return;
-
-  try {
-    console.log(`Language set to: ${lang}`);
-  } catch (error) {
-    console.warn('Failed to save language preference:', error);
-  }
 };
 
 export function I18nProvider({ children }: { children: ReactNode }) {
