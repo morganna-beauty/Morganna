@@ -6,7 +6,7 @@ import { Product, Concern } from "@/types";
 import { useI18n } from "@/hooks/useI18n";
 import { getRecommendationKeyFromConcerns } from "@/data/diagnostic-mapping";
 import StarBlog from "@/Icons/StartBlogIcon";
-import Star from "@/Icons/Star";
+import { StartDiagnosticButton } from "@/components/StartDiagnosticButton";
 
 interface PageProps {
   searchParams?: Record<string, string | string[]>;
@@ -21,13 +21,24 @@ export default function RecommendationsPage({ searchParams = {} }: PageProps) {
   const concerns = useMemo(() => {
     if (!concernsParam) return [] as string[];
 
-    return Array.isArray(concernsParam) ? concernsParam : [concernsParam];
+    const concernsArray = Array.isArray(concernsParam) ? concernsParam : [concernsParam];
+    // Filtrar concerns únicos para evitar duplicados
+
+    return Array.from(new Set(concernsArray));
   }, [concernsParam]);
 
-  const recKey = useMemo(
-    () => getRecommendationKeyFromConcerns(concerns as Concern[]),
-    [concerns]
-  );
+  // Calcular recKeys únicos para cada concern individual
+  const uniqueRecKeys = useMemo(() => {
+    const recKeysSet = new Set<string>();
+    
+    concerns.forEach((concern) => {
+      const recKey = getRecommendationKeyFromConcerns([concern as Concern]);
+
+      recKeysSet.add(recKey);
+    });
+
+    return Array.from(recKeysSet);
+  }, [concerns]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -86,29 +97,30 @@ export default function RecommendationsPage({ searchParams = {} }: PageProps) {
         </div>
 
         {/* Bloques de recomendación */}
-        <div className="flex flex-col items-start gap-3 w-full max-w-[400px] md:max-w-[700px] lg:max-w-[1114px]">
-          {concerns.map((c, index) => (
-            <div
-              key={index}
-              className="flex flex-row items-center p-2 gap-[14px] w-full bg-white border border-[#215E6B] rounded-lg"
-            >
-              <div className="flex justify-center items-center w-12 h-12 flex-shrink-0">
-                <div className="flex justify-center items-center w-10 h-10 bg-[#B6D6DD] rounded-full">
-                  <StarBlog />
+        {uniqueRecKeys.length > 0 && (
+          <div className="flex flex-col items-start gap-3 w-full max-w-[400px] md:max-w-[700px] lg:max-w-[1114px]">
+            {uniqueRecKeys.map((recKey) => (
+              <div
+                key={recKey}
+                className="flex flex-row items-center p-2 gap-[14px] w-full bg-white border border-[#215E6B] rounded-lg"
+              >
+                <div className="flex justify-center items-center w-12 h-12 flex-shrink-0">
+                  <div className="flex justify-center items-center w-10 h-10 bg-[#B6D6DD] rounded-full">
+                    <StarBlog />
+                  </div>
+                </div>
+                <div className="flex flex-col items-start gap-2 flex-1 min-w-0">
+                  <h2 className="text-sm font-semibold leading-5 tracking-[0.1px] text-black">
+                    {t(`diagnostic.recommendationHeader.${recKey}.title`)}
+                  </h2>
+                  <p className="text-sm font-medium leading-5 tracking-[0.1px] text-gray-500">
+                    {t(`diagnostic.recommendationHeader.${recKey}.detail`)}
+                  </p>
                 </div>
               </div>
-              <div className="flex flex-col items-start gap-2 flex-1 min-w-0">
-                <h2 className="text-sm font-semibold leading-5 tracking-[0.1px] text-black">
-                  {t(`diagnostic.recommendationHeader.${recKey}.title`)}
-
-                </h2>
-                <p className="text-sm font-medium leading-5 tracking-[0.1px] text-gray-500">
-                  {t(`diagnostic.recommendationHeader.${recKey}.detail`)}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         {/* Productos recomendados */}
         <div className="flex flex-col items-center gap-12 md:gap-14 lg:gap-16 w-full max-w-[400px] md:max-w-[700px] lg:max-w-[1320px]">
@@ -151,17 +163,7 @@ export default function RecommendationsPage({ searchParams = {} }: PageProps) {
               </p>
             </div>
 
-            <button
-              type="button"
-              className="flex justify-center items-center w-[215px] h-12 hover:opacity-90 transition-opacity"
-            >
-              <div className="flex flex-row justify-center items-center px-4 py-[10px] gap-2 w-full h-10 bg-[#215E6B] rounded-full">
-                <Star className="w-5 h-5 text-white flex-none" />
-                <span className="font-medium text-sm leading-5 tracking-[0.1px] text-white">
-                  {t("routine.button")}
-                </span>
-              </div>
-            </button>
+            <StartDiagnosticButton className="w-[215px] h-12" buttonClassName="w-full h-10 rounded-full" />
           </div>
         </div>
       </div>

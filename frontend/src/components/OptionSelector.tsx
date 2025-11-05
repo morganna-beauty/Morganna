@@ -1,3 +1,5 @@
+import { memo, useCallback, useMemo } from 'react';
+
 interface OptionSelectorProps<T extends string> {
   options: T[]
   selectedOption: T | null
@@ -6,39 +8,46 @@ interface OptionSelectorProps<T extends string> {
   multiple?: boolean
 }
 
-export const OptionSelector = <T extends string>({
+function OptionSelectorComponent<T extends string>({
   options,
   selectedOption,
   selectedOptions,
   onSelect,
   multiple = false,
-}: OptionSelectorProps<T>) => {
-  const isSelected = (option: T) => {
+}: OptionSelectorProps<T>) {
+  const isSelected = useCallback((option: T) => {
     if (multiple && selectedOptions) {
       return selectedOptions.includes(option);
     }
     
     return selectedOption === option;
-  };
+  }, [multiple, selectedOptions, selectedOption]);
 
-  const handleClick = (option: T) => {
+  const handleClick = useCallback((option: T) => {
     onSelect(option);
-  };
+  }, [onSelect]);
+
+  const optionsList = useMemo(() => 
+    options.map((option) => (
+      <button
+        key={option}
+        onClick={() => handleClick(option)}
+        className={`px-4 py-2.5 rounded-full border text-sm font-medium transition-colors
+          ${isSelected(option)
+            ? 'bg-[#215E6B] text-white border-[#215E6B]'
+            : 'bg-white text-[#49454F] border-[#CAC4D0] hover:bg-gray-50'}`}
+      >
+        {option}
+      </button>
+    )),
+    [options, handleClick, isSelected]
+  );
 
   return (
     <div className="flex flex-wrap justify-center gap-4 max-w-lg">
-      {options.map((option) => (
-        <button
-          key={option}
-          onClick={() => handleClick(option)}
-          className={`px-4 py-2.5 rounded-full border text-sm font-medium transition-colors
-            ${isSelected(option)
-              ? 'bg-[#215E6B] text-white border-[#215E6B]'
-              : 'bg-white text-[#49454F] border-[#CAC4D0] hover:bg-gray-50'}`}
-        >
-          {option}
-        </button>
-      ))}
+      {optionsList}
     </div>
   )
 }
+
+export const OptionSelector = memo(OptionSelectorComponent) as <T extends string>(props: OptionSelectorProps<T>) => JSX.Element;
