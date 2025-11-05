@@ -1,37 +1,73 @@
+'use client';
+
+import { useCallback, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import StarBlog from '@/Icons/StartBlogIcon';
+import { useI18n } from '@/hooks/useI18n';
 
 export default function AboutPage() {
+  const router = useRouter();
+  const { t } = useI18n();
+
+  const handleViewProducts = useCallback(() => {
+    router.push('/products');
+  }, [router]);
+
+  const handleStartDiagnostic = useCallback(() => {
+    router.push('/diagnostic');
+  }, [router]);
+
+  const title = useMemo(() => t('about.title'), [t]);
+  const description = useMemo(() => t('about.description'), [t]);
+  const viewProductsText = useMemo(() => t('about.viewProducts'), [t]);
+  const startDiagnosticText = useMemo(() => t('about.startDiagnostic'), [t]);
+  const ourStoryText = useMemo(() => t('about.ourStory'), [t]);
+  const ourStoryDescription = useMemo(() => t('about.ourStoryText'), [t]);
+  const missionAndPhilosophyText = useMemo(() => t('about.missionAndPhilosophy'), [t]);
+  const missionText = useMemo(() => t('about.mission'), [t]);
+  const missionDescription = useMemo(() => t('about.missionText'), [t]);
+  const visionText = useMemo(() => t('about.vision'), [t]);
+  const visionDescription = useMemo(() => t('about.visionText'), [t]);
+
+  const backgroundStyle = useMemo(() => ({
+    backgroundImage: "linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/hair_desktop.jpg')",
+  }), []);
+
   return (
     <div className="max-w-[1440px] mx-auto bg-white">
       <section className="flex flex-col justify-center items-center px-5 py-8 md:px-12 md:py-12 lg:px-24 lg:py-8 bg-white">
         <div 
           className="flex flex-col justify-center items-center px-8 md:px-12 lg:px-16 py-0 gap-8 w-full max-w-[400px] md:max-w-[700px] lg:max-w-[1248px] h-[634px] rounded-2xl bg-cover bg-center"
-          style={{
-            backgroundImage: "linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/hair_desktop.jpg')",
-          }}
+          style={backgroundStyle}
         >
           <div className="flex flex-col justify-center items-center gap-4 w-full max-w-[272px] md:max-w-[600px] lg:max-w-[1120px]">
             <h1 className="text-[32px] leading-[40px] md:text-[44px] md:leading-[52px] lg:text-[57px] lg:leading-[64px] font-medium text-center text-white w-full lg:tracking-[-0.25px]">
-              Nacimos para cuidar de ti y tu cabello
+              {title}
             </h1>
             <p className="text-[28px] leading-[36px] md:text-[26px] md:leading-[34px] lg:text-[28px] lg:leading-[36px] font-normal text-center text-white w-full">
-              Descubre la historia, la pasión y las personas detrás de los productos que transformarán tu cabello.
+              {description}
             </p>
           </div>
 
           <div className="flex flex-row items-center gap-4">
-            <button className="flex justify-center items-center h-12 hover:opacity-90 transition-opacity">
+            <button 
+              onClick={handleViewProducts}
+              className="flex justify-center items-center h-12 hover:opacity-90 transition-opacity"
+            >
               <div className="flex justify-center items-center px-4 py-[10px] w-full h-10 bg-[#215E6B] rounded-full">
                 <span className="font-medium text-sm leading-5 tracking-[0.1px] text-white">
-                  Ver Productos
+                  {viewProductsText}
                 </span>
               </div>
             </button>
             
-            <button className="flex justify-center items-center w-auto h-12 hover:opacity-90 transition-opacity">
+            <button 
+              onClick={handleStartDiagnostic}
+              className="flex justify-center items-center w-auto h-12 hover:opacity-90 transition-opacity"
+            >
               <div className="flex justify-center items-center px-4 py-[10px] w-full h-10 bg-white rounded-full">
                 <span className="font-medium text-sm leading-5 tracking-[0.1px] text-black">
-                  Haz tu diagnóstico
+                  {startDiagnosticText}
                 </span>
               </div>
             </button>
@@ -42,21 +78,17 @@ export default function AboutPage() {
       <section className="flex flex-col items-center px-5 py-8 md:px-12 md:py-16 lg:px-24 lg:py-24 gap-8">
         <div className="flex flex-col justify-center items-center gap-4 w-full max-w-[400px] md:max-w-[700px] lg:max-w-[1114px]">
           <h2 className="text-[32px] leading-[40px] font-medium text-center text-black w-full">
-            Nuestra historia
+            {ourStoryText}
           </h2>
           <p className="text-sm leading-5 md:text-lg md:leading-7 lg:text-[22px] lg:leading-[28px] font-medium md:font-normal text-center text-black w-full tracking-[0.1px] md:tracking-normal">
-            Somos una empresa dedicada a la fabricación de productos para el cuidado del cabello,
-            enfocada en la innovación y la salud capilar. Nuestro catálogo tiene una variedad
-            selecta para resolver las principales afecciones que puede presentar el cabello. Estamos
-            convencidos que una buena salud capilar va acompañada de buenos hábitos de cuidado,
-            rutinas sencillas de llevar y productos delicadamente diseñados para cada necesidad.
+            {ourStoryDescription}
           </p>
         </div>
       </section>
 
       <section className="flex flex-col items-center px-5 py-8 md:px-12 md:py-16 lg:px-24 lg:py-24 gap-8 md:gap-12 lg:gap-16 bg-white">
         <h2 className="text-[32px] leading-[40px] font-medium text-center text-black w-full max-w-[400px] md:max-w-[700px] lg:max-w-[1248px]">
-          Nuestra misión y filosofía
+          {missionAndPhilosophyText}
         </h2>
 
         <div className="flex flex-col md:flex-row items-stretch gap-6 w-full max-w-[400px] md:max-w-[700px] lg:max-w-[1248px]">
@@ -69,11 +101,10 @@ export default function AboutPage() {
             
             <div className="flex flex-col justify-center items-center gap-2 w-full">
               <h3 className="text-[22px] leading-[28px] font-medium text-center text-black w-full">
-                Misión
+                {missionText}
               </h3>
               <p className="text-base leading-6 font-normal text-center text-[#215E6B] w-full tracking-[0.5px]">
-                Facilitar la rutina de cuidado del cabello, promoviendo los buenos hábitos de
-                cuidado y la salud capilar.
+                {missionDescription}
               </p>
             </div>
           </div>
@@ -87,12 +118,10 @@ export default function AboutPage() {
             
             <div className="flex flex-col justify-center items-center gap-2 w-full">
               <h3 className="text-[22px] leading-[28px] font-medium text-center text-black w-full">
-                Visión
+                {visionText}
               </h3>
               <p className="text-base leading-6 font-normal text-center text-[#215E6B] w-full tracking-[0.5px]">
-                Convertirnos en la empresa líder de cosmética capilar, facilitando los procesos de
-                cuidados con productos innovadores, que proporcionen resultados notables y duraderos
-                en el cabello.
+                {visionDescription}
               </p>
             </div>
           </div>

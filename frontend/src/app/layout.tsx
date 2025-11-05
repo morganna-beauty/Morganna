@@ -21,7 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <AuthProvider>
               <Navbar />
 
-              <main>{children}</main>
+              <main className='bg-white'>{children}</main>
 
               <Footer />
 

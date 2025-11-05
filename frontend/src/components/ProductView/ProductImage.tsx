@@ -1,11 +1,26 @@
 'use client'
 
-export const ProductImage = ({ src, title }: { src: string; title: string }) => (
-  <div className="flex flex-row items-start w-full h-[400px] bg-gray-200 rounded-2xl overflow-hidden lg:w-[370px] lg:h-[370px]">
-    <img
-      src={src || '/placeholder.png'}
-      alt={title}
-      className="w-full h-full object-cover"
-    />
-  </div>
-);
+import { memo, useMemo } from 'react';
+
+interface ProductImageProps {
+  src: string;
+  title: string;
+}
+
+const ProductImageComponent = ({ src, title }: ProductImageProps) => {
+  const imageSrc = useMemo(() => src || '/placeholder.png', [src]);
+  
+  return (
+    <div className="flex flex-row items-start w-full h-[400px] bg-gray-200 rounded-2xl overflow-hidden lg:w-[370px] lg:h-[370px]">
+      <img
+        src={imageSrc}
+        alt={title}
+        className="w-full h-full object-cover"
+        loading="lazy"
+      />
+    </div>
+  );
+};
+
+export const ProductImage = memo(ProductImageComponent);
+ProductImage.displayName = 'ProductImage';
