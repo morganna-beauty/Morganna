@@ -254,7 +254,7 @@ export const useCart = () => {
       t('cart.clearCartBeforeWhatsApp') || 
       '¿Quieres vaciar el carrito después de enviar el pedido por WhatsApp?\n\nEsto ayuda a mantener el carrito limpio para futuras compras.'
     );
-
+ 
     const message = generateWhatsAppMessage();
     const encodedMessage = encodeURIComponent(message);
     const phone = phoneNumber || defaultPhone;

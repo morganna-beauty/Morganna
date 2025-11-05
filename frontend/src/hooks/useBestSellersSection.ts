@@ -82,6 +82,7 @@ export const useBestSellersSection = () => {
     }`;
   }, [currentIndex, products.length]);
 
+  
   const translations = useMemo(() => ({
     bestSellingProducts: t('bestsellers.bestSellingProducts'),
   }), [t]);
