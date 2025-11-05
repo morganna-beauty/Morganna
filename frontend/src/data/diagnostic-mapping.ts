@@ -17,6 +17,22 @@ export interface DiagnosticMappingResult {
   hairType?: HairType;
 }
 
+/**
+ * Mapea las respuestas del diagnóstico a Concerns que se envían en la URL.
+ * 
+ * Mapeo de respuestas del diagnóstico → Concerns:
+ * 
+ * Condiciones (Step 1):
+ * - 'dry_dull' → Concern.CABELLO_SECO
+ * - 'brittle_hair', 'split_ends', 'fall_breakage', 'only_fall' → Concern.DANO_REPARACION
+ * 
+ * Causas (Step 2):
+ * - 'thermal' → Concern.CONTROL_FRIZ
+ * - 'chemical' → Concern.DANO_REPARACION
+ * 
+ * Estos concerns se envían en la URL como: ?concerns=danoReparacion&concerns=cabelloSeco
+ * y se usan para filtrar productos en el backend.
+ */
 export function mapDiagnosticToConcerns({ 
   condition, 
   conditions, 
@@ -55,14 +71,45 @@ export function mapDiagnosticToConcerns({
 
 export type RecommendationKey = 'hydration' | 'repair' | 'frizz' | 'volume' | 'generic';
 
+/**
+ * Mapea los Concerns a RecommendationKeys para mostrar el recommendationHeader correspondiente.
+ * 
+ * Mapeo de Concerns → RecommendationKeys → recommendationHeader:
+ * 
+ * - Concern.CABELLO_SECO → 'hydration' → diagnostic.recommendationHeader.hydration
+ *   (Cabello seco y opaco: recomendamos líneas hidratantes)
+ * 
+ * - Concern.DANO_REPARACION → 'repair' → diagnostic.recommendationHeader.repair
+ *   (Daño y rotura: busca productos con proteínas y reparación intensiva)
+ * 
+ * - Concern.CONTROL_FRIZ → 'frizz' → diagnostic.recommendationHeader.frizz
+ *   (Control del frizz: activos suavizantes y protección térmica)
+ * 
+ * - Concern.VOLUMEN → 'volume' → diagnostic.recommendationHeader.volume
+ *   (Más volumen: aporta cuerpo sin apelmazar)
+ * 
+ * - Si no hay match → 'generic' → diagnostic.recommendationHeader.generic
+ *   (Recomendación personalizada genérica)
+ * 
+ * Estos keys se usan en la página de recomendaciones para mostrar el título y detalle
+ * correspondiente en los cards de recomendación.
+ */
 export function getRecommendationKeyFromConcerns(concerns: Concern[]): RecommendationKey {
   const set = new Set(concerns);
 
+  // Prioridad: si tiene CABELLO_SECO, muestra hidratación
   if (set.has(Concern.CABELLO_SECO)) return 'hydration';
+  
+  // Si tiene DANO_REPARACION, muestra reparación
   if (set.has(Concern.DANO_REPARACION)) return 'repair';
+  
+  // Si tiene CONTROL_FRIZ, muestra control de frizz
   if (set.has(Concern.CONTROL_FRIZ)) return 'frizz';
+  
+  // Si tiene VOLUMEN, muestra volumen
   if (set.has(Concern.VOLUMEN)) return 'volume';
   
+  // Si no hay match, usa genérico
   return 'generic';
 }
 

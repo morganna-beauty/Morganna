@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Concern } from '@/types';
 import { mapDiagnosticToConcerns } from '@/data/diagnostic-mapping';
 import { motion, AnimatePresence } from 'framer-motion';
-import { StepHeader, OptionSelector, RecommendationBox, NavigationButtons } from '@/components';
+import { StepHeader, OptionSelector, NavigationButtons } from '@/components';
 import { useI18n } from '@/hooks';
 
 type HairConditionKey = 'brittle_hair' | 'split_ends' | 'fall_breakage' | 'only_fall' | 'dry_dull';
@@ -21,7 +21,6 @@ export default function DiagnosticPage() {
   const [selectedConditions, setSelectedConditions] = useState<HairConditionKey[]>([]);
   const [selectedCauses, setSelectedCauses] = useState<HairCauseKey[]>([]);
   const [selectedProcess, setSelectedProcess] = useState<HairProcessKey | null>(null);
-  const [showFullText, setShowFullText] = useState(false);
 
   const { t } = useI18n();
 
@@ -96,26 +95,6 @@ export default function DiagnosticPage() {
     });
   }, [selectedCauses]);
 
-  const handleRestart = useCallback(() => {
-    setStep(1);
-    setSelectedConditions([]);
-    setSelectedCauses([]);
-    setSelectedProcess(null);
-    setShowFullText(false);
-  }, []);
-
-  const recommendation = useMemo(() => {
-    // Si hay causa química y proceso, usar el proceso
-    const hasChemical = selectedCauses.includes('chemical');
-    const key = hasChemical && selectedProcess ? selectedProcess : selectedCauses[0] || '';
-
-    if (!key) return t('diagnostic.recommendations.not_found');
-
-    const fullKey = `recommendations.${key}.${showFullText ? 'full' : 'short'}`;
-    const translated = t(fullKey);
-
-    return translated === fullKey ? t('diagnostic.recommendations.not_found') : translated;
-  }, [selectedCauses, selectedProcess, showFullText, t]);
 
   const fadeMotion = {
     initial: { opacity: 0, y: 10 },
@@ -191,17 +170,6 @@ export default function DiagnosticPage() {
 
                 setSelectedProcess(found?.key as HairProcessKey);
               }}
-            />
-          </motion.div>
-        )}
-
-        {step === 3 && (
-          <motion.div key="step3" {...fadeMotion}>
-            <RecommendationBox
-              text={recommendation}
-              showFullText={showFullText}
-              onToggleFullText={() => setShowFullText((v) => !v)}
-              onRestart={handleRestart}
             />
           </motion.div>
         )}
