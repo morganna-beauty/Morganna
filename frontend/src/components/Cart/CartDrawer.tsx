@@ -108,9 +108,6 @@ const CartDrawerComponent: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => 
                         {item.product.title}
                       </h3>
                       <p className="text-sm text-gray-500">{item.product.brand}</p>
-                      <p className="text-sm font-semibold text-[#215E6B]">
-                        ${item.priceAtTime.toFixed(2)}
-                      </p>
                     </div>
 
                     {/* Quantity Controls */}
@@ -152,12 +149,6 @@ const CartDrawerComponent: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => 
           {/* Footer */}
           {cart?.items && cart.items.length > 0 && (
             <div className="border-t p-4 space-y-4">
-              {/* Total */}
-              <div className="flex items-center justify-between text-lg font-semibold">
-                <span>{t('cart.total')}:</span>
-                <span className="text-[#215E6B]">${cart.totalAmount.toFixed(2)}</span>
-              </div>
-
               {/* Action Buttons */}
               <div className="space-y-2">
                 <button

@@ -26,18 +26,6 @@ export default function CartPage() {
     [cart?.items]
   );
 
-  const subtotal = useMemo(() => 
-    cart?.totalAmount || 0, 
-    [cart?.totalAmount]
-  );
-
-  const shippingCost = useMemo(() => 0, []); // Free shipping
-
-  const totalAmount = useMemo(() => 
-    subtotal + shippingCost, 
-    [subtotal, shippingCost]
-  );
-
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 py-12">
@@ -164,15 +152,6 @@ export default function CartPage() {
                               </button>
                             </div>
 
-                            {/* Price */}
-                            <div className="text-right">
-                              <p className="text-lg font-semibold text-[#215E6B]">
-                                ${(item.priceAtTime * item.quantity).toFixed(2)}
-                              </p>
-                              <p className="text-sm text-gray-500">
-                                ${item.priceAtTime.toFixed(2)} {t('cart.each')}
-                              </p>
-                            </div>
                           </div>
                         </div>
                       </div>
@@ -199,22 +178,6 @@ export default function CartPage() {
                   {t('cart.orderSummary')}
                 </h3>
 
-                <div className="space-y-3 mb-6">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">{t('cart.subtotal')} ({cart?.totalItems || 0} {t('cart.products')})</span>
-                    <span className="font-medium">${subtotal.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">{t('cart.shipping')}</span>
-                    <span className="text-green-600 font-medium">{t('cart.free')}</span>
-                  </div>
-                  <div className="border-t pt-3">
-                    <div className="flex justify-between">
-                      <span className="text-base font-semibold text-gray-900">{t('cart.total')}</span>
-                      <span className="text-xl font-bold text-[#215E6B]">${totalAmount.toFixed(2)}</span>
-                    </div>
-                  </div>
-                </div>
 
                 {/* Checkout Button */}
                 <button

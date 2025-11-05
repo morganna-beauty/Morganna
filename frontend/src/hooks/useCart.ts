@@ -225,24 +225,23 @@ export const useCart = () => {
     
     cart.items.forEach((item, index) => {
       message += `${index + 1}. ${item.product.title}\n`;
-      message += `   - ${t('cart.quantity')}: ${item.quantity}\n`;
-      message += `   - ${t('cart.unitPrice')}: $${item.priceAtTime.toFixed(2)}\n`;
-      message += `   - ${t('cart.subtotal')}: $${(item.priceAtTime * item.quantity).toFixed(2)}\n\n`;
+      message += `   - ${t('cart.quantity')}: ${item.quantity}\n\n`;
     });
 
-    message += `💰 ${t('cart.total')}: $${cart.totalAmount.toFixed(2)}\n\n`;
     message += t('cart.whatsappClosing');
 
     return message;
   }, [cart, t]);
 
   const sendToWhatsApp = useCallback((phoneNumber?: string) => {
+    const defaultPhone = '8297236285';
+    
     if (!cart?.items || cart.items.length === 0) {
       const message = t('cart.whatsappGreeting');
 
       const encodedMessage = encodeURIComponent(message);
 
-      const phone = phoneNumber || process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '';
+      const phone = phoneNumber || defaultPhone;
 
       const whatsappUrl = `https://wa.me/${phone}?text=${encodedMessage}`;
       
@@ -258,7 +257,7 @@ export const useCart = () => {
 
     const message = generateWhatsAppMessage();
     const encodedMessage = encodeURIComponent(message);
-    const phone = phoneNumber || process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '';
+    const phone = phoneNumber || defaultPhone;
     const whatsappUrl = `https://wa.me/${phone}?text=${encodedMessage}`;
     
     window.open(whatsappUrl, '_blank');
