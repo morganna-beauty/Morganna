@@ -4,18 +4,39 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useI18n } from './useI18n';
 import { useProducts } from './useProducts';
 
+
 export const useBestSellersSection = () => {
   const { t } = useI18n();
   const [currentIndex, setCurrentIndex] = useState(0);
   const { products } = useProducts();
 
   const updateIndex = useCallback(() => {
+    if (products.length <= 3) return;
+    
     setCurrentIndex((prevIndex) => {
       const maxIndex = products.length - 3;
 
-      return prevIndex >= maxIndex ? 0 : prevIndex + 3;
+      if (prevIndex >= maxIndex) {
+        return 0;
+      }
+
+      return prevIndex + 1;
     });
   }, [products.length]);
+
+  useEffect(() => {
+    if (products.length <= 3) {
+      setCurrentIndex(0);
+
+      return;
+    }
+
+    const maxIndex = products.length - 3;
+
+    if (currentIndex > maxIndex) {
+      setCurrentIndex(0);
+    }
+  }, [products.length, currentIndex]);
 
   useEffect(() => {
     if (products.length <= 3) return;
@@ -25,10 +46,17 @@ export const useBestSellersSection = () => {
     return () => clearInterval(interval);
   }, [products.length, updateIndex]);
 
-  const visibleProducts = useMemo(
-    () => products.slice(currentIndex, currentIndex + 3),
-    [products, currentIndex]
-  );
+  const visibleProducts = useMemo(() => {
+    if (products.length <= 3) {
+      return products;
+    }
+
+    if (currentIndex + 3 > products.length) {
+      return products.slice(-3);
+    }
+
+    return products.slice(currentIndex, currentIndex + 3);
+  }, [products, currentIndex]);
 
   const totalPages = useMemo(
     () => Math.ceil(products.length / 3),
@@ -45,10 +73,14 @@ export const useBestSellersSection = () => {
   }, []);
 
   const getPaginationButtonClass = useCallback((index: number) => {
+    const pageStartIndex = index * 3;
+    const pageEndIndex = Math.min(pageStartIndex + 3, products.length);
+    const isActive = currentIndex >= pageStartIndex && currentIndex < pageEndIndex;
+    
     return `w-2 h-2 rounded-full transition-all ${
-      currentIndex === index * 3 ? 'bg-black w-8' : 'bg-gray-300 hover:bg-gray-400'
+      isActive ? 'bg-black w-8' : 'bg-gray-300 hover:bg-gray-400'
     }`;
-  }, [currentIndex]);
+  }, [currentIndex, products.length]);
 
   const translations = useMemo(() => ({
     bestSellingProducts: t('bestsellers.bestSellingProducts'),
