@@ -242,7 +242,7 @@ export const useCart = () => {
 
       const encodedMessage = encodeURIComponent(message);
 
-      const phone = phoneNumber || process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '';
+      const phone = phoneNumber || process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '+18299357237';
 
       const whatsappUrl = `https://wa.me/${phone}?text=${encodedMessage}`;
       
