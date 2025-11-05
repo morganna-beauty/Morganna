@@ -7,6 +7,7 @@ interface BestSellersCardProps {
   product: Product;
 }
 
+
 const BestSellersCard = memo(({ product }: BestSellersCardProps) => {
   return (
     <Link 
